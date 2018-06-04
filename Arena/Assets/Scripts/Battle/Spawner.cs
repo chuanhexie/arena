@@ -6,6 +6,7 @@ namespace Arena
 {
     public class Spawner : MonoBehaviour 
     {
+        [Header("(REFERENCE)")]
         public GameObject sender;
         public GameObject receiver;
     }

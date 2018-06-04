@@ -7,9 +7,14 @@ namespace Arena
 {
     public class BattleObjectStatsDisplay : MonoBehaviour 
     {
-        public GameObject representedBattleObject;
-
+        [Header("(EDITABLE)")]
+        [Header("Child Plugins")]
         public GameObject hpText;
+
+        [Space(10)]
+
+        [Header("(REFERENCE)")]
+        public GameObject representedBattleObject;
 
         // Use this for initialization
         void Start () 

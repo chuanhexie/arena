@@ -7,14 +7,18 @@ namespace Arena
 {
     public class ToolSelectOptionDisplay : MonoBehaviour 
     {
+        [Header("(EDITABLE)")]
+        [Header("Child Plugins")]
         public GameObject toolThumbnailGameObject;
-
-        public GameObject representedPlayerTool;
-        public float angleInQuickselect;
-
         public GameObject stamOrManaFlag;
         public GameObject isEquippedFlag;
         public GameObject isBleedFlag;
+
+        [Space(10)]
+
+        [Header("(REFERENCE)")]
+        public GameObject representedPlayerTool;
+        public float angleInQuickselect;
 
         // Use this for initialization
         void Start () 

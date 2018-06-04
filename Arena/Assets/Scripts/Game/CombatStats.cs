@@ -6,23 +6,12 @@ namespace Arena
 {
     public class CombatStats : MonoBehaviour 
     {
+        [Header("(EDITABLE)")]
         public float damage;
         public float poison;
         public float stun;
         public float fire;
         public float useSpeed;
         public float resourceEfficiency;
-
-        // Use this for initialization
-        void Start () 
-        {
-
-        }
-
-        // Update is called once per frame
-        void Update () 
-        {
-
-        }
     }
 }

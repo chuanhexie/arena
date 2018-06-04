@@ -6,9 +6,14 @@ namespace Arena
 {
     public class BattleObject : MonoBehaviour 
     {
-        public float curHP;
+        [Header("(EDITABLE)")]
         public float maxHP;
         public GameObject combatHitbox;
+
+        [Space(10)]
+
+        [Header("(REFERENCE)")]
+        public float curHP;
         public bool isDead;
 
         // Use this for initialization

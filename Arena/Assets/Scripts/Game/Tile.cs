@@ -6,10 +6,12 @@ namespace Arena
 {
     public class Tile : MonoBehaviour 
     {
+        [Header("(REFERENCE)")]
+        [Header("General Flags")]
         public bool isBlock;
         public bool isSpawner;
-        public GameObject spawnerGate;
 
+        [Header("Coordinates in Grid (not scene)")]
         public int locationX;
         public int locationY;
 

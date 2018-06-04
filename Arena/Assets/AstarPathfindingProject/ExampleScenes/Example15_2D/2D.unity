@@ -254,116 +254,11 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 22
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 135}
---- !u!1 &250713941
+--- !u!1 &252732217 stripped
 GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 1642935304434328, guid: 6a4b45fa28855fa4db1288b4fac29203,
-    type: 2}
-  m_PrefabInternal: {fileID: 1905319021}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 250713943}
-  - component: {fileID: 250713942}
-  m_Layer: 0
-  m_Name: SwordBCI
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &250713942
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 114872245120006874, guid: 6a4b45fa28855fa4db1288b4fac29203,
-    type: 2}
-  m_PrefabInternal: {fileID: 1905319021}
-  m_GameObject: {fileID: 250713941}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: af0c70684d2bc754c93f4710118ae12d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  layerMask:
-    serializedVersion: 2
-    m_Bits: 8192
-  usesAltAimReticule: 0
-  isChildOfPlayer: 1
-  isPassiveSpawn: 0
-  playerIsImmune: 1
-  enemyIsImmune: 0
-  startingSpeed: 0
-  duration: 0.1
-  forwardDistanceToSpawn: 0.5
-  isRaycast: 1
-  raycastLength: 2.3
-  prefabToSpawn: {fileID: 1010457515799194, guid: 39fe474da82334647b8f72c2d5097033,
-    type: 2}
-  prefabBattleColliderInstructionOnSelfDestroy: {fileID: 0}
---- !u!4 &250713943
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 4494504214061500, guid: 6a4b45fa28855fa4db1288b4fac29203,
-    type: 2}
-  m_PrefabInternal: {fileID: 1905319021}
-  m_GameObject: {fileID: 250713941}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 1905319024}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &252732217
-GameObject:
-  m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 1832643332154174, guid: 6a4b45fa28855fa4db1288b4fac29203,
     type: 2}
   m_PrefabInternal: {fileID: 865286989}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 252732219}
-  - component: {fileID: 252732218}
-  m_Layer: 0
-  m_Name: DamSword
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &252732218
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 114772331221177954, guid: 6a4b45fa28855fa4db1288b4fac29203,
-    type: 2}
-  m_PrefabInternal: {fileID: 865286989}
-  m_GameObject: {fileID: 252732217}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 30847a3908262e5458b3d17cbb9be81a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  battleColliderInstructionPrefabs:
-  - {fileID: 539348692}
-  combatStats: {fileID: 772734613}
-  usesMana: 0
-  isBleed: 1
-  thumbnail: {fileID: 21300000, guid: 26b8d1b85f22a9049bda47b66fa0e214, type: 3}
---- !u!4 &252732219
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 4353725108400276, guid: 6a4b45fa28855fa4db1288b4fac29203,
-    type: 2}
-  m_PrefabInternal: {fileID: 865286989}
-  m_GameObject: {fileID: 252732217}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.042812, y: 0.0033703924, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 539348694}
-  - {fileID: 772734615}
-  m_Father: {fileID: 0}
-  m_RootOrder: 16
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &257978481
 Prefab:
   m_ObjectHideFlags: 0
@@ -445,108 +340,12 @@ Prefab:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6a4b45fa28855fa4db1288b4fac29203, type: 2}
-  m_RootGameObject: {fileID: 257978482}
   m_IsPrefabParent: 0
---- !u!1 &257978482
+--- !u!1 &257978482 stripped
 GameObject:
-  m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 1832643332154174, guid: 6a4b45fa28855fa4db1288b4fac29203,
     type: 2}
   m_PrefabInternal: {fileID: 257978481}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 257978484}
-  - component: {fileID: 257978483}
-  m_Layer: 0
-  m_Name: BalancedStaff
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &257978483
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 114772331221177954, guid: 6a4b45fa28855fa4db1288b4fac29203,
-    type: 2}
-  m_PrefabInternal: {fileID: 257978481}
-  m_GameObject: {fileID: 257978482}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 30847a3908262e5458b3d17cbb9be81a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  battleColliderInstructionPrefabs:
-  - {fileID: 639018168}
-  combatStats: {fileID: 936026518}
-  usesMana: 1
-  isBleed: 0
-  thumbnail: {fileID: 21300000, guid: f1ab3f7b15544f242b4acf303db4a056, type: 3}
---- !u!4 &257978484
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 4353725108400276, guid: 6a4b45fa28855fa4db1288b4fac29203,
-    type: 2}
-  m_PrefabInternal: {fileID: 257978481}
-  m_GameObject: {fileID: 257978482}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.042812, y: 0.0033703924, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 639018170}
-  - {fileID: 936026520}
-  m_Father: {fileID: 0}
-  m_RootOrder: 12
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &319009338
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 1916454521884508, guid: 6a4b45fa28855fa4db1288b4fac29203,
-    type: 2}
-  m_PrefabInternal: {fileID: 2102620413}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 319009340}
-  - component: {fileID: 319009339}
-  m_Layer: 0
-  m_Name: SwordCombatStats
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &319009339
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 114255411055307360, guid: 6a4b45fa28855fa4db1288b4fac29203,
-    type: 2}
-  m_PrefabInternal: {fileID: 2102620413}
-  m_GameObject: {fileID: 319009338}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0a18a1186bd576d4daa3f5cf45c595ef, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  damage: 0
-  poison: 15
-  stun: 0
-  fire: 0
-  useSpeed: 1
-  resourceEfficiency: 1
---- !u!4 &319009340
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 4125514283136338, guid: 6a4b45fa28855fa4db1288b4fac29203,
-    type: 2}
-  m_PrefabInternal: {fileID: 2102620413}
-  m_GameObject: {fileID: 319009338}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 1542237101}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &376375076
 GameObject:
   m_ObjectHideFlags: 0
@@ -897,65 +696,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 8.82}
   m_EdgeRadius: 0
---- !u!1 &539348692
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 1642935304434328, guid: 6a4b45fa28855fa4db1288b4fac29203,
-    type: 2}
-  m_PrefabInternal: {fileID: 865286989}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 539348694}
-  - component: {fileID: 539348693}
-  m_Layer: 0
-  m_Name: SwordBCI
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &539348693
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 114872245120006874, guid: 6a4b45fa28855fa4db1288b4fac29203,
-    type: 2}
-  m_PrefabInternal: {fileID: 865286989}
-  m_GameObject: {fileID: 539348692}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: af0c70684d2bc754c93f4710118ae12d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  layerMask:
-    serializedVersion: 2
-    m_Bits: 8192
-  usesAltAimReticule: 0
-  isChildOfPlayer: 1
-  isPassiveSpawn: 0
-  playerIsImmune: 1
-  enemyIsImmune: 0
-  startingSpeed: 0
-  duration: 0.01
-  forwardDistanceToSpawn: 0.5
-  isRaycast: 1
-  raycastLength: 1
-  prefabToSpawn: {fileID: 1010457515799194, guid: 39fe474da82334647b8f72c2d5097033,
-    type: 2}
-  prefabBattleColliderInstructionOnSelfDestroy: {fileID: 0}
---- !u!4 &539348694
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 4494504214061500, guid: 6a4b45fa28855fa4db1288b4fac29203,
-    type: 2}
-  m_PrefabInternal: {fileID: 865286989}
-  m_GameObject: {fileID: 539348692}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 252732219}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &544608126
 GameObject:
   m_ObjectHideFlags: 0
@@ -1053,12 +793,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f567bdd759333294d86e62d40a6a80a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  battleCharacterPrefab: {fileID: 1404594924559292, guid: c3d6fbee4086fff45b55c7e07992b29f,
+  prefabBattleCharacter: {fileID: 1404594924559292, guid: c3d6fbee4086fff45b55c7e07992b29f,
     type: 2}
-  playerDirectionalAimPrefab: {fileID: 0}
-  lineRendererPrefab: {fileID: 1560951546789218, guid: e7c0203716de76747a7b04d0e7593694,
+  prefabLineRenderer: {fileID: 1560951546789218, guid: e7c0203716de76747a7b04d0e7593694,
     type: 2}
-  player: {fileID: 0}
+  prefabDirectionalAim: {fileID: 1530537110421056, guid: 1d372f5dd082b444a9c63e175be60619,
+    type: 2}
   playerSprite: {fileID: 21300000, guid: d3e92645da84e5e4cbf53607012c9a9f, type: 3}
   playerSpeed: 90
   playerSpawnLocation: {x: -0.3, y: 3.5}
@@ -1071,18 +811,11 @@ MonoBehaviour:
   - {fileID: 1542237099}
   - {fileID: 252732217}
   - {fileID: 1172797419}
-  playerLeftTool: {fileID: 0}
-  playerRightTool: {fileID: 0}
   maxHealth: 3
-  curHealth: 0
   maxStamina: 100
-  curStamina: 0
   maxMana: 100
-  curMana: 0
   curDirectionX: 0
   curDirectionY: 0
-  playerDirectionalAim: {fileID: 1530537110421056, guid: 1d372f5dd082b444a9c63e175be60619,
-    type: 2}
   enemySprite: {fileID: 21300000, guid: 9043eb4be6a81254d817eb2612564995, type: 3}
   tempEnemySpeed: 1.5
   baseToolUseSpeed: 5
@@ -1099,6 +832,13 @@ MonoBehaviour:
   playerToolInUse: {fileID: 0}
   battleToolQuickSelectActive: 0
   battleColliders: []
+  player: {fileID: 0}
+  playerLeftTool: {fileID: 0}
+  playerRightTool: {fileID: 0}
+  curHealth: 0
+  curStamina: 0
+  curMana: 0
+  playerDirectionalAim: {fileID: 0}
 --- !u!4 &555902834
 Transform:
   m_ObjectHideFlags: 0
@@ -1150,65 +890,6 @@ Transform:
   m_LocalScale: {x: 0.45, y: 0.45, z: 0}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &639018168
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 1642935304434328, guid: 6a4b45fa28855fa4db1288b4fac29203,
-    type: 2}
-  m_PrefabInternal: {fileID: 257978481}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 639018170}
-  - component: {fileID: 639018169}
-  m_Layer: 0
-  m_Name: SwordBCI
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &639018169
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 114872245120006874, guid: 6a4b45fa28855fa4db1288b4fac29203,
-    type: 2}
-  m_PrefabInternal: {fileID: 257978481}
-  m_GameObject: {fileID: 639018168}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: af0c70684d2bc754c93f4710118ae12d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  layerMask:
-    serializedVersion: 2
-    m_Bits: 8192
-  usesAltAimReticule: 0
-  isChildOfPlayer: 1
-  isPassiveSpawn: 0
-  playerIsImmune: 1
-  enemyIsImmune: 0
-  startingSpeed: 0
-  duration: 0.01
-  forwardDistanceToSpawn: 0.5
-  isRaycast: 1
-  raycastLength: 50
-  prefabToSpawn: {fileID: 1010457515799194, guid: 39fe474da82334647b8f72c2d5097033,
-    type: 2}
-  prefabBattleColliderInstructionOnSelfDestroy: {fileID: 0}
---- !u!4 &639018170
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 4494504214061500, guid: 6a4b45fa28855fa4db1288b4fac29203,
-    type: 2}
-  m_PrefabInternal: {fileID: 257978481}
-  m_GameObject: {fileID: 639018168}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 257978484}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &639496564
@@ -1275,65 +956,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 5
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &704846932
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 1642935304434328, guid: 6a4b45fa28855fa4db1288b4fac29203,
-    type: 2}
-  m_PrefabInternal: {fileID: 2102620413}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 704846934}
-  - component: {fileID: 704846933}
-  m_Layer: 0
-  m_Name: SwordBCI
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &704846933
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 114872245120006874, guid: 6a4b45fa28855fa4db1288b4fac29203,
-    type: 2}
-  m_PrefabInternal: {fileID: 2102620413}
-  m_GameObject: {fileID: 704846932}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: af0c70684d2bc754c93f4710118ae12d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  layerMask:
-    serializedVersion: 2
-    m_Bits: 8192
-  usesAltAimReticule: 0
-  isChildOfPlayer: 1
-  isPassiveSpawn: 0
-  playerIsImmune: 1
-  enemyIsImmune: 0
-  startingSpeed: 0
-  duration: 0.01
-  forwardDistanceToSpawn: 0.5
-  isRaycast: 1
-  raycastLength: 1
-  prefabToSpawn: {fileID: 1010457515799194, guid: 39fe474da82334647b8f72c2d5097033,
-    type: 2}
-  prefabBattleColliderInstructionOnSelfDestroy: {fileID: 0}
---- !u!4 &704846934
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 4494504214061500, guid: 6a4b45fa28855fa4db1288b4fac29203,
-    type: 2}
-  m_PrefabInternal: {fileID: 2102620413}
-  m_GameObject: {fileID: 704846932}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 1542237101}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &740862147
 GameObject:
@@ -1505,57 +1127,7 @@ Prefab:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6a4b45fa28855fa4db1288b4fac29203, type: 2}
-  m_RootGameObject: {fileID: 999120925}
   m_IsPrefabParent: 0
---- !u!1 &772734613
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 1916454521884508, guid: 6a4b45fa28855fa4db1288b4fac29203,
-    type: 2}
-  m_PrefabInternal: {fileID: 865286989}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 772734615}
-  - component: {fileID: 772734614}
-  m_Layer: 0
-  m_Name: SwordCombatStats
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &772734614
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 114255411055307360, guid: 6a4b45fa28855fa4db1288b4fac29203,
-    type: 2}
-  m_PrefabInternal: {fileID: 865286989}
-  m_GameObject: {fileID: 772734613}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0a18a1186bd576d4daa3f5cf45c595ef, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  damage: 15
-  poison: 0
-  stun: 0
-  fire: 0
-  useSpeed: 1
-  resourceEfficiency: 1
---- !u!4 &772734615
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 4125514283136338, guid: 6a4b45fa28855fa4db1288b4fac29203,
-    type: 2}
-  m_PrefabInternal: {fileID: 865286989}
-  m_GameObject: {fileID: 772734613}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 252732219}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &795111612
 GameObject:
   m_ObjectHideFlags: 0
@@ -1626,65 +1198,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 20
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 135}
---- !u!1 &860970251
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 1642935304434328, guid: 6a4b45fa28855fa4db1288b4fac29203,
-    type: 2}
-  m_PrefabInternal: {fileID: 1872897813}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 860970253}
-  - component: {fileID: 860970252}
-  m_Layer: 0
-  m_Name: SwordBCI
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &860970252
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 114872245120006874, guid: 6a4b45fa28855fa4db1288b4fac29203,
-    type: 2}
-  m_PrefabInternal: {fileID: 1872897813}
-  m_GameObject: {fileID: 860970251}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: af0c70684d2bc754c93f4710118ae12d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  layerMask:
-    serializedVersion: 2
-    m_Bits: 8192
-  usesAltAimReticule: 0
-  isChildOfPlayer: 1
-  isPassiveSpawn: 0
-  playerIsImmune: 1
-  enemyIsImmune: 0
-  startingSpeed: 0
-  duration: 0.01
-  forwardDistanceToSpawn: 0.5
-  isRaycast: 1
-  raycastLength: 1
-  prefabToSpawn: {fileID: 1010457515799194, guid: 39fe474da82334647b8f72c2d5097033,
-    type: 2}
-  prefabBattleColliderInstructionOnSelfDestroy: {fileID: 0}
---- !u!4 &860970253
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 4494504214061500, guid: 6a4b45fa28855fa4db1288b4fac29203,
-    type: 2}
-  m_PrefabInternal: {fileID: 1872897813}
-  m_GameObject: {fileID: 860970251}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 1172797421}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &863803368
 Prefab:
   m_ObjectHideFlags: 0
@@ -1771,7 +1284,6 @@ Prefab:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6a4b45fa28855fa4db1288b4fac29203, type: 2}
-  m_RootGameObject: {fileID: 1013987485}
   m_IsPrefabParent: 0
 --- !u!1001 &865286989
 Prefab:
@@ -1854,7 +1366,6 @@ Prefab:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6a4b45fa28855fa4db1288b4fac29203, type: 2}
-  m_RootGameObject: {fileID: 252732217}
   m_IsPrefabParent: 0
 --- !u!1 &912231963
 GameObject:
@@ -1926,106 +1437,11 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 19
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 45}
---- !u!1 &936026518
+--- !u!1 &953317417 stripped
 GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 1916454521884508, guid: 6a4b45fa28855fa4db1288b4fac29203,
-    type: 2}
-  m_PrefabInternal: {fileID: 257978481}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 936026520}
-  - component: {fileID: 936026519}
-  m_Layer: 0
-  m_Name: SwordCombatStats
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &936026519
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 114255411055307360, guid: 6a4b45fa28855fa4db1288b4fac29203,
-    type: 2}
-  m_PrefabInternal: {fileID: 257978481}
-  m_GameObject: {fileID: 936026518}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0a18a1186bd576d4daa3f5cf45c595ef, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  damage: 8
-  poison: 0
-  stun: 0
-  fire: 0
-  useSpeed: 8
-  resourceEfficiency: 8
---- !u!4 &936026520
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 4125514283136338, guid: 6a4b45fa28855fa4db1288b4fac29203,
-    type: 2}
-  m_PrefabInternal: {fileID: 257978481}
-  m_GameObject: {fileID: 936026518}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 257978484}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &953317417
-GameObject:
-  m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 1832643332154174, guid: 6a4b45fa28855fa4db1288b4fac29203,
     type: 2}
   m_PrefabInternal: {fileID: 1301840925}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 953317419}
-  - component: {fileID: 953317418}
-  m_Layer: 0
-  m_Name: FireSword
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &953317418
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 114772331221177954, guid: 6a4b45fa28855fa4db1288b4fac29203,
-    type: 2}
-  m_PrefabInternal: {fileID: 1301840925}
-  m_GameObject: {fileID: 953317417}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 30847a3908262e5458b3d17cbb9be81a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  battleColliderInstructionPrefabs:
-  - {fileID: 1102195322}
-  combatStats: {fileID: 1935768062}
-  usesMana: 0
-  isBleed: 1
-  thumbnail: {fileID: 21300000, guid: 26b8d1b85f22a9049bda47b66fa0e214, type: 3}
---- !u!4 &953317419
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 4353725108400276, guid: 6a4b45fa28855fa4db1288b4fac29203,
-    type: 2}
-  m_PrefabInternal: {fileID: 1301840925}
-  m_GameObject: {fileID: 953317417}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.042812, y: 0.0033703924, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 1102195324}
-  - {fileID: 1935768064}
-  m_Father: {fileID: 0}
-  m_RootOrder: 13
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &983200567
 GameObject:
   m_ObjectHideFlags: 0
@@ -2264,108 +1680,16 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &999120925
+--- !u!1 &999120925 stripped
 GameObject:
-  m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 1832643332154174, guid: 6a4b45fa28855fa4db1288b4fac29203,
     type: 2}
   m_PrefabInternal: {fileID: 754458603}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 999120927}
-  - component: {fileID: 999120926}
-  m_Layer: 0
-  m_Name: CheaterSword
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &999120926
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 114772331221177954, guid: 6a4b45fa28855fa4db1288b4fac29203,
-    type: 2}
-  m_PrefabInternal: {fileID: 754458603}
-  m_GameObject: {fileID: 999120925}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 30847a3908262e5458b3d17cbb9be81a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  battleColliderInstructionPrefabs:
-  - {fileID: 2146765642}
-  combatStats: {fileID: 1825915148}
-  usesMana: 0
-  isBleed: 1
-  thumbnail: {fileID: 21300000, guid: 26b8d1b85f22a9049bda47b66fa0e214, type: 3}
---- !u!4 &999120927
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 4353725108400276, guid: 6a4b45fa28855fa4db1288b4fac29203,
-    type: 2}
-  m_PrefabInternal: {fileID: 754458603}
-  m_GameObject: {fileID: 999120925}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.042812, y: 0.0033703924, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 2146765644}
-  - {fileID: 1825915150}
-  m_Father: {fileID: 0}
-  m_RootOrder: 9
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1013987485
+--- !u!1 &1013987485 stripped
 GameObject:
-  m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 1832643332154174, guid: 6a4b45fa28855fa4db1288b4fac29203,
     type: 2}
   m_PrefabInternal: {fileID: 863803368}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 1013987487}
-  - component: {fileID: 1013987486}
-  m_Layer: 0
-  m_Name: ElecSword
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1013987486
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 114772331221177954, guid: 6a4b45fa28855fa4db1288b4fac29203,
-    type: 2}
-  m_PrefabInternal: {fileID: 863803368}
-  m_GameObject: {fileID: 1013987485}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 30847a3908262e5458b3d17cbb9be81a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  battleColliderInstructionPrefabs:
-  - {fileID: 2105382409}
-  combatStats: {fileID: 1931523543}
-  usesMana: 0
-  isBleed: 1
-  thumbnail: {fileID: 21300000, guid: 26b8d1b85f22a9049bda47b66fa0e214, type: 3}
---- !u!4 &1013987487
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 4353725108400276, guid: 6a4b45fa28855fa4db1288b4fac29203,
-    type: 2}
-  m_PrefabInternal: {fileID: 863803368}
-  m_GameObject: {fileID: 1013987485}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.042812, y: 0.0033703924, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 2105382411}
-  - {fileID: 1931523545}
-  m_Father: {fileID: 0}
-  m_RootOrder: 14
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1016871235
 GameObject:
   m_ObjectHideFlags: 0
@@ -2419,116 +1743,11 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1102195322
+--- !u!1 &1172797419 stripped
 GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 1642935304434328, guid: 6a4b45fa28855fa4db1288b4fac29203,
-    type: 2}
-  m_PrefabInternal: {fileID: 1301840925}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 1102195324}
-  - component: {fileID: 1102195323}
-  m_Layer: 0
-  m_Name: SwordBCI
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1102195323
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 114872245120006874, guid: 6a4b45fa28855fa4db1288b4fac29203,
-    type: 2}
-  m_PrefabInternal: {fileID: 1301840925}
-  m_GameObject: {fileID: 1102195322}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: af0c70684d2bc754c93f4710118ae12d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  layerMask:
-    serializedVersion: 2
-    m_Bits: 8192
-  usesAltAimReticule: 0
-  isChildOfPlayer: 1
-  isPassiveSpawn: 0
-  playerIsImmune: 1
-  enemyIsImmune: 0
-  startingSpeed: 0
-  duration: 0.01
-  forwardDistanceToSpawn: 0.5
-  isRaycast: 1
-  raycastLength: 1
-  prefabToSpawn: {fileID: 1010457515799194, guid: 39fe474da82334647b8f72c2d5097033,
-    type: 2}
-  prefabBattleColliderInstructionOnSelfDestroy: {fileID: 0}
---- !u!4 &1102195324
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 4494504214061500, guid: 6a4b45fa28855fa4db1288b4fac29203,
-    type: 2}
-  m_PrefabInternal: {fileID: 1301840925}
-  m_GameObject: {fileID: 1102195322}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 953317419}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1172797419
-GameObject:
-  m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 1832643332154174, guid: 6a4b45fa28855fa4db1288b4fac29203,
     type: 2}
   m_PrefabInternal: {fileID: 1872897813}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 1172797421}
-  - component: {fileID: 1172797420}
-  m_Layer: 0
-  m_Name: EfficSword
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1172797420
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 114772331221177954, guid: 6a4b45fa28855fa4db1288b4fac29203,
-    type: 2}
-  m_PrefabInternal: {fileID: 1872897813}
-  m_GameObject: {fileID: 1172797419}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 30847a3908262e5458b3d17cbb9be81a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  battleColliderInstructionPrefabs:
-  - {fileID: 860970251}
-  combatStats: {fileID: 1564333319}
-  usesMana: 0
-  isBleed: 1
-  thumbnail: {fileID: 21300000, guid: 26b8d1b85f22a9049bda47b66fa0e214, type: 3}
---- !u!4 &1172797421
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 4353725108400276, guid: 6a4b45fa28855fa4db1288b4fac29203,
-    type: 2}
-  m_PrefabInternal: {fileID: 1872897813}
-  m_GameObject: {fileID: 1172797419}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.042812, y: 0.0033703924, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 860970253}
-  - {fileID: 1564333321}
-  m_Father: {fileID: 0}
-  m_RootOrder: 17
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1215890923
 GameObject:
   m_ObjectHideFlags: 0
@@ -2643,7 +1862,6 @@ Prefab:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6a4b45fa28855fa4db1288b4fac29203, type: 2}
-  m_RootGameObject: {fileID: 953317417}
   m_IsPrefabParent: 0
 --- !u!1 &1314452615
 GameObject:
@@ -2719,155 +1937,11 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1314452615}
---- !u!1 &1542237099
+--- !u!1 &1542237099 stripped
 GameObject:
-  m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 1832643332154174, guid: 6a4b45fa28855fa4db1288b4fac29203,
     type: 2}
   m_PrefabInternal: {fileID: 2102620413}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 1542237101}
-  - component: {fileID: 1542237100}
-  m_Layer: 0
-  m_Name: PoisSword
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1542237100
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 114772331221177954, guid: 6a4b45fa28855fa4db1288b4fac29203,
-    type: 2}
-  m_PrefabInternal: {fileID: 2102620413}
-  m_GameObject: {fileID: 1542237099}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 30847a3908262e5458b3d17cbb9be81a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  battleColliderInstructionPrefabs:
-  - {fileID: 704846932}
-  combatStats: {fileID: 319009338}
-  usesMana: 0
-  isBleed: 1
-  thumbnail: {fileID: 21300000, guid: 26b8d1b85f22a9049bda47b66fa0e214, type: 3}
---- !u!4 &1542237101
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 4353725108400276, guid: 6a4b45fa28855fa4db1288b4fac29203,
-    type: 2}
-  m_PrefabInternal: {fileID: 2102620413}
-  m_GameObject: {fileID: 1542237099}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.042812, y: 0.0033703924, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 704846934}
-  - {fileID: 319009340}
-  m_Father: {fileID: 0}
-  m_RootOrder: 15
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1564333319
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 1916454521884508, guid: 6a4b45fa28855fa4db1288b4fac29203,
-    type: 2}
-  m_PrefabInternal: {fileID: 1872897813}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 1564333321}
-  - component: {fileID: 1564333320}
-  m_Layer: 0
-  m_Name: SwordCombatStats
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1564333320
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 114255411055307360, guid: 6a4b45fa28855fa4db1288b4fac29203,
-    type: 2}
-  m_PrefabInternal: {fileID: 1872897813}
-  m_GameObject: {fileID: 1564333319}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0a18a1186bd576d4daa3f5cf45c595ef, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  damage: 5
-  poison: 0
-  stun: 0
-  fire: 0
-  useSpeed: 7
-  resourceEfficiency: 7
---- !u!4 &1564333321
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 4125514283136338, guid: 6a4b45fa28855fa4db1288b4fac29203,
-    type: 2}
-  m_PrefabInternal: {fileID: 1872897813}
-  m_GameObject: {fileID: 1564333319}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 1172797421}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1589679885
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 1916454521884508, guid: 6a4b45fa28855fa4db1288b4fac29203,
-    type: 2}
-  m_PrefabInternal: {fileID: 1905319021}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 1589679887}
-  - component: {fileID: 1589679886}
-  m_Layer: 0
-  m_Name: SwordCombatStats
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1589679886
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 114255411055307360, guid: 6a4b45fa28855fa4db1288b4fac29203,
-    type: 2}
-  m_PrefabInternal: {fileID: 1905319021}
-  m_GameObject: {fileID: 1589679885}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0a18a1186bd576d4daa3f5cf45c595ef, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  damage: 0
-  poison: 0
-  stun: 3
-  fire: 0
-  useSpeed: 15
-  resourceEfficiency: 100
---- !u!4 &1589679887
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 4125514283136338, guid: 6a4b45fa28855fa4db1288b4fac29203,
-    type: 2}
-  m_PrefabInternal: {fileID: 1905319021}
-  m_GameObject: {fileID: 1589679885}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 1905319024}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1665805672
 GameObject:
   m_ObjectHideFlags: 0
@@ -3027,55 +2101,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1825915148
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 1916454521884508, guid: 6a4b45fa28855fa4db1288b4fac29203,
-    type: 2}
-  m_PrefabInternal: {fileID: 754458603}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 1825915150}
-  - component: {fileID: 1825915149}
-  m_Layer: 0
-  m_Name: SwordCombatStats
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1825915149
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 114255411055307360, guid: 6a4b45fa28855fa4db1288b4fac29203,
-    type: 2}
-  m_PrefabInternal: {fileID: 754458603}
-  m_GameObject: {fileID: 1825915148}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0a18a1186bd576d4daa3f5cf45c595ef, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  damage: 10
-  poison: 10
-  stun: 10
-  fire: 10
-  useSpeed: 10
-  resourceEfficiency: 10
---- !u!4 &1825915150
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 4125514283136338, guid: 6a4b45fa28855fa4db1288b4fac29203,
-    type: 2}
-  m_PrefabInternal: {fileID: 754458603}
-  m_GameObject: {fileID: 1825915148}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 999120927}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1872897813
 Prefab:
   m_ObjectHideFlags: 0
@@ -3157,7 +2182,6 @@ Prefab:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6a4b45fa28855fa4db1288b4fac29203, type: 2}
-  m_RootGameObject: {fileID: 1172797419}
   m_IsPrefabParent: 0
 --- !u!1001 &1905319021
 Prefab:
@@ -3250,59 +2274,12 @@ Prefab:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6a4b45fa28855fa4db1288b4fac29203, type: 2}
-  m_RootGameObject: {fileID: 1905319022}
   m_IsPrefabParent: 0
---- !u!1 &1905319022
+--- !u!1 &1905319022 stripped
 GameObject:
-  m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 1832643332154174, guid: 6a4b45fa28855fa4db1288b4fac29203,
     type: 2}
   m_PrefabInternal: {fileID: 1905319021}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 1905319024}
-  - component: {fileID: 1905319023}
-  m_Layer: 0
-  m_Name: FastWhip
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1905319023
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 114772331221177954, guid: 6a4b45fa28855fa4db1288b4fac29203,
-    type: 2}
-  m_PrefabInternal: {fileID: 1905319021}
-  m_GameObject: {fileID: 1905319022}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 30847a3908262e5458b3d17cbb9be81a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  battleColliderInstructionPrefabs:
-  - {fileID: 250713941}
-  combatStats: {fileID: 1589679885}
-  usesMana: 0
-  isBleed: 0
-  thumbnail: {fileID: 21300000, guid: 98715131deced0b4dbe57c34c85fb12d, type: 3}
---- !u!4 &1905319024
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 4353725108400276, guid: 6a4b45fa28855fa4db1288b4fac29203,
-    type: 2}
-  m_PrefabInternal: {fileID: 1905319021}
-  m_GameObject: {fileID: 1905319022}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.042812, y: 0.0033703924, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 250713943}
-  - {fileID: 1589679887}
-  m_Father: {fileID: 0}
-  m_RootOrder: 11
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1918019940
 GameObject:
   m_ObjectHideFlags: 0
@@ -3393,104 +2370,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1931523543
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 1916454521884508, guid: 6a4b45fa28855fa4db1288b4fac29203,
-    type: 2}
-  m_PrefabInternal: {fileID: 863803368}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 1931523545}
-  - component: {fileID: 1931523544}
-  m_Layer: 0
-  m_Name: SwordCombatStats
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1931523544
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 114255411055307360, guid: 6a4b45fa28855fa4db1288b4fac29203,
-    type: 2}
-  m_PrefabInternal: {fileID: 863803368}
-  m_GameObject: {fileID: 1931523543}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0a18a1186bd576d4daa3f5cf45c595ef, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  damage: 0
-  poison: 0
-  stun: 2
-  fire: 0
-  useSpeed: 15
-  resourceEfficiency: 15
---- !u!4 &1931523545
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 4125514283136338, guid: 6a4b45fa28855fa4db1288b4fac29203,
-    type: 2}
-  m_PrefabInternal: {fileID: 863803368}
-  m_GameObject: {fileID: 1931523543}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 1013987487}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1935768062
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 1916454521884508, guid: 6a4b45fa28855fa4db1288b4fac29203,
-    type: 2}
-  m_PrefabInternal: {fileID: 1301840925}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 1935768064}
-  - component: {fileID: 1935768063}
-  m_Layer: 0
-  m_Name: SwordCombatStats
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1935768063
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 114255411055307360, guid: 6a4b45fa28855fa4db1288b4fac29203,
-    type: 2}
-  m_PrefabInternal: {fileID: 1301840925}
-  m_GameObject: {fileID: 1935768062}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0a18a1186bd576d4daa3f5cf45c595ef, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  damage: 0
-  poison: 0
-  stun: 0
-  fire: 15
-  useSpeed: 0.1
-  resourceEfficiency: 100
---- !u!4 &1935768064
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 4125514283136338, guid: 6a4b45fa28855fa4db1288b4fac29203,
-    type: 2}
-  m_PrefabInternal: {fileID: 1301840925}
-  m_GameObject: {fileID: 1935768062}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 953317419}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &2102620413
 Prefab:
   m_ObjectHideFlags: 0
@@ -3577,123 +2456,4 @@ Prefab:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6a4b45fa28855fa4db1288b4fac29203, type: 2}
-  m_RootGameObject: {fileID: 1542237099}
   m_IsPrefabParent: 0
---- !u!1 &2105382409
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 1642935304434328, guid: 6a4b45fa28855fa4db1288b4fac29203,
-    type: 2}
-  m_PrefabInternal: {fileID: 863803368}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 2105382411}
-  - component: {fileID: 2105382410}
-  m_Layer: 0
-  m_Name: SwordBCI
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &2105382410
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 114872245120006874, guid: 6a4b45fa28855fa4db1288b4fac29203,
-    type: 2}
-  m_PrefabInternal: {fileID: 863803368}
-  m_GameObject: {fileID: 2105382409}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: af0c70684d2bc754c93f4710118ae12d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  layerMask:
-    serializedVersion: 2
-    m_Bits: 8192
-  usesAltAimReticule: 0
-  isChildOfPlayer: 1
-  isPassiveSpawn: 0
-  playerIsImmune: 1
-  enemyIsImmune: 0
-  startingSpeed: 0
-  duration: 0.01
-  forwardDistanceToSpawn: 0.5
-  isRaycast: 1
-  raycastLength: 1
-  prefabToSpawn: {fileID: 1010457515799194, guid: 39fe474da82334647b8f72c2d5097033,
-    type: 2}
-  prefabBattleColliderInstructionOnSelfDestroy: {fileID: 0}
---- !u!4 &2105382411
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 4494504214061500, guid: 6a4b45fa28855fa4db1288b4fac29203,
-    type: 2}
-  m_PrefabInternal: {fileID: 863803368}
-  m_GameObject: {fileID: 2105382409}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 1013987487}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &2146765642
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 1642935304434328, guid: 6a4b45fa28855fa4db1288b4fac29203,
-    type: 2}
-  m_PrefabInternal: {fileID: 754458603}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 2146765644}
-  - component: {fileID: 2146765643}
-  m_Layer: 0
-  m_Name: SwordBCI
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &2146765643
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 114872245120006874, guid: 6a4b45fa28855fa4db1288b4fac29203,
-    type: 2}
-  m_PrefabInternal: {fileID: 754458603}
-  m_GameObject: {fileID: 2146765642}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: af0c70684d2bc754c93f4710118ae12d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  layerMask:
-    serializedVersion: 2
-    m_Bits: 8192
-  usesAltAimReticule: 0
-  isChildOfPlayer: 1
-  isPassiveSpawn: 0
-  playerIsImmune: 1
-  enemyIsImmune: 0
-  startingSpeed: 0
-  duration: 0.01
-  forwardDistanceToSpawn: 0.5
-  isRaycast: 1
-  raycastLength: 1
-  prefabToSpawn: {fileID: 1010457515799194, guid: 39fe474da82334647b8f72c2d5097033,
-    type: 2}
-  prefabBattleColliderInstructionOnSelfDestroy: {fileID: 0}
---- !u!4 &2146765644
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 4494504214061500, guid: 6a4b45fa28855fa4db1288b4fac29203,
-    type: 2}
-  m_PrefabInternal: {fileID: 754458603}
-  m_GameObject: {fileID: 2146765642}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 999120927}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

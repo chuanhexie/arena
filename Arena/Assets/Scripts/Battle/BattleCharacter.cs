@@ -7,6 +7,7 @@ namespace Arena
 {
     public class BattleCharacter : MonoBehaviour 
     {
+        [Header("(REFERENCE)")]
         public bool isPlayer;
 
         public Sprite sprite;

@@ -8,28 +8,9 @@ namespace Arena
 {
     public class SpawnerGate : MonoBehaviour 
     {
+        [Header("(EDITABLE)")]
+        [Header("Child Plugins")]
         public GameObject gateGraphicObject;
         public GameObject enemyGraphicObject;
-
-        public GameObject adjacentTile;
-        public int horNodeCount;
-        public int vertNodeCount;
-        public float nodeSpacing;
-
-        public List<GameObject> clockArrows;
-
-        // Use this for initialization
-        void Start () 
-        {
-
-        }
-
-        // Update is called once per frame
-        void Update () 
-        {
-
-        }
-
-
     }
 }

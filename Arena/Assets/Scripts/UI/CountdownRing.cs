@@ -8,9 +8,16 @@ namespace Arena
 {
     public class CountdownRing : MonoBehaviour 
     {
+        [Header("(REFERENCE)")]
+        [Header("Target")]
         public GameObject targetGameObject;
+
+        [Header("Type")]
+        public CountdownRingType type;
+
+        [Header("Countdown")]
         public float currentCountdownValue;
         public float initialCountdownValue;
-        public CountdownRingType type;
+
     }
 }

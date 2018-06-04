@@ -8,6 +8,7 @@ namespace Arena
 {
     public class SpawnerGateSystem : MonoBehaviour 
     {
+        [Header("(REFERENCE)")]
         public List<GameObject> spawnerGates;
         public List<GameObject> clockArrows;
     }

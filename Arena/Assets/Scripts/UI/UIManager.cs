@@ -8,38 +8,36 @@ namespace Arena
 {
     public class UIManager : MonoBehaviour 
     {
-        [SerializeField] RectTransform canvas;
+        [Header("(EDITABLE)")]
+        [Header("Canvas")]
+        public RectTransform canvas;
 
-        [SerializeField] GameObject prefabBattleObjectStatsDisplay;
-        [SerializeField] GameObject prefabToolSelectOptionDisplay;
-        [SerializeField] GameObject prefabToolQuickSelectMenu;
-        [SerializeField] GameObject prefabSpawnerGate;
-        [SerializeField] GameObject prefabClockArrow;
-        [SerializeField] GameObject prefabCountdownRing;
-        [SerializeField] GameObject prefabSpawnerGateSystem;
+        [Header("Prefabs")]
+        public GameObject prefabBattleObjectStatsDisplay;
+        public GameObject prefabToolSelectOptionDisplay;
+        public GameObject prefabToolQuickSelectMenu;
+        public GameObject prefabSpawnerGate;
+        public GameObject prefabClockArrow;
+        public GameObject prefabCountdownRing;
+        public GameObject prefabSpawnerGateSystem;
 
-        public Sprite toolSelectBleedFlag;
-        public Sprite toolSelectStamFlag;
-        public Sprite toolSelectManaFlag;
-        public Sprite toolSelectLeftFlag;
-        public Sprite toolSelectRightFlag;
+        [Header("HUD Plugins")]
+        public GameObject staminaText;
+        public GameObject manaText;
+        public GameObject healthText;
+        public GameObject enemySpawnCountdownText;
+        public GameObject remainingEnemiesCount;
+        public GameObject selectedToolLeftHUD;
+        public GameObject selectedToolRightHUD;
 
-        public Sprite spriteInactiveClockArrow;
-        public Sprite spriteActiveClockArrow;
-
-        [SerializeField] GameObject toolCountdownText;
-        [SerializeField] GameObject staminaText;
-        [SerializeField] GameObject manaText;
-        [SerializeField] GameObject healthText;
-        [SerializeField] GameObject enemySpawnCountdownText;
-        [SerializeField] GameObject remainingEnemiesCount;
-        [SerializeField] GameObject selectedToolLeftHUD;
-        [SerializeField] GameObject selectedToolRightHUD;
-
-        [SerializeField] float countdownRingMaxScale;
+        [Header("Countdown Rings")]
+        public float countdownRingMaxScale;
         public Color CRtoolColor;
         public Color CRstunColor;
 
+        [Header("Spawner Gate Systems")]
+        public Sprite spriteInactiveClockArrow;
+        public Sprite spriteActiveClockArrow;
         public bool isFirstSpawnerGateHor;
         public float firstSpawnerGateRotation = 90;
         public int standardHorClockArrowHalfCount;
@@ -47,15 +45,26 @@ namespace Arena
         public float standardHorHalfLength;
         public float standardVerHalfLength;
 
+        [Header("Tool Quickselect")]
         public float toolSelectRingRadius;
         public GameObject toolQuickSelectMenuForBattle;
 
+        [Header("Tool Quickselect Options")]
+        public Sprite toolSelectBleedFlag;
+        public Sprite toolSelectStamFlag;
+        public Sprite toolSelectManaFlag;
+        public Sprite toolSelectLeftFlag;
+        public Sprite toolSelectRightFlag;
+
+        [Space(10)]
+
+        [Header("(REFERENCE)")]
         public List<GameObject> battleObjectStatsDisplays;
         public List<GameObject> spawnerGates;
-
         public List<GameObject> customLineRenderers;
         public List<GameObject> countdownRings;
         public GameObject curSpawnerGateSystem;
+
 
         // FPS
 		float deltaTime = 0.0f;
@@ -370,49 +379,6 @@ namespace Arena
                     toolSelectOptionSpriteRenderer.enabled = false;
                 }
             }
-        }
-
-        public void InitSpawnerGate(GameObject adjacentSpawnerTile, float rotation, float relativeXPos, float relativeYPos, int horNodeCount, int vertNodeCount, float nodeSpacing)
-        {
-            GameObject spawnerGateGameObject = Instantiate(prefabSpawnerGate);
-            var spawnerGateTransform = spawnerGateGameObject.transform;
-            var spawnerGateScript = spawnerGateGameObject.GetComponent<SpawnerGate>();
-
-            spawnerGateScript.adjacentTile = adjacentSpawnerTile;
-            spawnerGateTransform.rotation = Quaternion.Euler(0, 0, rotation);
-            Vector2 adjacentSpawnerTilePos = adjacentSpawnerTile.transform.position;
-            spawnerGateTransform.position = adjacentSpawnerTilePos + new Vector2(relativeXPos, relativeYPos);
-
-            adjacentSpawnerTile.GetComponent<Tile>().spawnerGate = spawnerGateGameObject;
-
-            spawnerGateScript.horNodeCount = horNodeCount;
-            spawnerGateScript.vertNodeCount = vertNodeCount;
-            spawnerGateScript.nodeSpacing = nodeSpacing;
-
-            // CLOCK ARROWS
-            Vector2 curArrowSpawnLocalPos = Vector2.zero;
-            for (var i = 1; i <= horNodeCount; i++)
-            {
-                GameObject clockArrowGameObject = Instantiate(prefabClockArrow);
-                var clockArrowTransform = clockArrowGameObject.transform;
-                clockArrowTransform.SetParent(spawnerGateTransform);
-                clockArrowTransform.localRotation = Quaternion.Euler(0, 0, -360);
-                clockArrowTransform.localPosition = new Vector2(i * -nodeSpacing, 0);
-                spawnerGateScript.clockArrows.Add(clockArrowGameObject);
-            }
-            for (var i = 1; i <= vertNodeCount; i++)
-            {
-                GameObject clockArrowGameObject = Instantiate(prefabClockArrow);
-                var clockArrowTransform = clockArrowGameObject.transform;
-                clockArrowTransform.SetParent(spawnerGateTransform);
-                clockArrowTransform.localRotation = Quaternion.Euler(0, 0, 90);
-                clockArrowTransform.localPosition = new Vector2((horNodeCount + 0.6f) * -nodeSpacing, i * -nodeSpacing);
-                spawnerGateScript.clockArrows.Add(clockArrowGameObject);
-            }
-
-            spawnerGateScript.enemyGraphicObject.transform.rotation = Quaternion.Euler(0, 0, 0);
-
-            spawnerGates.Add(spawnerGateGameObject);
         }
 
         public Color GetToolColor(GameObject tool)

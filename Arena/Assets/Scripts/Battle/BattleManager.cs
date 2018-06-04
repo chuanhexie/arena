@@ -9,51 +9,74 @@ namespace Arena
 {
     public class BattleManager : MonoBehaviour 
     {
-        public GameObject battleCharacterPrefab;
-        public GameObject playerDirectionalAimPrefab;
-        public GameObject lineRendererPrefab;
+        [Header("(EDITABLE)")]
+        [Header("Prefabs")]
+        public GameObject prefabBattleCharacter;
+        public GameObject prefabLineRenderer;
+        public GameObject prefabDirectionalAim;
 
-        public GameObject player;
+        [Header("Sprites")]
         public Sprite playerSprite;
+        public Sprite enemySprite;
+
+        [Header("Player General")]
         public float playerSpeed;
         public Vector2 playerSpawnLocation;
-        public List<GameObject> playerTools;
-        public GameObject playerLeftTool;
-        public GameObject playerRightTool;
-
-        public float maxHealth;
-        public float curHealth;
-        public float maxStamina;
-        public float curStamina;
-        public float maxMana;
-        public float curMana;
-
-        public float curDirectionX;
-        public float curDirectionY;
-        public GameObject playerDirectionalAim;
-        public Sprite enemySprite;
-        public float tempEnemySpeed;
-
         public float baseToolUseSpeed;
         public float baseStaminaRegenRate;
         public float idleStaminaRegenBoost;
 
+        [Header("Player Tools")]
+        public List<GameObject> playerTools;
+
+        [Header("Player Stats")]
+        public float maxHealth;
+        public float maxStamina;
+        public float maxMana;
+
+        [Header("Placeholder Enemy General")]
+        public float tempEnemySpeed;
+
+        [Header("Enemy Spawning")]
         public float baseTimeToSpawnEnemy;
         public int amountOfEnemiesToSpawn;
-        public float enemySpawnCountdown;
-        public int enemySpawnerTileIndex = 0;
 
-        public List<GameObject> battleObjects;
+        [Space(10)]
 
+        [Header("(REFERENCE)")]
+        [Header("Player General")]
+        public GameObject player;
+        public GameObject playerLeftTool;
+        public GameObject playerRightTool;
 
-        public float currentToolSpeedFinal = 0;
-        public float playerToolCompletionCountdown = 0;
+        [Header("Player Stats")]
+        public float curHealth;
+        public float curStamina;
+        public float curMana;
+
+        [Header("Player Aim")]
+        public GameObject playerDirectionalAim;
+        public float curDirectionX;
+        public float curDirectionY;
+
+        [Header("Player Tools")]
         public bool isPlayerCurrentlyUsingTool;
         public GameObject playerToolInUse;
+        public float currentToolSpeedFinal = 0;
+        public float playerToolCompletionCountdown = 0;
 
+        [Header("Tool Quickselect")]
         public bool battleToolQuickSelectActive = false;
 
+        [Header("Battle Objects")]
+        public List<GameObject> battleObjects;
+
+        [Header("Battle Colliders")]
         public List<GameObject> battleColliders;
+
+        [Header("Enemy Spawning")]
+        public float enemySpawnCountdown;
+        public int enemySpawnerTileIndex = 0;
 
         public static BattleManager singleton;
         void Awake()
@@ -227,7 +250,7 @@ namespace Arena
 
         public void InitBattleCharacter(bool isPlayer, Vector2 spawnLocation)
         {
-            var characterGameObject = Instantiate(battleCharacterPrefab);
+            var characterGameObject = Instantiate(prefabBattleCharacter);
             battleObjects.Add(characterGameObject);
             var characterScript = characterGameObject.GetComponent<BattleCharacter>();
             var characterAILerp = characterGameObject.GetComponent<AILerp>();
@@ -244,7 +267,7 @@ namespace Arena
                 player = characterGameObject;
                 characterAILerp.enabled = false;
                 characterSpriteRenderer.sprite = playerSprite;
-                var directionalAimGameObject = Instantiate(playerDirectionalAim);
+                var directionalAimGameObject = Instantiate(prefabDirectionalAim);
                 playerDirectionalAim = directionalAimGameObject;
                 playerDirectionalAim.transform.parent = player.transform;
                 playerDirectionalAim.transform.localRotation = Quaternion.Euler(0, 0, 180);
@@ -288,7 +311,7 @@ namespace Arena
                     raycastEndLocation = positionToSpawnBattleCollider + (forward  * battleColliderInstructionsScript.raycastLength);
 
                 // RENDER RAYCAST LINE
-                var lineRenderer = Instantiate(lineRendererPrefab);
+                var lineRenderer = Instantiate(prefabLineRenderer);
                 var lineRendererScript = lineRenderer.GetComponent<LineRenderer>();
                 UIManager.singleton.customLineRenderers.Add(lineRenderer);
                 Vector3[] positions = new Vector3[] { 

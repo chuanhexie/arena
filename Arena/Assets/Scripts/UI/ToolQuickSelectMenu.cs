@@ -8,22 +8,16 @@ namespace Arena
 {
     public class ToolQuickSelectMenu : MonoBehaviour 
     {
+        [Header("(EDITABLE)")]
+        [Header("Child Plugins")]
         public GameObject toolQuickselectRing;
         public GameObject selectionReticule;
-        public List<GameObject> toolSelectOptionDisplays;
 
+        [Space(10)]
+
+        [Header("(REFERENCE)")]
         public float selectionAngle;
-
-        // Use this for initialization
-        void Start () 
-        {
-            
-        }
-            
-        void LateUpdate () 
-        {
-            
-        }
+        public List<GameObject> toolSelectOptionDisplays;
 
         public void PositionSelectionReticule (float inputAngle)
         {

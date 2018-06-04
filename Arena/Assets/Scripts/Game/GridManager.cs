@@ -10,20 +10,28 @@ namespace Arena
 {
     public class GridManager : MonoBehaviour 
     {
+        [Header("(EDITABLE)")]
+        [Header("Prefabs")]
         public GameObject prefabTile;
         public GameObject prefabSpawner;
 
+        [Header("Sprites")]
         public Sprite floorSprite;
         public Sprite blockSprite;
         public Sprite floorSpawnSprite;
 
+        [Header("Grid Size & Location")]
         public int gridWidth;
         public int gridHeight;
         public float gridCenterX;
         public float gridCenterY;
 
+        [Header("Random Generation Modifiers")]
         public int amountOfBlocks;
 
+        [Space(10)]
+
+        [Header("(REFERENCE)")]
         public List<GameObject> allTilesInGrid;
         public List<GameObject> spawners;
 
