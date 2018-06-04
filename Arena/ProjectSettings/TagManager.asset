@@ -1,0 +1,58 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags:
+  - Strength
+  - HP
+  - CharacterSelectionButton
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - 
+  - 
+  - Player
+  - Debug
+  - CombatHitbox
+  - RaycastHitbox
+  - PlayerCombat
+  - EnemyCombat
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: BelowDefault
+    uniqueID: 4266017957
+    locked: 0
+  - name: Default
+    uniqueID: 0
+    locked: 0
+  - name: Player
+    uniqueID: 2580676161
+    locked: 0
+  - name: Debug
+    uniqueID: 1966340373
+    locked: 0
+  - name: UI
+    uniqueID: 2519080933
+    locked: 0
