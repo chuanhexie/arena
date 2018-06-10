@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4641295934330942}
   - component: {fileID: 61286426964380192}
   m_Layer: 13
-  m_Name: CombatHitbox
+  m_Name: DefensiveCombatHitbox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -157,7 +157,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isBlock: 0
   isSpawner: 0
-  spawnerGate: {fileID: 0}
   locationX: 0
   locationY: 0
 --- !u!114 &114199098779000672
@@ -171,9 +170,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d09decbeb5a723b47a30b1c29ab786dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  curHP: 0
   maxHP: 10
-  combatHitbox: {fileID: 1585205991199836}
+  defensiveCombatHitbox: {fileID: 1585205991199836}
+  offensiveCombatHitbox: {fileID: 0}
+  curHP: 0
   isDead: 0
 --- !u!212 &212235431511237482
 SpriteRenderer:

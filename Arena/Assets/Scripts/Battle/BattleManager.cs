@@ -19,12 +19,24 @@ namespace Arena
         public Sprite playerSprite;
         public Sprite enemySprite;
 
+        [Header("Gameplay General")]
+        public float defaultKnockbackForce;
+        public float defualtKnockbackTimeLength;
+
+        [Header("Tools General")]
+        public float poisonFrequencyMaxTime;
+
         [Header("Player General")]
         public float playerSpeed;
         public Vector2 playerSpawnLocation;
         public float baseToolUseSpeed;
         public float baseStaminaRegenRate;
         public float idleStaminaRegenBoost;
+
+        [Header("Player Hitboxes")]
+        public Vector2[] playerMovementEdgeColliderPoints;
+        public Vector2 playerCombatHitboxDimensions;
+        public LayerMask playerCombatHitboxLayer;
 
         [Header("Player Tools")]
         public List<GameObject> playerTools;
@@ -34,10 +46,17 @@ namespace Arena
         public float maxStamina;
         public float maxMana;
 
-        [Header("Placeholder Enemy General")]
+        [Header("Default Enemy General")]
         public float tempEnemySpeed;
+        public float defaultEnemyDamage = 1;
+        public float defaultMeleeTowardsPlayerCooldownTime;
 
-        [Header("Enemy Spawning")]
+        [Header("Default Hitboxes")]
+        public Vector2[] defaultEnemyMovementEdgeColliderPoints;
+        public Vector2 defaultEnemyCombatHitboxDimensions;
+        public LayerMask enemyCombatHitboxLayer;
+
+        [Header("Default Spawning")]
         public float baseTimeToSpawnEnemy;
         public int amountOfEnemiesToSpawn;
 
@@ -50,7 +69,6 @@ namespace Arena
         public GameObject playerRightTool;
 
         [Header("Player Stats")]
-        public float curHealth;
         public float curStamina;
         public float curMana;
 
@@ -89,7 +107,6 @@ namespace Arena
             // SET VARIOUS BATTLE VALUES TO THEIR DEFAULTS
             curDirectionX = 0;
             curDirectionY = -1;
-            curHealth = maxHealth;
             curStamina = maxStamina;
             curMana = maxMana;
             if (playerTools[0] != null)
@@ -150,11 +167,21 @@ namespace Arena
                 var curBattleObjectGameObject = battleObjects[i];
                 var curBattleObjectScript = curBattleObjectGameObject.GetComponent<BattleObject>();
                 var battleObjectStatsDisplay = UIManager.singleton.GetStatsDisplayByBattleObject(curBattleObjectGameObject);
+                var battleObjectDefensiveHitbox = curBattleObjectScript.defensiveCombatHitbox.GetComponent<BoxCollider2D>();
 
                 // --------- BATTLE-CHARACTER-LOGIC START ------------
                 var curBattleCharacterScript = curBattleObjectGameObject.GetComponent<BattleCharacter>();
                 if (curBattleCharacterScript != null)
                 {
+                    var battleObjectOffensiveHitbox = curBattleObjectScript.offensiveCombatHitbox.GetComponent<BoxCollider2D>();
+
+                    // --------- RANDOM TIMERS-START ------------
+                    if (curBattleCharacterScript.meleeTowardsPlayerCooldown > 0)
+                        curBattleCharacterScript.meleeTowardsPlayerCooldown -= Time.deltaTime;
+                    else
+                        curBattleCharacterScript.meleeTowardsPlayerCooldown = 0;
+                    // --------- RANDOM TIMERS-START ------------
+
                     // ----------- STUN-LOGIC START ---------------
                     // DECREASE STUN COUNTDOWN IF STUNNED, IF COUNTDOWN IS BELOW ZERO THEN RESET TO 0
                     if (curBattleCharacterScript.remainingStunTime > 0)
@@ -162,12 +189,41 @@ namespace Arena
                     else
                         curBattleCharacterScript.remainingStunTime = 0;
 
-                    // IF STUN COUNTDOWN IS BELOW ZERO, RESTORE CHARACTER MOVEMENT
-                    if (curBattleCharacterScript.remainingStunTime <= 0)
+                    if (curBattleCharacterScript.knockbackMovementDisabledCountdown > 0)
+                        curBattleCharacterScript.knockbackMovementDisabledCountdown -= Time.deltaTime;
+                    else
+                        curBattleCharacterScript.knockbackMovementDisabledCountdown = 0;
+
+                    // ALLOW AI TO MOVE AGAIN IF THEY FIT CRITERIA
+                    if (curBattleCharacterScript.remainingStunTime <= 0 && curBattleCharacterScript.knockbackMovementDisabledCountdown <= 0)
                     {
                         curBattleObjectGameObject.GetComponent<AILerp>().canMove = true;
                     }
                     // ----------- STUN-LOGIC END -----------
+
+                    // ---------- POISON-LOGIC START ---------------
+                    if (curBattleCharacterScript.curPoisonDamageCountdown > 0)
+                        curBattleCharacterScript.curPoisonDamageCountdown -= Time.deltaTime;
+                    else
+                        curBattleCharacterScript.curPoisonDamageCountdown = 0;
+
+                    if (curBattleCharacterScript.poisonDamageFrequency > 0 && curBattleCharacterScript.curPoisonDamageCountdown <= 0)
+                    {
+                        curBattleObjectScript.curHP -= 1;
+                        if (curBattleObjectScript.curHP < 0)
+                            curBattleObjectScript.curHP = 0;
+                        curBattleCharacterScript.curPoisonDamageCountdown = curBattleCharacterScript.poisonDamageFrequency;
+                    }
+                    // ---------- POISON-LOGIC END ---------------
+
+                    // ----------- ENEMY-TO-PLAYER-DAMAGE START ----------------
+
+                    if (battleObjectOffensiveHitbox.bounds.Intersects(player.GetComponent<BattleObject>().defensiveCombatHitbox.GetComponent<BoxCollider2D>().bounds) &&
+                        !curBattleCharacterScript.isPlayer)
+                    {
+                        HandleCombatCollision(player, curBattleObjectGameObject);
+                    }
+                    // ----------- ENEMY-TO-PLAYER-DAMAGE END ----------------
                 }
 
                 // DISPLAY HP TEXT FOR BATTLE OBJECTS THAT DONT DISPLAY HP UNTIL THEY ARE UNDER THEIR MAX HP
@@ -182,7 +238,7 @@ namespace Arena
                 }
 
                 // DESTROY BATTLE OBJECT AND BATTLE OBJECT STATS DISPLAY IF HP IS 0 OR LESS
-                if (curBattleObjectScript.curHP <= 0 && !curBattleObjectScript.isDead)
+                if (curBattleObjectScript.curHP <= 0 && !curBattleObjectScript.isDead && !curBattleObjectScript.isPlayer)
                 {
                     curBattleObjectScript.isDead = true;
 
@@ -244,7 +300,7 @@ namespace Arena
                 var toolSpeedFinal = baseToolUseSpeed / currentToolSpeedStat;
                 currentToolSpeedFinal = toolSpeedFinal;
                 playerToolCompletionCountdown = toolSpeedFinal;
-                UIManager.singleton.InitCountdownRing(player, toolSpeedFinal, UIManager.singleton.CRtoolColor);
+                UIManager.singleton.InitCountdownRing(player, toolSpeedFinal, toolSpeedFinal, UIManager.singleton.CRtoolColor);
             }
         }
 
@@ -257,6 +313,9 @@ namespace Arena
             var characterAIDestinationSetter = characterGameObject.GetComponent<AIDestinationSetter>();
             var characterSpriteRenderer = characterGameObject.GetComponent<SpriteRenderer>();
             var battleObjectScript = characterGameObject.GetComponent<BattleObject>();
+            var edgeCollider = characterGameObject.GetComponent<EdgeCollider2D>();
+            var defensiveCombatHitbox = battleObjectScript.defensiveCombatHitbox.GetComponent<BoxCollider2D>();
+            var offensiveCombatHitbox = battleObjectScript.offensiveCombatHitbox.GetComponent<BoxCollider2D>();
 
             characterGameObject.GetComponent<Rigidbody2D>().freezeRotation = true;
 
@@ -264,14 +323,23 @@ namespace Arena
             {
                 characterGameObject.name = "Player";
                 characterScript.isPlayer = true;
+                battleObjectScript.isPlayer = true;
                 player = characterGameObject;
                 characterAILerp.enabled = false;
                 characterSpriteRenderer.sprite = playerSprite;
+                battleObjectScript.maxHP = maxHealth;
+
+                // PLAYER AIM
                 var directionalAimGameObject = Instantiate(prefabDirectionalAim);
                 playerDirectionalAim = directionalAimGameObject;
                 playerDirectionalAim.transform.parent = player.transform;
                 playerDirectionalAim.transform.localRotation = Quaternion.Euler(0, 0, 180);
-                battleObjectScript.combatHitbox.layer = LayerMask.NameToLayer("PlayerCombat");
+
+                // HITBOXES
+                edgeCollider.points = playerMovementEdgeColliderPoints;
+                defensiveCombatHitbox.size = playerCombatHitboxDimensions;
+                defensiveCombatHitbox.gameObject.layer = GameManager.layermaskToLayer(playerCombatHitboxLayer);
+                offensiveCombatHitbox.gameObject.SetActive(false);
             }
             else
             {
@@ -279,6 +347,13 @@ namespace Arena
                 characterAIDestinationSetter.target = player.transform;
                 characterSpriteRenderer.sprite = enemySprite;
                 UIManager.singleton.InitBattleObjectStatsDisplay(characterGameObject);
+
+                //HITBOXES
+                edgeCollider.points = defaultEnemyMovementEdgeColliderPoints;
+                defensiveCombatHitbox.size = defaultEnemyCombatHitboxDimensions;
+                defensiveCombatHitbox.gameObject.layer = GameManager.layermaskToLayer(enemyCombatHitboxLayer);
+                offensiveCombatHitbox.size = defaultEnemyCombatHitboxDimensions;
+                offensiveCombatHitbox.gameObject.layer = GameManager.layermaskToLayer(playerCombatHitboxLayer);
             }
 
             battleObjectScript.curHP = battleObjectScript.maxHP;
@@ -289,7 +364,6 @@ namespace Arena
         public void UseTool(GameObject toolGameObject)
         {
             var toolScript = toolGameObject.GetComponent<Tool>();
-            var combatStatsScript = toolScript.combatStats.GetComponent<CombatStats>();
             var battleColliderInstructionsScript = toolScript.battleColliderInstructionPrefabs[0].GetComponent<BattleColliderInstruction>();
 
             Vector2 positionToSpawnBattleCollider = playerDirectionalAim.transform.position;
@@ -326,30 +400,7 @@ namespace Arena
                     var hitBattleObject = hit.collider.transform.parent;
                     if (hitBattleObject != null)
                     {
-                        var hitBattleObjectScript = hitBattleObject.GetComponent<BattleObject>();
-                        var hitBattleCharacterScript = hitBattleObject.GetComponent<BattleCharacter>();
-
-                        if (hitBattleObject.GetComponent<Tile>() == null)
-                        {
-                            // STUN
-                            hitBattleCharacterScript.remainingStunTime += combatStatsScript.stun;
-                            if (hitBattleCharacterScript.remainingStunTime > 0)
-                            {
-                                UIManager.singleton.InitCountdownRing(hitBattleObject.gameObject, hitBattleCharacterScript.remainingStunTime, UIManager.singleton.CRstunColor, CountdownRingType.stun);
-                                hitBattleObject.GetComponent<AILerp>().canMove = false;
-                            }
-                        }
-
-                        // DAMAGE
-                        var originalHitBattleObjectCurHP = hitBattleObjectScript.curHP;
-                        hitBattleObjectScript.curHP -= combatStatsScript.damage;
-                        if (toolScript.isBleed)
-                        {
-                            curMana += originalHitBattleObjectCurHP - hitBattleObjectScript.curHP;
-                            if (curMana > maxMana)
-                                curMana = maxMana;
-                        }
-                        Debug.Log(hit.collider.transform.parent.name + ": " + hitBattleObjectScript.curHP);
+                        HandleCombatCollision(hitBattleObject.gameObject, GetPlayer(), toolScript);
                     }
                 }
             }
@@ -394,7 +445,137 @@ namespace Arena
                 enemySpawnCountdown = 0;
             }
         }
+
+        public void HandleCombatCollision(GameObject _targetGameObject, GameObject _offensiveGameObject, Tool _usedToolScript = null)
+        {
+            var targetBattleObjectScript = _targetGameObject.GetComponent<BattleObject>();
+            var targetBattleCharacterScript = _targetGameObject.GetComponent<BattleCharacter>();
+            var offensiveBattleCharacterScript = _offensiveGameObject.GetComponent<BattleCharacter>();
+            CombatStats combatStatsScript = null;
+
+            // DEFAULTS TO BE OVERIDDEN IF APPROPRIATE
+            float damage = defaultEnemyDamage;
+            float curKnockbackForce = defaultKnockbackForce;
+
+            if (_usedToolScript != null)
+            {
+                combatStatsScript = _usedToolScript.combatStats.GetComponent<CombatStats>();
+                damage = combatStatsScript.damage;
+
+                // CHANGE PUSHBACK TO TOOL'S STAT
+                curKnockbackForce = _usedToolScript.knockbackForce;
+
+                // IF TARGET ISN'T A TILE, APPLY STATUS EFFECTS
+                if (_targetGameObject.GetComponent<Tile>() == null)
+                {
+                    // ------- STUN-APPLY-START ----------
+                    targetBattleCharacterScript.remainingStunTime += combatStatsScript.stun;
+                    if (targetBattleCharacterScript.remainingStunTime > 0 && combatStatsScript.stun > 0)
+                    {
+                        UIManager.singleton.InitCountdownRing(_targetGameObject, 
+                            targetBattleCharacterScript.remainingStunTime,
+                            targetBattleCharacterScript.remainingStunTime,
+                            UIManager.singleton.CRstunColor,
+                            false,
+                            CountdownRingType.stun);
+                        _targetGameObject.GetComponent<AILerp>().canMove = false;
+                    }
+                    // ------- STUN-APPLY-END ----------
+
+                    // ------- POISON-APPLY-START ----------
+                    if (combatStatsScript.poison > 0)
+                    {
+                        targetBattleCharacterScript.basePoisonPoints += combatStatsScript.poison;
+
+                        float newPoisonFrequency = poisonFrequencyMaxTime / targetBattleCharacterScript.basePoisonPoints;
+
+                        // IF TARGET HASN'T BEEN POISONED, DO SIMPLE ADDITION
+                        if (targetBattleCharacterScript.poisonDamageFrequency <= 0)
+                        {
+                            targetBattleCharacterScript.poisonDamageFrequency = newPoisonFrequency;
+                            targetBattleCharacterScript.curPoisonDamageCountdown = targetBattleCharacterScript.poisonDamageFrequency;
+                        }
+                        // IF TARGET HAS BEEN POISONED, PROPORTIONALLY MODIFY CURRENT POISON PROGRESS
+                        else
+                        {
+                            var originalPoisonFreq = targetBattleCharacterScript.poisonDamageFrequency;
+                            targetBattleCharacterScript.poisonDamageFrequency = newPoisonFrequency;
+                            // increase poison damage frequency while adjusting the current progress towards that goal to be proportional to the new goal
+                            var newCurPoisonCountdown = 
+                                (targetBattleCharacterScript.curPoisonDamageCountdown * targetBattleCharacterScript.poisonDamageFrequency)
+                                / originalPoisonFreq;
+                            targetBattleCharacterScript.curPoisonDamageCountdown = newCurPoisonCountdown;
+                        }
+
+                        Debug.Log("Max: " + targetBattleCharacterScript.poisonDamageFrequency);
+                        Debug.Log("Cur: " + targetBattleCharacterScript.curPoisonDamageCountdown);
+                        Debug.Log("----------------");
+
+                        UIManager.singleton.InitCountdownRing(_targetGameObject, 
+                            targetBattleCharacterScript.curPoisonDamageCountdown, 
+                            targetBattleCharacterScript.poisonDamageFrequency, 
+                            UIManager.singleton.CRpoisonColor,
+                            true,
+                            CountdownRingType.poison);
+                    }
+                    // ------- POISON-APPLY-END ----------
+
+                }
+            }
+
+            // DAMAGE (IF BY AN AI, THEY MUST NOT HAVE HIT WITH MELEE IN THE PAST X SECONDS)
+            if (offensiveBattleCharacterScript.meleeTowardsPlayerCooldown <= 0 && offensiveBattleCharacterScript.remainingStunTime <= 0)
+            {
+                var originalHitBattleObjectCurHP = targetBattleObjectScript.curHP;
+                targetBattleObjectScript.curHP -= damage;
+
+                // PLAYER FUNTION: GAIN MP WITH BLEED WEAPON
+                if (_usedToolScript != null && _usedToolScript.isBleed)
+                {
+                    curMana += originalHitBattleObjectCurHP - targetBattleObjectScript.curHP;
+                    if (curMana > maxMana)
+                        curMana = maxMana;
+                }
+
+                // IF AI IS ATTACKING, SET COOLDOWN BEFORE THEY CAN HIT WITH MELEE AGAIN
+                if (!offensiveBattleCharacterScript.isPlayer)
+                    offensiveBattleCharacterScript.meleeTowardsPlayerCooldown = defaultMeleeTowardsPlayerCooldownTime;
+            }
+
+            // KNOCKBACK (STILL OCCURS EVEN IF DAMAGE ISN'T DEALT)
+            if (targetBattleObjectScript.isPlayer ||
+                (_usedToolScript != null && _usedToolScript.knockbackForce > 0))
+                HandleKnockback(_targetGameObject, _offensiveGameObject.transform.position, curKnockbackForce);
+        }
+
+        public void HandleKnockback(GameObject _battleObjectToKnockback, Vector2 _knockbackOrigin, float pushForce)
+        {
+            var battleObjectScript = _battleObjectToKnockback.GetComponent<BattleObject>();
+            var battleObjectRigidbody = _battleObjectToKnockback.gameObject.GetComponent<Rigidbody2D>();
+
+            if (battleObjectRigidbody != null)
+            {
+                Vector2 pos = _battleObjectToKnockback.transform.position;
+                Vector2 dir = (pos - _knockbackOrigin).normalized;
+
+                battleObjectRigidbody.velocity = (dir * pushForce);
+
+                if (!battleObjectScript.isPlayer)
+                {
+                    var battleObjectAILerp = _battleObjectToKnockback.GetComponent<AILerp>();
+                    Debug.Log(battleObjectAILerp);
+                    if (battleObjectAILerp != null)
+                    {
+                        battleObjectAILerp.canMove = false;
+                        _battleObjectToKnockback.gameObject.GetComponent<BattleCharacter>().knockbackMovementDisabledCountdown = defualtKnockbackTimeLength;
+                    }
+                }
+            }
+        }
+
+        public GameObject GetPlayer()
+        {
+            return battleObjects.FirstOrDefault(x => x.GetComponent<BattleObject>().isPlayer == true);
+        }
     }
-
-
 }

@@ -34,6 +34,7 @@ namespace Arena
         public float countdownRingMaxScale;
         public Color CRtoolColor;
         public Color CRstunColor;
+        public Color CRpoisonColor;
 
         [Header("Spawner Gate Systems")]
         public Sprite spriteInactiveClockArrow;
@@ -211,7 +212,7 @@ namespace Arena
             remainingEnemiesCount.GetComponent<Text>().text = battleManager.amountOfEnemiesToSpawn.ToString();
             staminaText.GetComponent<Text>().text = battleManager.curStamina.ToString("0.00");
             manaText.GetComponent<Text>().text = battleManager.curMana.ToString("0.00");
-            healthText.GetComponent<Text>().text = battleManager.curHealth.ToString("0.00");
+            healthText.GetComponent<Text>().text = battleManager.GetPlayer().GetComponent<BattleObject>().curHP.ToString("0.00");
 
             var selectedToolLeftThumbnailSpriteRenderer = selectedToolLeftHUD.GetComponent<SpriteRenderer>();
             selectedToolLeftThumbnailSpriteRenderer.sprite = battleManager.playerLeftTool.GetComponent<Tool>().thumbnail;
@@ -233,7 +234,12 @@ namespace Arena
             singleton = this;
         }
 
-        public void InitCountdownRing(GameObject _targetGameObject, float _initialCountdownValue, Color _color, CountdownRingType _countdownRingType = CountdownRingType.basic)
+        public void InitCountdownRing(GameObject _targetGameObject,
+            float _curCountdownValue,
+            float _maxCountdownValue,
+            Color _color,
+            bool isReoccurring = false,
+            CountdownRingType _countdownRingType = CountdownRingType.basic)
         {
             var createNewCountdownRing = true;
             foreach (Transform child in _targetGameObject.transform)
@@ -242,8 +248,9 @@ namespace Arena
                 if (countdownRingScript != null && countdownRingScript.type == _countdownRingType)
                 {
                     createNewCountdownRing = false;
-                    countdownRingScript.currentCountdownValue = _initialCountdownValue;
-                    countdownRingScript.initialCountdownValue = _initialCountdownValue;
+                    countdownRingScript.currentCountdownValue = _curCountdownValue;
+                    countdownRingScript.initialCountdownValue = _maxCountdownValue;
+                    countdownRingScript.isReoccurring = isReoccurring;
                     break;
                 }
             }
@@ -256,8 +263,9 @@ namespace Arena
                 newCountdownRingGameObject.transform.parent = _targetGameObject.transform;
                 newCountdownRingGameObject.transform.localPosition = Vector2.zero;
                 newCountdownRingGameObject.transform.localScale = Vector2.zero;
-                newCountdownRingScript.currentCountdownValue = _initialCountdownValue;
-                newCountdownRingScript.initialCountdownValue = _initialCountdownValue;
+                newCountdownRingScript.currentCountdownValue = _curCountdownValue;
+                newCountdownRingScript.initialCountdownValue = _maxCountdownValue;
+                newCountdownRingScript.isReoccurring = isReoccurring;
                 newCountdownRingScript.type = _countdownRingType;
                 newCountdownRingGameObject.GetComponent<SpriteRenderer>().color = _color;
                 countdownRings.Add(newCountdownRingGameObject);
@@ -284,6 +292,10 @@ namespace Arena
             {
                 var newScale = (countdownRingMaxScale * countdownRingScript.currentCountdownValue) / countdownRingScript.initialCountdownValue;
                 _countdownRingGameObject.transform.localScale = new Vector2(newScale, newScale);
+            }
+            else if (countdownRingScript.isReoccurring)
+            {
+                countdownRingScript.currentCountdownValue = countdownRingScript.initialCountdownValue;
             }
             else
             {

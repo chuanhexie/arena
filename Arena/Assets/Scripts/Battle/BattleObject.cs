@@ -8,13 +8,16 @@ namespace Arena
     {
         [Header("(EDITABLE)")]
         public float maxHP;
-        public GameObject combatHitbox;
+        public GameObject defensiveCombatHitbox;
+        public GameObject offensiveCombatHitbox;
 
         [Space(10)]
 
         [Header("(REFERENCE)")]
         public float curHP;
         public bool isDead;
+        public bool isPlayer;
+
 
         // Use this for initialization
         void Start () 

@@ -22,7 +22,7 @@ TagManager:
   - RaycastHitbox
   - PlayerCombat
   - EnemyCombat
-  - 
+  - NeutralCombat
   - 
   - 
   - 

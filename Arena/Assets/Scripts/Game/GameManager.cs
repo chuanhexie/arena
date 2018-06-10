@@ -191,7 +191,16 @@ namespace Arena
             }
         }
 
-
+        public static int layermaskToLayer(LayerMask _layerMask)
+        {
+            int layerNumber = 0;
+            int layer = _layerMask.value;
+            while (layer > 0) {
+                layer = layer >> 1;
+                layerNumber++;
+            }
+            return layerNumber - 1;
+        }
     }
 
 

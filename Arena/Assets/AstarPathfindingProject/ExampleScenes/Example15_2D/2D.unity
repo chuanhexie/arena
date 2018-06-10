@@ -296,7 +296,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4353725108400276, guid: 6a4b45fa28855fa4db1288b4fac29203, type: 2}
       propertyPath: m_RootOrder
-      value: 12
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 114255411055307360, guid: 6a4b45fa28855fa4db1288b4fac29203,
         type: 2}
@@ -619,7 +619,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!61 &502842034
 BoxCollider2D:
@@ -799,9 +799,26 @@ MonoBehaviour:
     type: 2}
   prefabDirectionalAim: {fileID: 1530537110421056, guid: 1d372f5dd082b444a9c63e175be60619,
     type: 2}
-  playerSprite: {fileID: 21300000, guid: d3e92645da84e5e4cbf53607012c9a9f, type: 3}
-  playerSpeed: 90
+  playerSprite: {fileID: 21300000, guid: dadfcf7d1645ed8448402337c3d04f7a, type: 3}
+  enemySprite: {fileID: 21300000, guid: 7c7a4e81ebef24f409e0b97be746ee52, type: 3}
+  defaultKnockbackForce: 5
+  defualtKnockbackTimeLength: 0.4
+  poisonFrequencyMaxTime: 60
+  playerSpeed: 120
   playerSpawnLocation: {x: -0.3, y: 3.5}
+  baseToolUseSpeed: 5
+  baseStaminaRegenRate: 6
+  idleStaminaRegenBoost: 6
+  playerMovementEdgeColliderPoints:
+  - {x: 0.33, y: -0.9}
+  - {x: 0.33, y: -0.9}
+  - {x: 0.33, y: -0.57}
+  - {x: -0.33, y: -0.57}
+  - {x: -0.33, y: -0.9}
+  playerCombatHitboxDimensions: {x: 1.45, y: 1.8}
+  playerCombatHitboxLayer:
+    serializedVersion: 2
+    m_Bits: 4096
   playerTools:
   - {fileID: 999120925}
   - {fileID: 1905319022}
@@ -814,31 +831,38 @@ MonoBehaviour:
   maxHealth: 3
   maxStamina: 100
   maxMana: 100
-  curDirectionX: 0
-  curDirectionY: 0
-  enemySprite: {fileID: 21300000, guid: 9043eb4be6a81254d817eb2612564995, type: 3}
   tempEnemySpeed: 1.5
-  baseToolUseSpeed: 5
-  baseStaminaRegenRate: 6
-  idleStaminaRegenBoost: 6
-  baseTimeToSpawnEnemy: 4
-  amountOfEnemiesToSpawn: 25
-  enemySpawnCountdown: 0
-  enemySpawnerTileIndex: 0
-  battleObjects: []
-  currentToolSpeedFinal: 0
-  playerToolCompletionCountdown: 0
-  isPlayerCurrentlyUsingTool: 0
-  playerToolInUse: {fileID: 0}
-  battleToolQuickSelectActive: 0
-  battleColliders: []
+  defaultEnemyDamage: 1
+  defaultMeleeTowardsPlayerCooldownTime: 1
+  defaultEnemyMovementEdgeColliderPoints:
+  - {x: 0.45, y: 0.45}
+  - {x: 0.45, y: -0.45}
+  - {x: -0.45, y: -0.45}
+  - {x: -0.45, y: 0.45}
+  - {x: 0.45, y: 0.45}
+  defaultEnemyCombatHitboxDimensions: {x: 1.79, y: 1.79}
+  enemyCombatHitboxLayer:
+    serializedVersion: 2
+    m_Bits: 8192
+  baseTimeToSpawnEnemy: 2
+  amountOfEnemiesToSpawn: 1
   player: {fileID: 0}
   playerLeftTool: {fileID: 0}
   playerRightTool: {fileID: 0}
-  curHealth: 0
   curStamina: 0
   curMana: 0
   playerDirectionalAim: {fileID: 0}
+  curDirectionX: 0
+  curDirectionY: 0
+  isPlayerCurrentlyUsingTool: 0
+  playerToolInUse: {fileID: 0}
+  currentToolSpeedFinal: 0
+  playerToolCompletionCountdown: 0
+  battleToolQuickSelectActive: 0
+  battleObjects: []
+  battleColliders: []
+  enemySpawnCountdown: 0
+  enemySpawnerTileIndex: 0
 --- !u!4 &555902834
 Transform:
   m_ObjectHideFlags: 0
@@ -1068,7 +1092,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4353725108400276, guid: 6a4b45fa28855fa4db1288b4fac29203, type: 2}
       propertyPath: m_RootOrder
-      value: 9
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 114255411055307360, guid: 6a4b45fa28855fa4db1288b4fac29203,
         type: 2}
@@ -1261,26 +1285,39 @@ Prefab:
         type: 2}
       propertyPath: thumbnail
       value: 
-      objectReference: {fileID: 21300000, guid: 26b8d1b85f22a9049bda47b66fa0e214,
+      objectReference: {fileID: 21300000, guid: 1de3bc71ea5a5044cbe334c59faa113a,
         type: 3}
     - target: {fileID: 114772331221177954, guid: 6a4b45fa28855fa4db1288b4fac29203,
         type: 2}
       propertyPath: isBleed
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1832643332154174, guid: 6a4b45fa28855fa4db1288b4fac29203, type: 2}
       propertyPath: m_Name
-      value: ElecSword
+      value: StunHammer
       objectReference: {fileID: 0}
     - target: {fileID: 114255411055307360, guid: 6a4b45fa28855fa4db1288b4fac29203,
         type: 2}
       propertyPath: stun
-      value: 2
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 114872245120006874, guid: 6a4b45fa28855fa4db1288b4fac29203,
         type: 2}
       propertyPath: layerMask.m_Bits
       value: 8192
+      objectReference: {fileID: 0}
+    - target: {fileID: 1642935304434328, guid: 6a4b45fa28855fa4db1288b4fac29203, type: 2}
+      propertyPath: m_Name
+      value: HammerBCI
+      objectReference: {fileID: 0}
+    - target: {fileID: 1916454521884508, guid: 6a4b45fa28855fa4db1288b4fac29203, type: 2}
+      propertyPath: m_Name
+      value: HammerCombatStats
+      objectReference: {fileID: 0}
+    - target: {fileID: 114772331221177954, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: knockbackForce
+      value: 25
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6a4b45fa28855fa4db1288b4fac29203, type: 2}
@@ -1476,7 +1513,7 @@ RectTransform:
   - {fileID: 376375078}
   - {fileID: 1665805673}
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -1594,7 +1631,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   version: 1
   data:
-    dataString: UEsDBBQAAAgIAACAn+u+aw+6TgIAAOYEAAALACQAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQF1VMuS2jAQ/BVK50CJN+SWAEtyYKGWpHLxRchjrEKWXJK8vIp/z0g22JDKyXb39GimZ+QrEcrmwJ02SyPilY6BfG0R/06+tAgL3AdzQiPcRURYnYEzgn9Te+ljKYKFEok22SLew0xbZxFOmLSAlNHOqxVC1xY54aM99ZJzJb34Z+uGbxyUA9OIo50BnU6n4+Gkdxd06CQgg8H0SVsoLlmWQ7wVF6hTdIed/qjSjjujSYhV2GMVRjt9n5prKYWtiiTunAcPtnkKBrwLsWDYc6it2+kjkILYpw4/n9TrJLHgqr4MO8+FQfPKtOS7dqnPlTF7KAv8ZLLwB3VDVWXK1T9su6QTo7Mf91O71J/gUsEPH+zMmXUNw5vwvFF4cOnI5IHtJPxJQb3rpdGFipF0pvDSwkJvXn8+GpulwA81Xpb6AhZ5bfvrfH0Pt9D7aSZFtqso/NxKHcwOKwEGJ/MTyw0LY6soRH0Nvy38YvvmZlXEmzDWIVX1qHxxO10YH0oWwTHfS+Fm2igwzQw5KCbdeYN53Ov8Xrj/q96YvzzV6RV3vxsvkgDX8ZS+UBt9fMzKpvq4ApuuCyeFgtpoT7yjUTOtVLlezZbusm1hEsYbsn0h4ufNIiPOppT2KYx6gxFGtylAb8cHXU5Hk3g8HJKwekJhn0xuykIre3Bsqk6ucM3uv43W0rA8rHps2HEpLpm2daRQid5yA6DWZYZH4WDwELyW8SIWaNAWnBMqDJxcIyI1P0AcPRJFodPFyRkW1VkikotP7TwSkVn4n0TkRm5/AVBLAwQUAAAICAAAgJ/rSxjO8G0AAAB4AAAACQAkAG1ldGEuanNvbgoAIAAAAAAAAQAYAACAPtXesZ0BAIA+1d6xnQEAgD7V3rGdAatWKkstKs7Mz1OyUjDRM9QzNNJRUEovSizIKAaKGII4pZkpIHa0kllyoqWBgbFBqpmRiVlaYrKuQWqqUVKyiWGygZlFirmpqVIsUH1JZUGqX2JuKkRPQGJJRlpmXkpmXrqee1FmijvIaKXYWgBQSwECLQAUAAAICAAAgJ/rvmsPuk4CAADmBAAACwAkAAAAAAAAAAAAAAAAAAAAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQFQSwECLQAUAAAICAAAgJ/rSxjO8G0AAAB4AAAACQAkAAAAAAAAAAAAAACbAgAAbWV0YS5qc29uCgAgAAAAAAABABgAAIA+1d6xnQEAgD7V3rGdAQCAPtXesZ0BUEsFBgAAAAACAAIAuAAAAFMDAAAAAA==
+    dataString: UEsDBBQAAAgIAACAn+uLciAFTgIAAOQEAAALACQAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQF1VE1z2jAQ/SuMzoURYEjcW2sI7SEfE9rpxRchr7EGWfJIcgjJ8N+7kg027vRk+719+/G08icRylbAnTYbI7JHnQH5OiL+nXwZERa4V+aERniKiLC6BGcE/6b20sdSBGslcm3KdbaHRFtnEc6ZtICU0c6rFUKfI/KOj3HsJadW+uGfozO+cVAOTC+OTiIax/Hd/C66CCb03iOLKIpvtLXikpUVZFvxAV2K6bIV3k/msxCocMA2hiLmy2ophW07JO5UBQO2VQEGvAWZYDhwaIxO4jkiBYh94fD7Rv6c5xZcO5Vhp5UwaF2Tl3zXrvDJSmYPTXtvTNa+0jS01aR8/IcdN3RudPnjUnVKfQVXCH54ZSfOrOvZ3YdXXefT4NGRyQPbSfhTgHrSG6NrlSHpTO2ltYXZqvu8DpYUwA8d3rQ6AOuqM314un6Gc5j9PZGi3LUUfm6lDm6HhQCDR/MT2w3rYtsoRH0Pvy38Yvv+XrXEgzDWIdXOqHxzO10bH0rWwTE/S+0SbRSYfoYKFJPu9IJ53PD8Btz/VQ/MX522estdbsZAEuAuntIB9aKP17OyhT4+gi2eayeFgs5oTzyhUYlWqlmv/kgX2bY2OeM92b4W2e1mkSVnMaVzCstZtMToMQWY7Xg05XR5n90tFiSsnlA4J5MvTaOtPXhsqkuucM0uP43RxrAqrHpm2HEjPkptu0ihcr3lBkA9NxmujYPBIngvs3Um0KAtOCdUOHDymRKp+QGy9JooDZOu351haZclJZV4084jKUnC3yQlZ3L+C1BLAwQUAAAICAAAgJ/rSxjO8G0AAAB4AAAACQAkAG1ldGEuanNvbgoAIAAAAAAAAQAYAACAPtXesZ0BAIA+1d6xnQEAgD7V3rGdAatWKkstKs7Mz1OyUjDRM9QzNNJRUEovSizIKAaKGII4pZkpIHa0kllyoqWBgbFBqpmRiVlaYrKuQWqqUVKyiWGygZlFirmpqVIsUH1JZUGqX2JuKkRPQGJJRlpmXkpmXrqee1FmijvIaKXYWgBQSwECLQAUAAAICAAAgJ/ri3IgBU4CAADkBAAACwAkAAAAAAAAAAAAAAAAAAAAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQFQSwECLQAUAAAICAAAgJ/rSxjO8G0AAAB4AAAACQAkAAAAAAAAAAAAAACbAgAAbWV0YS5qc29uCgAgAAAAAAABABgAAIA+1d6xnQEAgD7V3rGdAQCAPtXesZ0BUEsFBgAAAAACAAIAuAAAAFMDAAAAAA==
     upgradeData: 
     file_cachedStartup: {fileID: 0}
     data_cachedStartup: 
@@ -1774,7 +1811,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1301840925
 Prefab:
@@ -1818,7 +1855,7 @@ Prefab:
     - target: {fileID: 114255411055307360, guid: 6a4b45fa28855fa4db1288b4fac29203,
         type: 2}
       propertyPath: useSpeed
-      value: 0.1
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 114255411055307360, guid: 6a4b45fa28855fa4db1288b4fac29203,
         type: 2}
@@ -1839,26 +1876,39 @@ Prefab:
         type: 2}
       propertyPath: thumbnail
       value: 
-      objectReference: {fileID: 21300000, guid: 26b8d1b85f22a9049bda47b66fa0e214,
+      objectReference: {fileID: 21300000, guid: 1de3bc71ea5a5044cbe334c59faa113a,
         type: 3}
     - target: {fileID: 114772331221177954, guid: 6a4b45fa28855fa4db1288b4fac29203,
         type: 2}
       propertyPath: isBleed
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1832643332154174, guid: 6a4b45fa28855fa4db1288b4fac29203, type: 2}
       propertyPath: m_Name
-      value: FireSword
+      value: BasicHammer
       objectReference: {fileID: 0}
     - target: {fileID: 114255411055307360, guid: 6a4b45fa28855fa4db1288b4fac29203,
         type: 2}
       propertyPath: fire
-      value: 15
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114872245120006874, guid: 6a4b45fa28855fa4db1288b4fac29203,
         type: 2}
       propertyPath: layerMask.m_Bits
       value: 8192
+      objectReference: {fileID: 0}
+    - target: {fileID: 1642935304434328, guid: 6a4b45fa28855fa4db1288b4fac29203, type: 2}
+      propertyPath: m_Name
+      value: HammerBCI
+      objectReference: {fileID: 0}
+    - target: {fileID: 1916454521884508, guid: 6a4b45fa28855fa4db1288b4fac29203, type: 2}
+      propertyPath: m_Name
+      value: HammerCombatStats
+      objectReference: {fileID: 0}
+    - target: {fileID: 114772331221177954, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: knockbackForce
+      value: 25
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6a4b45fa28855fa4db1288b4fac29203, type: 2}
@@ -2220,7 +2270,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4353725108400276, guid: 6a4b45fa28855fa4db1288b4fac29203, type: 2}
       propertyPath: m_RootOrder
-      value: 11
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 114255411055307360, guid: 6a4b45fa28855fa4db1288b4fac29203,
         type: 2}
@@ -2244,7 +2294,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1832643332154174, guid: 6a4b45fa28855fa4db1288b4fac29203, type: 2}
       propertyPath: m_Name
-      value: FastWhip
+      value: PoisonWhip
       objectReference: {fileID: 0}
     - target: {fileID: 114872245120006874, guid: 6a4b45fa28855fa4db1288b4fac29203,
         type: 2}
@@ -2260,7 +2310,7 @@ Prefab:
     - target: {fileID: 114255411055307360, guid: 6a4b45fa28855fa4db1288b4fac29203,
         type: 2}
       propertyPath: stun
-      value: 3
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114872245120006874, guid: 6a4b45fa28855fa4db1288b4fac29203,
         type: 2}
@@ -2271,6 +2321,11 @@ Prefab:
         type: 2}
       propertyPath: layerMask.m_Bits
       value: 8192
+      objectReference: {fileID: 0}
+    - target: {fileID: 114255411055307360, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: poison
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6a4b45fa28855fa4db1288b4fac29203, type: 2}
@@ -2322,18 +2377,6 @@ MonoBehaviour:
     type: 2}
   prefabSpawnerGateSystem: {fileID: 1371772721425578, guid: e0ac06a36902abd4796f7350679025ed,
     type: 2}
-  toolSelectBleedFlag: {fileID: 21300000, guid: 89d3ec6d549cb5b49b3fce8a0827a159,
-    type: 3}
-  toolSelectStamFlag: {fileID: 21300000, guid: 0f08571bff753ee41b90515c01e4fc72, type: 3}
-  toolSelectManaFlag: {fileID: 21300000, guid: 3ac78e2179a04394ca74ef0c1d929a2b, type: 3}
-  toolSelectLeftFlag: {fileID: 21300000, guid: 2ace313d86805f342b59b43930cdb567, type: 3}
-  toolSelectRightFlag: {fileID: 21300000, guid: 87aaf1122f606f84b828b4c451c3d6ba,
-    type: 3}
-  spriteInactiveClockArrow: {fileID: 21300000, guid: 2eb4bd0220b831a44ae3943a68b05d32,
-    type: 3}
-  spriteActiveClockArrow: {fileID: 21300000, guid: d7f0a6c36b63c4049aac03f829e25730,
-    type: 3}
-  toolCountdownText: {fileID: 0}
   staminaText: {fileID: 479234577}
   manaText: {fileID: 404509300}
   healthText: {fileID: 99549859}
@@ -2344,6 +2387,11 @@ MonoBehaviour:
   countdownRingMaxScale: 3.5
   CRtoolColor: {r: 1, g: 0.61703855, b: 0.13235295, a: 1}
   CRstunColor: {r: 0.291955, g: 0.7941176, b: 0.7941176, a: 1}
+  CRpoisonColor: {r: 0, g: 1, b: 0.13103461, a: 1}
+  spriteInactiveClockArrow: {fileID: 21300000, guid: 2eb4bd0220b831a44ae3943a68b05d32,
+    type: 3}
+  spriteActiveClockArrow: {fileID: 21300000, guid: d7f0a6c36b63c4049aac03f829e25730,
+    type: 3}
   isFirstSpawnerGateHor: 1
   firstSpawnerGateRotation: 0
   standardHorClockArrowHalfCount: 8
@@ -2352,6 +2400,13 @@ MonoBehaviour:
   standardVerHalfLength: 4.5
   toolSelectRingRadius: 3.75
   toolQuickSelectMenuForBattle: {fileID: 0}
+  toolSelectBleedFlag: {fileID: 21300000, guid: 89d3ec6d549cb5b49b3fce8a0827a159,
+    type: 3}
+  toolSelectStamFlag: {fileID: 21300000, guid: 0f08571bff753ee41b90515c01e4fc72, type: 3}
+  toolSelectManaFlag: {fileID: 21300000, guid: 3ac78e2179a04394ca74ef0c1d929a2b, type: 3}
+  toolSelectLeftFlag: {fileID: 21300000, guid: 2ace313d86805f342b59b43930cdb567, type: 3}
+  toolSelectRightFlag: {fileID: 21300000, guid: 87aaf1122f606f84b828b4c451c3d6ba,
+    type: 3}
   battleObjectStatsDisplays: []
   spawnerGates: []
   customLineRenderers: []

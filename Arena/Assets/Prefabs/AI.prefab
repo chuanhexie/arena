@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4676658470256162}
   - component: {fileID: 61608664982769200}
   m_Layer: 13
-  m_Name: CombatHitbox
+  m_Name: OffensiveCombatHitbox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -51,6 +51,35 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &1872863731887940
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4102313697801470}
+  - component: {fileID: 61311281789085864}
+  m_Layer: 13
+  m_Name: DefensiveCombatHitbox
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4102313697801470
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1872863731887940}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4461370697824632}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4461370697824632
 Transform:
   m_ObjectHideFlags: 1
@@ -58,9 +87,10 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1404594924559292}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.0512075, y: 3.1411397, z: 0}
+  m_LocalPosition: {x: 1.9072611, y: 1.9262195, z: 0}
   m_LocalScale: {x: 0.465, y: 0.465, z: 0.465}
   m_Children:
+  - {fileID: 4102313697801470}
   - {fileID: 4676658470256162}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -71,12 +101,12 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1018519367318512}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4461370697824632}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &50132069283862768
 Rigidbody2D:
@@ -90,7 +120,7 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
-  m_LinearDrag: 0
+  m_LinearDrag: 5
   m_AngularDrag: 0.05
   m_GravityScale: 1
   m_Material: {fileID: 0}
@@ -98,6 +128,31 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!61 &61311281789085864
+BoxCollider2D:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1872863731887940}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1.79, y: 1.79}
+  m_EdgeRadius: 0
 --- !u!61 &61608664982769200
 BoxCollider2D:
   m_ObjectHideFlags: 1
@@ -121,7 +176,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1.29, y: 1.23}
+  m_Size: {x: 1.79, y: 1.79}
   m_EdgeRadius: 0
 --- !u!68 &68945694687385954
 EdgeCollider2D:
@@ -138,11 +193,11 @@ EdgeCollider2D:
   m_Offset: {x: 0, y: 0}
   m_EdgeRadius: 0
   m_Points:
-  - {x: -0.3, y: -0.85}
-  - {x: 0.3, y: -0.85}
-  - {x: 0.3, y: -0.3}
-  - {x: -0.3, y: -0.3}
-  - {x: -0.3, y: -0.85}
+  - {x: 0.6, y: -0.35}
+  - {x: 0.6, y: -0.9}
+  - {x: -0.6, y: -0.9}
+  - {x: -0.6, y: -0.35}
+  - {x: 0.6, y: -0.35}
 --- !u!114 &114290482582218032
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -196,6 +251,7 @@ MonoBehaviour:
   remainingStunTime: 0
   poisonDamageFrequency: 0
   poisonNextDamageCountdown: 0
+  knockbackMovementDisabledCountdown: 0
 --- !u!114 &114724716664098964
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -221,10 +277,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d09decbeb5a723b47a30b1c29ab786dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  curHP: 0
   maxHP: 10
-  combatHitbox: {fileID: 1018519367318512}
+  defensiveCombatHitbox: {fileID: 1872863731887940}
+  offensiveCombatHitbox: {fileID: 1018519367318512}
+  curHP: 0
   isDead: 0
+  isPlayer: 0
 --- !u!114 &114894751289015104
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -283,7 +341,7 @@ SpriteRenderer:
   m_SortingLayerID: -1714291135
   m_SortingLayer: 1
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 9043eb4be6a81254d817eb2612564995, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 7c7a4e81ebef24f409e0b97be746ee52, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

@@ -17,5 +17,6 @@ namespace Arena
         public GameObject combatStats;
         public bool usesMana;
         public bool isBleed;
+        public float knockbackForce;
     }
 }

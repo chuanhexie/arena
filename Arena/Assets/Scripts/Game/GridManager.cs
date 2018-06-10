@@ -336,7 +336,7 @@ namespace Arena
             {
                 spriteRenderer.sprite = blockSprite;
                 tileGameObject.GetComponent<BoxCollider2D>().enabled = true;
-                battleObjectScript.combatHitbox.GetComponent<BoxCollider2D>().enabled = true;
+                battleObjectScript.defensiveCombatHitbox.GetComponent<BoxCollider2D>().enabled = true;
                 battleObjectScript.curHP = battleObjectScript.maxHP;
             }
             else
@@ -349,7 +349,7 @@ namespace Arena
                 else
                     spriteRenderer.sprite = floorSprite;
                 tileGameObject.GetComponent<BoxCollider2D>().enabled = false;
-                battleObjectScript.combatHitbox.GetComponent<BoxCollider2D>().enabled = false;
+                battleObjectScript.defensiveCombatHitbox.GetComponent<BoxCollider2D>().enabled = false;
             }
 
         }

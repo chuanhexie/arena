@@ -10,13 +10,22 @@ namespace Arena
         [Header("(REFERENCE)")]
         public bool isPlayer;
 
+        [Header("General")]
         public Sprite sprite;
         public float walkSpeed;
         public float runSpeed;
 
+        [Header("Status Ailments")]
         public float remainingStunTime;
+        public float basePoisonPoints;
         public float poisonDamageFrequency;
-        public float poisonNextDamageCountdown;
+        public float curPoisonDamageCountdown;
+
+        [Header("Relationship to Player")]
+        public float meleeTowardsPlayerCooldown;
+
+        [Header("AI")]
+        public float knockbackMovementDisabledCountdown;
 
     	// Use this for initialization
     	void Start () 

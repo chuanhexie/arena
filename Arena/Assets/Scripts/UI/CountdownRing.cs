@@ -15,6 +15,9 @@ namespace Arena
         [Header("Type")]
         public CountdownRingType type;
 
+        [Header("General")]
+        public bool isReoccurring;
+
         [Header("Countdown")]
         public float currentCountdownValue;
         public float initialCountdownValue;
