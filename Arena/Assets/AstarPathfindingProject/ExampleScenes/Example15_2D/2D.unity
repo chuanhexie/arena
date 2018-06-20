@@ -392,7 +392,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1775886363
-  m_SortingLayer: 3
+  m_SortingLayer: 4
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 26b8d1b85f22a9049bda47b66fa0e214, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -799,16 +799,19 @@ MonoBehaviour:
     type: 2}
   prefabDirectionalAim: {fileID: 1530537110421056, guid: 1d372f5dd082b444a9c63e175be60619,
     type: 2}
+  prefabFire: {fileID: 1015484970473178, guid: 016c32e7a3259be43803d0fc708f70e7, type: 2}
   playerSprite: {fileID: 21300000, guid: dadfcf7d1645ed8448402337c3d04f7a, type: 3}
   enemySprite: {fileID: 21300000, guid: 7c7a4e81ebef24f409e0b97be746ee52, type: 3}
   defaultKnockbackForce: 5
   defualtKnockbackTimeLength: 0.4
   poisonFrequencyMaxTime: 60
-  playerSpeed: 120
+  playerWalkSpeed: 70
+  playerRunSpeed: 140
   playerSpawnLocation: {x: -0.3, y: 3.5}
   baseToolUseSpeed: 5
   baseStaminaRegenRate: 6
   idleStaminaRegenBoost: 6
+  runningStaminaCost: 20
   playerMovementEdgeColliderPoints:
   - {x: 0.33, y: -0.9}
   - {x: 0.33, y: -0.9}
@@ -820,12 +823,12 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4096
   playerTools:
-  - {fileID: 999120925}
+  - {fileID: 1542237099}
   - {fileID: 1905319022}
   - {fileID: 257978482}
   - {fileID: 953317417}
   - {fileID: 1013987485}
-  - {fileID: 1542237099}
+  - {fileID: 999120925}
   - {fileID: 252732217}
   - {fileID: 1172797419}
   maxHealth: 3
@@ -840,15 +843,16 @@ MonoBehaviour:
   - {x: -0.45, y: -0.45}
   - {x: -0.45, y: 0.45}
   - {x: 0.45, y: 0.45}
-  defaultEnemyCombatHitboxDimensions: {x: 1.79, y: 1.79}
+  defaultEnemyCombatHitboxDimensions: {x: 2.2, y: 2.2}
   enemyCombatHitboxLayer:
     serializedVersion: 2
     m_Bits: 8192
-  baseTimeToSpawnEnemy: 2
-  amountOfEnemiesToSpawn: 1
+  baseTimeToSpawnEnemy: 4
+  amountOfEnemiesToSpawn: 25
   player: {fileID: 0}
   playerLeftTool: {fileID: 0}
   playerRightTool: {fileID: 0}
+  playerIsRunning: 0
   curStamina: 0
   curMana: 0
   playerDirectionalAim: {fileID: 0}
@@ -861,6 +865,7 @@ MonoBehaviour:
   battleToolQuickSelectActive: 0
   battleObjects: []
   battleColliders: []
+  activeFires: []
   enemySpawnCountdown: 0
   enemySpawnerTileIndex: 0
 --- !u!4 &555902834
@@ -903,6 +908,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42d5af1829b267c4cbe8b089bedf7fc1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isLeftTriggerAxisInUse: 0
 --- !u!4 &567131427
 Transform:
   m_ObjectHideFlags: 0
@@ -1142,7 +1148,7 @@ Prefab:
     - target: {fileID: 114255411055307360, guid: 6a4b45fa28855fa4db1288b4fac29203,
         type: 2}
       propertyPath: fire
-      value: 10
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 114872245120006874, guid: 6a4b45fa28855fa4db1288b4fac29203,
         type: 2}
@@ -2051,7 +2057,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1775886363
-  m_SortingLayer: 3
+  m_SortingLayer: 4
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 26b8d1b85f22a9049bda47b66fa0e214, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -2467,12 +2473,12 @@ Prefab:
     - target: {fileID: 114255411055307360, guid: 6a4b45fa28855fa4db1288b4fac29203,
         type: 2}
       propertyPath: useSpeed
-      value: 1
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 114255411055307360, guid: 6a4b45fa28855fa4db1288b4fac29203,
         type: 2}
       propertyPath: resourceEfficiency
-      value: 1
+      value: 1000
       objectReference: {fileID: 0}
     - target: {fileID: 114772331221177954, guid: 6a4b45fa28855fa4db1288b4fac29203,
         type: 2}
@@ -2497,17 +2503,22 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1832643332154174, guid: 6a4b45fa28855fa4db1288b4fac29203, type: 2}
       propertyPath: m_Name
-      value: PoisSword
+      value: FireSword
       objectReference: {fileID: 0}
     - target: {fileID: 114255411055307360, guid: 6a4b45fa28855fa4db1288b4fac29203,
         type: 2}
       propertyPath: poison
-      value: 15
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114872245120006874, guid: 6a4b45fa28855fa4db1288b4fac29203,
         type: 2}
       propertyPath: layerMask.m_Bits
       value: 8192
+      objectReference: {fileID: 0}
+    - target: {fileID: 114255411055307360, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: fire
+      value: 30
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6a4b45fa28855fa4db1288b4fac29203, type: 2}

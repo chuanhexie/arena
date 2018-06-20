@@ -14,6 +14,8 @@ namespace Arena
         private GridManager gridManagerSingleton;
         private UIManager UIManagerSingleton;
 
+        public bool isLeftTriggerAxisInUse;
+
         // Use this for initialization
         void Start () 
         {
@@ -30,6 +32,9 @@ namespace Arena
 
             // INIT HP & STATUS DISPLAYS (ON CANVAS) TO FOLLOW ENEMIES & BLOCKS
             UIManagerSingleton.InitBattleObjectStatsDisplays();
+
+            // INPUT
+            isLeftTriggerAxisInUse = false;
         }
 
 
@@ -55,14 +60,89 @@ namespace Arena
         // CHECK PLAYER INPUT & PERFORM APPROPRIATE ACTIONS
         public void CheckInput()
         {
-            // RIGHT BUMPER (QUICKSELECT MENU)
-            battleManagerSingleton.battleToolQuickSelectActive = Input.GetButton("LeftBumper");
-            var battleToolQuickSelectInit = Input.GetButtonDown("LeftBumper");
-            bool leftToolButtonActive = Input.GetAxisRaw("LeftTrigger") > 0;
-            bool rightToolButtonActive = Input.GetAxisRaw("RightTrigger") > 0;
+            // --------------- SHOULDER BUTTONS START --------------------
+            // LEFT TRIGGER, LOGIC TO CHECK IF FIRST DOWN OR NOT FOR INITIALIZING QUICKSELECT
+            var battleToolQuickSelectInit = false;
+            if (Input.GetAxisRaw("LeftTrigger") > 0)
+            {
+                if (isLeftTriggerAxisInUse == false)
+                {
+                    isLeftTriggerAxisInUse = true;
+                    battleToolQuickSelectInit = true;
+                }
+            }
+            if (Input.GetAxisRaw("LeftTrigger") == 0)
+            {
+                isLeftTriggerAxisInUse = false;
+            }
+            battleManagerSingleton.battleToolQuickSelectActive = isLeftTriggerAxisInUse;
+
+            // RUN BUTTON
+            BattleManager.singleton.playerIsRunning = ((
+                (Input.GetAxisRaw("RightTrigger") > 0) || Input.GetButton("RightControl")) && 
+                !BattleManager.singleton.isPlayerCurrentlyUsingTool &&
+                BattleManager.singleton.curStamina > 0);
+
+            // TOOL BUTTONS
+            bool leftToolButtonActive = Input.GetButton("LeftBumper");
+            if (!leftToolButtonActive)
+                leftToolButtonActive = Input.GetButton("LeftControl");
+            bool rightToolButtonActive = Input.GetButton("RightBumper");
+            if (!rightToolButtonActive)
+                rightToolButtonActive = Input.GetButton("Space");
+
+            // --------------- SHOULDER BUTTONS END --------------------
 
             var rawHorizontalInput = Input.GetAxisRaw("LeftJoystickHorizontal");
             var rawVerticalInput = -Input.GetAxisRaw("LeftJoystickVertical");
+
+            // LEFT JOYSTICK
+            if (rawHorizontalInput == 0)
+                rawHorizontalInput = Input.GetAxisRaw("LeftKeysHorizontal");
+            if (rawVerticalInput == 0)
+                rawVerticalInput = Input.GetAxisRaw("LeftKeysVertical");
+            var horizontalInputDirection = 0;
+            var verticalInputDirection = 0;
+
+            if (rawHorizontalInput > 0)
+                horizontalInputDirection = 1;
+            else if (rawHorizontalInput < 0)
+                horizontalInputDirection = -1;
+
+            if (rawVerticalInput > 0)
+                verticalInputDirection = 1;
+            else if (rawVerticalInput < 0)
+                verticalInputDirection = -1;
+
+            var movementSpeed = battleManagerSingleton.playerWalkSpeed;
+            if (battleManagerSingleton.playerIsRunning)
+                movementSpeed = battleManagerSingleton.playerRunSpeed;
+
+            Vector2 movement = new Vector2(rawHorizontalInput * movementSpeed * Time.deltaTime, 
+                rawVerticalInput * movementSpeed * Time.deltaTime);
+            
+            battleManagerSingleton.player.GetComponent<Rigidbody2D>().velocity = movement;
+
+            // RIGHT JOYSTICK
+            rawHorizontalInput = Input.GetAxisRaw("RightJoystickHorizontal");
+            rawVerticalInput = -Input.GetAxisRaw("RightJoystickVertical");
+            if (rawHorizontalInput == 0)
+                rawHorizontalInput = Input.GetAxisRaw("RightKeysHorizontal");
+            if (rawVerticalInput == 0)
+                rawVerticalInput = Input.GetAxisRaw("RightKeysVertical");
+            horizontalInputDirection = 0;
+            verticalInputDirection = 0;
+
+            if (rawHorizontalInput > 0)
+                horizontalInputDirection = 1;
+            else if (rawHorizontalInput < 0)
+                horizontalInputDirection = -1;
+
+            if (rawVerticalInput > 0)
+                verticalInputDirection = 1;
+            else if (rawVerticalInput < 0)
+                verticalInputDirection = -1;
+
             var rawInputAngle = Mathf.Atan2(-rawHorizontalInput, rawVerticalInput) * Mathf.Rad2Deg;
             rawInputAngle += 90;
             if (rawInputAngle < 0)
@@ -71,54 +151,13 @@ namespace Arena
                 rawInputAngle -= 360;
             if (battleToolQuickSelectInit && rawHorizontalInput == 0 && rawVerticalInput == 0)
                 rawInputAngle = 90;
-
+            
             if (!battleManagerSingleton.battleToolQuickSelectActive)
             {
+                // HIDE TOOL QUICKSELECT
                 UIManager.singleton.toolQuickSelectMenuForBattle.SetActive(false);
 
-                // LEFT JOYSTICK (MOVEMENT)
-                if (rawHorizontalInput == 0)
-                    rawHorizontalInput = Input.GetAxisRaw("LeftKeysHorizontal");
-                if (rawVerticalInput == 0)
-                    rawVerticalInput = Input.GetAxisRaw("LeftKeysVertical");
-                var horizontalInputDirection = 0;
-                var verticalInputDirection = 0;
-
-                if (rawHorizontalInput > 0)
-                    horizontalInputDirection = 1;
-                else if (rawHorizontalInput < 0)
-                    horizontalInputDirection = -1;
-
-                if (rawVerticalInput > 0)
-                    verticalInputDirection = 1;
-                else if (rawVerticalInput < 0)
-                    verticalInputDirection = -1;
-
-                Vector2 movement = new Vector2(rawHorizontalInput * battleManagerSingleton.playerSpeed * Time.deltaTime, 
-                    rawVerticalInput * battleManagerSingleton.playerSpeed * Time.deltaTime);
-                
-                battleManagerSingleton.player.GetComponent<Rigidbody2D>().velocity = movement;
-
                 //AIM
-                rawHorizontalInput = Input.GetAxisRaw("RightJoystickHorizontal");
-                rawVerticalInput = -Input.GetAxisRaw("RightJoystickVertical");
-                if (rawHorizontalInput == 0)
-                    rawHorizontalInput = Input.GetAxisRaw("RightKeysHorizontal");
-                if (rawVerticalInput == 0)
-                    rawVerticalInput = Input.GetAxisRaw("RightKeysVertical");
-                horizontalInputDirection = 0;
-                verticalInputDirection = 0;
-
-                if (rawHorizontalInput > 0)
-                    horizontalInputDirection = 1;
-                else if (rawHorizontalInput < 0)
-                    horizontalInputDirection = -1;
-
-                if (rawVerticalInput > 0)
-                    verticalInputDirection = 1;
-                else if (rawVerticalInput < 0)
-                    verticalInputDirection = -1;
-
                 if (horizontalInputDirection != 0 || verticalInputDirection != 0)
                 {
                     battleManagerSingleton.curDirectionX = horizontalInputDirection;
@@ -155,8 +194,6 @@ namespace Arena
             }
             else
             {
-                battleManagerSingleton.player.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
-
                 var toolQuickSelectMenuForBattle = UIManager.singleton.toolQuickSelectMenuForBattle;
                 var toolQuickSelectMenuForBattleScript = toolQuickSelectMenuForBattle.GetComponent<ToolQuickSelectMenu>();
                 toolQuickSelectMenuForBattle.SetActive(true);
@@ -202,6 +239,4 @@ namespace Arena
             return layerNumber - 1;
         }
     }
-
-
 }
