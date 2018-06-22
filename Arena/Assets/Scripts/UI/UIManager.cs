@@ -20,6 +20,7 @@ namespace Arena
         public GameObject prefabClockArrow;
         public GameObject prefabCountdownRing;
         public GameObject prefabSpawnerGateSystem;
+        public GameObject prefabTopDownAimBoundary;
 
         [Header("HUD Plugins")]
         public GameObject staminaText;
@@ -35,6 +36,9 @@ namespace Arena
         public Color CRtoolColor;
         public Color CRstunColor;
         public Color CRpoisonColor;
+
+        [Header("Player Attachments")]
+        public float topDownAimBoundaryScale;
 
         [Header("Spawner Gate Systems")]
         public Sprite spriteInactiveClockArrow;
@@ -65,6 +69,9 @@ namespace Arena
         public List<GameObject> customLineRenderers;
         public List<GameObject> countdownRings;
         public GameObject curSpawnerGateSystem;
+
+        [Header("Player Attachments")]
+        public GameObject topDownAimBoundary;
 
 
         // FPS
@@ -525,6 +532,17 @@ namespace Arena
                 else
                     clockArrows[i].GetComponent<SpriteRenderer>().sprite = spriteInactiveClockArrow;
             }
+        }
+
+        public void InitPlayerTopDownAimBoundary()
+        {
+            var newTopDownAimBoundary = Instantiate(prefabTopDownAimBoundary);
+            Transform topDownAimBoundaryTransform = newTopDownAimBoundary.transform;
+            topDownAimBoundaryTransform.transform.localScale = new Vector3(topDownAimBoundaryScale, topDownAimBoundaryScale, topDownAimBoundaryScale);
+            topDownAimBoundaryTransform.transform.parent = BattleManager.singleton.player.transform;
+            topDownAimBoundaryTransform.transform.localPosition = Vector2.zero;
+            topDownAimBoundary = newTopDownAimBoundary;
+            topDownAimBoundary.SetActive(false);
         }
     }
 

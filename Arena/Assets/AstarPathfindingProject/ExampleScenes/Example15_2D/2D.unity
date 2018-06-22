@@ -799,6 +799,8 @@ MonoBehaviour:
     type: 2}
   prefabDirectionalAim: {fileID: 1530537110421056, guid: 1d372f5dd082b444a9c63e175be60619,
     type: 2}
+  prefabTopDownAim: {fileID: 1639033831027352, guid: e4f12eb86989c4e4c8f76b452e2c4b1b,
+    type: 2}
   prefabFire: {fileID: 1015484970473178, guid: 016c32e7a3259be43803d0fc708f70e7, type: 2}
   playerSprite: {fileID: 21300000, guid: dadfcf7d1645ed8448402337c3d04f7a, type: 3}
   enemySprite: {fileID: 21300000, guid: 7c7a4e81ebef24f409e0b97be746ee52, type: 3}
@@ -834,6 +836,9 @@ MonoBehaviour:
   maxHealth: 3
   maxStamina: 100
   maxMana: 100
+  playerTopDownAimMaxDistance: 2
+  playerTopDownAimMovementSpeed: 0.1
+  playerTopDownAimOffset: {x: 0, y: -0.9}
   tempEnemySpeed: 1.5
   defaultEnemyDamage: 1
   defaultMeleeTowardsPlayerCooldownTime: 1
@@ -848,7 +853,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8192
   baseTimeToSpawnEnemy: 4
-  amountOfEnemiesToSpawn: 25
+  amountOfEnemiesToSpawn: 0
   player: {fileID: 0}
   playerLeftTool: {fileID: 0}
   playerRightTool: {fileID: 0}
@@ -858,6 +863,9 @@ MonoBehaviour:
   playerDirectionalAim: {fileID: 0}
   curDirectionX: 0
   curDirectionY: 0
+  playerTopDownAim: {fileID: 0}
+  playerTopDownCurAimAngleRadians: 0
+  playerTopDownCurAimDistance: 0
   isPlayerCurrentlyUsingTool: 0
   playerToolInUse: {fileID: 0}
   currentToolSpeedFinal: 0
@@ -1370,42 +1378,72 @@ Prefab:
     - target: {fileID: 114255411055307360, guid: 6a4b45fa28855fa4db1288b4fac29203,
         type: 2}
       propertyPath: useSpeed
-      value: 1
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 114255411055307360, guid: 6a4b45fa28855fa4db1288b4fac29203,
         type: 2}
       propertyPath: resourceEfficiency
-      value: 1
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 114772331221177954, guid: 6a4b45fa28855fa4db1288b4fac29203,
         type: 2}
       propertyPath: usesMana
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 114255411055307360, guid: 6a4b45fa28855fa4db1288b4fac29203,
         type: 2}
       propertyPath: damage
-      value: 15
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 114772331221177954, guid: 6a4b45fa28855fa4db1288b4fac29203,
         type: 2}
       propertyPath: thumbnail
       value: 
-      objectReference: {fileID: 21300000, guid: 26b8d1b85f22a9049bda47b66fa0e214,
+      objectReference: {fileID: 21300000, guid: 5ddb48db2be29c745ae2ede19ea1119e,
         type: 3}
     - target: {fileID: 114772331221177954, guid: 6a4b45fa28855fa4db1288b4fac29203,
         type: 2}
       propertyPath: isBleed
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1832643332154174, guid: 6a4b45fa28855fa4db1288b4fac29203, type: 2}
       propertyPath: m_Name
-      value: DamSword
+      value: CrystalBall
       objectReference: {fileID: 0}
     - target: {fileID: 114872245120006874, guid: 6a4b45fa28855fa4db1288b4fac29203,
         type: 2}
       propertyPath: layerMask.m_Bits
       value: 8192
+      objectReference: {fileID: 0}
+    - target: {fileID: 114872245120006874, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: forwardDistanceToSpawn
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114872245120006874, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: isRaycast
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114872245120006874, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: raycastLength
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114872245120006874, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: usesAltAimReticule
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114255411055307360, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: poison
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114255411055307360, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: stun
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6a4b45fa28855fa4db1288b4fac29203, type: 2}
@@ -2383,6 +2421,8 @@ MonoBehaviour:
     type: 2}
   prefabSpawnerGateSystem: {fileID: 1371772721425578, guid: e0ac06a36902abd4796f7350679025ed,
     type: 2}
+  prefabTopDownAimBoundary: {fileID: 1610312836295710, guid: b2f42d7f944b01b4e810d51f37b6ac9a,
+    type: 2}
   staminaText: {fileID: 479234577}
   manaText: {fileID: 404509300}
   healthText: {fileID: 99549859}
@@ -2394,6 +2434,7 @@ MonoBehaviour:
   CRtoolColor: {r: 1, g: 0.61703855, b: 0.13235295, a: 1}
   CRstunColor: {r: 0.291955, g: 0.7941176, b: 0.7941176, a: 1}
   CRpoisonColor: {r: 0, g: 1, b: 0.13103461, a: 1}
+  topDownAimBoundaryScale: 4.1
   spriteInactiveClockArrow: {fileID: 21300000, guid: 2eb4bd0220b831a44ae3943a68b05d32,
     type: 3}
   spriteActiveClockArrow: {fileID: 21300000, guid: d7f0a6c36b63c4049aac03f829e25730,

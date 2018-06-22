@@ -14,6 +14,7 @@ namespace Arena
         public GameObject prefabBattleCharacter;
         public GameObject prefabLineRenderer;
         public GameObject prefabDirectionalAim;
+        public GameObject prefabTopDownAim;
         public GameObject prefabFire;
 
         [Header("Sprites")]
@@ -49,6 +50,11 @@ namespace Arena
         public float maxStamina;
         public float maxMana;
 
+        [Header("Player Top Down Aim")]
+        public float playerTopDownAimMaxDistance;
+        public float playerTopDownAimMovementSpeed;
+        public Vector2 playerTopDownAimOffset;
+
         [Header("Default Enemy General")]
         public float tempEnemySpeed;
         public float defaultEnemyDamage = 1;
@@ -76,10 +82,15 @@ namespace Arena
         public float curStamina;
         public float curMana;
 
-        [Header("Player Aim")]
+        [Header("Player Directional Aim")]
         public GameObject playerDirectionalAim;
         public float curDirectionX;
         public float curDirectionY;
+
+        [Header("Player Top Down Aim")]
+        public GameObject playerTopDownAim;
+        public float playerTopDownCurAimAngleRadians;
+        public float playerTopDownCurAimDistance;
 
         [Header("Player Tools")]
         public bool isPlayerCurrentlyUsingTool;
@@ -348,11 +359,18 @@ namespace Arena
                 characterSpriteRenderer.sprite = playerSprite;
                 battleObjectScript.maxHP = maxHealth;
 
-                // PLAYER AIM
+                // PLAYER DIRECTIONAL AIM
                 var directionalAimGameObject = Instantiate(prefabDirectionalAim);
                 playerDirectionalAim = directionalAimGameObject;
                 playerDirectionalAim.transform.parent = player.transform;
                 playerDirectionalAim.transform.localRotation = Quaternion.Euler(0, 0, 180);
+
+
+                // PLAYER TOP DOWN AIM
+                var topDownAimGameObject = Instantiate(prefabTopDownAim);
+                playerTopDownAim = topDownAimGameObject;
+                playerTopDownAim.transform.parent = player.transform;
+                SetPlayerTopDownAim();
 
                 // HITBOXES
                 edgeCollider.points = playerMovementEdgeColliderPoints;
@@ -639,6 +657,63 @@ namespace Arena
                     AstarPath.active.Scan();
                 }
             }
+        }
+
+        public void SetPlayerTopDownAim()
+        {
+            if (DoesToolUseAltAim(playerLeftTool) || DoesToolUseAltAim(playerRightTool))
+            {
+                playerTopDownAim.SetActive(true);
+                UIManager.singleton.topDownAimBoundary.SetActive(true);
+                UpdatePlayerTopDownAim(Vector2.zero, true);
+            }
+            else if (playerTopDownAim.activeInHierarchy)
+            {
+                playerTopDownAim.transform.localPosition = playerTopDownAimOffset;
+                playerTopDownAim.SetActive(false);
+                if (UIManager.singleton.topDownAimBoundary)
+                    UIManager.singleton.topDownAimBoundary.SetActive(false);
+                playerTopDownCurAimDistance = 0;
+            }
+        }
+
+        public void UpdatePlayerTopDownAim(Vector2 projectedMovement, bool isCenter = false)
+        {
+            Transform playerTransform = player.transform;
+            Vector2 playerPosition = playerTransform.position;
+            Transform playerTopDownAimTransform = playerTopDownAim.transform;
+            Vector2 playerTopDownAimPosition = playerTopDownAimTransform.position;
+
+            if (!isCenter)
+            {
+                // get distance of projected aim-position from player, if it exceeds max distance allowed, set to max distance
+                Vector2 projectedAimPosition = playerTopDownAimPosition + projectedMovement;
+                float aimDistanceFromPlayer = Vector2.Distance(projectedAimPosition, playerPosition);
+                playerTopDownCurAimDistance = aimDistanceFromPlayer;
+                if (aimDistanceFromPlayer > playerTopDownAimMaxDistance)
+                    playerTopDownCurAimDistance = playerTopDownAimMaxDistance;
+
+                // either way, set the angle of the aim from the player to the angle of the current projected aim position, only update angle when there is input
+                if (projectedMovement != Vector2.zero)
+                {
+                    Vector2 dirFromPlayer = playerPosition - projectedAimPosition;
+                    playerTopDownCurAimAngleRadians = Mathf.Atan2(-dirFromPlayer.y, -dirFromPlayer.x);
+                }
+            }
+            else
+            {
+                playerTopDownCurAimAngleRadians = 0;
+                playerTopDownCurAimDistance = 0;
+            }
+
+            // move player top down aim based on angle and distance from player, rather than a set distance, in order to enforce a circular boundary
+            Vector2 directionToMoveAim = new Vector2((float)Mathf.Cos(playerTopDownCurAimAngleRadians), (float)Mathf.Sin(playerTopDownCurAimAngleRadians));
+            playerTopDownAimTransform.position = playerPosition + (directionToMoveAim  * playerTopDownCurAimDistance);
+        }
+
+        public bool DoesToolUseAltAim(GameObject toolToCheckForAltAimGO)
+        {
+            return toolToCheckForAltAimGO.GetComponent<Tool>().battleColliderInstructionPrefabs.Any(x => x.GetComponent<BattleColliderInstruction>().usesAltAimReticule);
         }
     }
 }

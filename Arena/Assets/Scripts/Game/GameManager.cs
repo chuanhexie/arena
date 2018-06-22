@@ -30,6 +30,9 @@ namespace Arena
             // INIT BATTLE MANAGER
             battleManagerSingleton.InitBattle();
 
+            // INIT TOP DOWN AIM BOUNDARY
+            UIManagerSingleton.InitPlayerTopDownAimBoundary();
+
             // INIT HP & STATUS DISPLAYS (ON CANVAS) TO FOLLOW ENEMIES & BLOCKS
             UIManagerSingleton.InitBattleObjectStatsDisplays();
 
@@ -157,7 +160,7 @@ namespace Arena
                 // HIDE TOOL QUICKSELECT
                 UIManager.singleton.toolQuickSelectMenuForBattle.SetActive(false);
 
-                //AIM
+                //DIRECTIONAL AIM
                 if (horizontalInputDirection != 0 || verticalInputDirection != 0)
                 {
                     battleManagerSingleton.curDirectionX = horizontalInputDirection;
@@ -184,6 +187,12 @@ namespace Arena
                 }
 
                 battleManagerSingleton.playerDirectionalAim.transform.localPosition = new Vector2(battleManagerSingleton.curDirectionX / 2, battleManagerSingleton.curDirectionY / 2 - 0.5f);
+
+                // TOP DOWN AIM (ALT AIM)
+                if (battleManagerSingleton.playerTopDownAim.activeInHierarchy)
+                    battleManagerSingleton.UpdatePlayerTopDownAim(new Vector2(
+                        horizontalInputDirection * battleManagerSingleton.playerTopDownAimMovementSpeed,
+                        verticalInputDirection * battleManagerSingleton.playerTopDownAimMovementSpeed));
 
                 //TOOLS
                 if (leftToolButtonActive)
@@ -223,6 +232,11 @@ namespace Arena
                         {
                             battleManagerSingleton.playerRightTool = battleQuickSelectCurrentlySelectedTool;
                         }
+                    }
+
+                    if (leftToolButtonActive || rightToolButtonActive)
+                    {
+                        battleManagerSingleton.SetPlayerTopDownAim();
                     }
                 }
             }
