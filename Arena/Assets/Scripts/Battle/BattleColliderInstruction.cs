@@ -25,6 +25,8 @@ namespace Arena
         [Header("Raycast")]
         public bool isRaycast;
         public float raycastLength;
+        public int raycastCount;
+        public float multiRaycastSpreadAngle;
 
         [Header("Prefabs")]
         public GameObject prefabToSpawn;

@@ -852,7 +852,7 @@ MonoBehaviour:
   enemyCombatHitboxLayer:
     serializedVersion: 2
     m_Bits: 8192
-  baseTimeToSpawnEnemy: 4
+  baseTimeToSpawnEnemy: 0.5
   amountOfEnemiesToSpawn: 0
   player: {fileID: 0}
   playerLeftTool: {fileID: 0}
@@ -1967,12 +1967,12 @@ Prefab:
     - target: {fileID: 114872245120006874, guid: 6a4b45fa28855fa4db1288b4fac29203,
         type: 2}
       propertyPath: isRaycast
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114872245120006874, guid: 6a4b45fa28855fa4db1288b4fac29203,
         type: 2}
       propertyPath: raycastLength
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6a4b45fa28855fa4db1288b4fac29203, type: 2}
@@ -2262,12 +2262,12 @@ Prefab:
     - target: {fileID: 114255411055307360, guid: 6a4b45fa28855fa4db1288b4fac29203,
         type: 2}
       propertyPath: useSpeed
-      value: 7
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 114255411055307360, guid: 6a4b45fa28855fa4db1288b4fac29203,
         type: 2}
       propertyPath: resourceEfficiency
-      value: 7
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 114772331221177954, guid: 6a4b45fa28855fa4db1288b4fac29203,
         type: 2}
@@ -2277,13 +2277,13 @@ Prefab:
     - target: {fileID: 114255411055307360, guid: 6a4b45fa28855fa4db1288b4fac29203,
         type: 2}
       propertyPath: damage
-      value: 5
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 114772331221177954, guid: 6a4b45fa28855fa4db1288b4fac29203,
         type: 2}
       propertyPath: thumbnail
       value: 
-      objectReference: {fileID: 21300000, guid: 26b8d1b85f22a9049bda47b66fa0e214,
+      objectReference: {fileID: 21300000, guid: e89ce20fa06cf204a82af3290e345975,
         type: 3}
     - target: {fileID: 114772331221177954, guid: 6a4b45fa28855fa4db1288b4fac29203,
         type: 2}
@@ -2292,12 +2292,60 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1832643332154174, guid: 6a4b45fa28855fa4db1288b4fac29203, type: 2}
       propertyPath: m_Name
-      value: EfficSword
+      value: BasicRifle
       objectReference: {fileID: 0}
     - target: {fileID: 114872245120006874, guid: 6a4b45fa28855fa4db1288b4fac29203,
         type: 2}
       propertyPath: layerMask.m_Bits
       value: 8192
+      objectReference: {fileID: 0}
+    - target: {fileID: 1642935304434328, guid: 6a4b45fa28855fa4db1288b4fac29203, type: 2}
+      propertyPath: m_Name
+      value: RifleBCI
+      objectReference: {fileID: 0}
+    - target: {fileID: 1916454521884508, guid: 6a4b45fa28855fa4db1288b4fac29203, type: 2}
+      propertyPath: m_Name
+      value: RifleCombatStats
+      objectReference: {fileID: 0}
+    - target: {fileID: 114872245120006874, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: raycastLength
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 114872245120006874, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: raycastCount
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 114872245120006874, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: multiRaycastSpreadAngle
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 114255411055307360, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: poison
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114255411055307360, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: stun
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114255411055307360, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: fire
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114772331221177954, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: combatStatsReduction
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 114772331221177954, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: isReloadTool
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6a4b45fa28855fa4db1288b4fac29203, type: 2}

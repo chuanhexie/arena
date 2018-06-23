@@ -15,6 +15,7 @@ namespace Arena
 
         [Header("General")]
         public GameObject combatStats;
+        public float combatStatsReduction;
         public bool usesMana;
         public bool isBleed;
         public bool isReloadTool;

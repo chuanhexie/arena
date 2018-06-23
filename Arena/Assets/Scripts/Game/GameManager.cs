@@ -242,6 +242,14 @@ namespace Arena
             }
         }
 
+        public static Vector2 radianToDirection(float _input, bool _isDegree = false)
+        {
+            if (_isDegree)
+                _input = _input * Mathf.Deg2Rad;
+
+            return new Vector2((float)Mathf.Cos(_input), (float)Mathf.Sin(_input));
+        }
+
         public static int layermaskToLayer(LayerMask _layerMask)
         {
             int layerNumber = 0;

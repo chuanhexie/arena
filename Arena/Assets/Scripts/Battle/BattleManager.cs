@@ -413,55 +413,71 @@ namespace Arena
 
                 if (battleColliderInstructionsScript.isRaycast)
                 {
-                    // RAYCAST
-                    RaycastHit2D hit = Physics2D.Raycast(
-                                           positionToSpawnBattleCollider,
-                                           forward,
-                                           battleColliderInstructionsScript.raycastLength,
-                                           battleColliderInstructionsScript.layerMask);
-                    Vector2 raycastEndLocation = hit.point;
-                    if (hit.collider == null)
-                        raycastEndLocation = positionToSpawnBattleCollider + (forward * battleColliderInstructionsScript.raycastLength);
+                    int raycastsToCreateCount = battleColliderInstructionsScript.raycastCount;
+                    if (raycastsToCreateCount <= 0)
+                        raycastsToCreateCount = 1;
 
-                    // RENDER RAYCAST LINE
-                    var lineRenderer = Instantiate(prefabLineRenderer);
-                    var lineRendererScript = lineRenderer.GetComponent<LineRenderer>();
-                    UIManager.singleton.customLineRenderers.Add(lineRenderer);
-                    Vector3[] positions = new Vector3[]
-                    { 
-                        new Vector3(positionToSpawnBattleCollider.x, positionToSpawnBattleCollider.y, -2),
-                        new Vector3(raycastEndLocation.x, raycastEndLocation.y, -2)
-                    };
-                    lineRendererScript.SetPositions(positions);
+                    float aimCenterAngle = playerDirectionalAim.transform.eulerAngles.z + 90;
+                    Debug.Log(aimCenterAngle);
+                    float curRaycastAngle = aimCenterAngle - (battleColliderInstructionsScript.multiRaycastSpreadAngle / 2);
 
-                    // DEAL DAMAGE IF HIT
-                    if (hit.collider != null)
+                    for (var i = 0; i < raycastsToCreateCount; i++)
                     {
-                        var hitBattleObject = hit.collider.transform.parent;
-                        if (hitBattleObject != null)
+                        // RAYCAST
+                        RaycastHit2D hit = Physics2D.Raycast(
+                                               positionToSpawnBattleCollider,
+                                               GameManager.radianToDirection(curRaycastAngle, true),
+                                               battleColliderInstructionsScript.raycastLength,
+                                               battleColliderInstructionsScript.layerMask);
+                        Vector2 raycastEndLocation = hit.point;
+                        if (hit.collider == null)
+                            raycastEndLocation = positionToSpawnBattleCollider +
+                                (GameManager.radianToDirection(curRaycastAngle, true) * battleColliderInstructionsScript.raycastLength);
+
+                        // RENDER RAYCAST LINE
+                        var lineRenderer = Instantiate(prefabLineRenderer);
+                        var lineRendererScript = lineRenderer.GetComponent<LineRenderer>();
+                        UIManager.singleton.customLineRenderers.Add(lineRenderer);
+                        Vector3[] positions = new Vector3[]
+                        { 
+                            new Vector3(positionToSpawnBattleCollider.x, positionToSpawnBattleCollider.y, -2),
+                            new Vector3(raycastEndLocation.x, raycastEndLocation.y, -2)
+                        };
+                        lineRendererScript.SetPositions(positions);
+
+                        // DEAL DAMAGE IF HIT
+                        if (hit.collider != null)
                         {
-                            HandleCombatCollision(hitBattleObject.gameObject, GetPlayer(), raycastEndLocation, toolScript);
+                            var hitBattleObject = hit.collider.transform.parent;
+                            if (hitBattleObject != null)
+                            {
+                                HandleCombatCollision(hitBattleObject.gameObject, GetPlayer(), raycastEndLocation, toolScript);
+                            }
                         }
+
+                        // ------- FIRE-SPAWN-START ---------
+                        if (combatStatsScript.fire > 0)
+                        {
+                            var newFireGameObject = Instantiate(prefabFire);
+                            var newFireBattleObjectScript = newFireGameObject.GetComponent<BattleObject>();
+
+                            activeFires.Add(newFireGameObject);
+
+                            newFireGameObject.transform.position = raycastEndLocation;
+                            newFireBattleObjectScript.maxHP = combatStatsScript.fire * 
+                                (toolScript.combatStatsReduction == 0 ? 1 : toolScript.combatStatsReduction);
+                            newFireBattleObjectScript.curHP = newFireBattleObjectScript.maxHP;
+                            newFireBattleObjectScript.defensiveCombatHitbox.GetComponent<BoxCollider2D>().enabled = false;
+
+                            UIManager.singleton.InitBattleObjectStatsDisplay(newFireGameObject);
+
+                            AstarPath.active.Scan();
+                        }
+                        // ------- FIRE-SPAWN-END ---------
+
+                        // ADVANCE RAYCAST SPAWN ANGLE FOR MULTIPLE RAYCAST SPAWN
+                        curRaycastAngle += (battleColliderInstructionsScript.multiRaycastSpreadAngle / (battleColliderInstructionsScript.raycastCount - 1));
                     }
-
-                    // ------- FIRE-SPAWN-START ---------
-                    if (combatStatsScript.fire > 0)
-                    {
-                        var newFireGameObject = Instantiate(prefabFire);
-                        var newFireBattleObjectScript = newFireGameObject.GetComponent<BattleObject>();
-
-                        activeFires.Add(newFireGameObject);
-
-                        newFireGameObject.transform.position = raycastEndLocation;
-                        newFireBattleObjectScript.maxHP = combatStatsScript.fire;
-                        newFireBattleObjectScript.curHP = newFireBattleObjectScript.maxHP;
-                        newFireBattleObjectScript.defensiveCombatHitbox.GetComponent<BoxCollider2D>().enabled = false;
-
-                        UIManager.singleton.InitBattleObjectStatsDisplay(newFireGameObject);
-
-                        AstarPath.active.Scan();
-                    }
-                    // ------- FIRE-SPAWN-END ---------
                 }
                 else
                 {
@@ -519,6 +535,8 @@ namespace Arena
 
         public void HandleCombatCollision(GameObject _targetGameObject, GameObject _offensiveGameObject, Vector2 _hitPosition = new Vector2(), Tool _usedToolScript = null)
         {
+            float curCombatStatsReduction = _usedToolScript.combatStatsReduction == 0 ? 1 : _usedToolScript.combatStatsReduction;
+
             var targetBattleObjectScript = _targetGameObject.GetComponent<BattleObject>();
             var targetBattleCharacterScript = _targetGameObject.GetComponent<BattleCharacter>();
             var offensiveBattleCharacterScript = _offensiveGameObject.GetComponent<BattleCharacter>();
@@ -531,7 +549,7 @@ namespace Arena
             if (_usedToolScript != null)
             {
                 combatStatsScript = _usedToolScript.combatStats.GetComponent<CombatStats>();
-                damage = combatStatsScript.damage;
+                damage = combatStatsScript.damage * curCombatStatsReduction;
 
                 // CHANGE PUSHBACK TO TOOL'S STAT
                 curKnockbackForce = _usedToolScript.knockbackForce;
@@ -540,7 +558,7 @@ namespace Arena
                 if (_targetGameObject.GetComponent<Tile>() == null)
                 {
                     // ------- STUN-APPLY-START ----------
-                    targetBattleCharacterScript.remainingStunTime += combatStatsScript.stun;
+                    targetBattleCharacterScript.remainingStunTime += combatStatsScript.stun * curCombatStatsReduction;
                     if (targetBattleCharacterScript.remainingStunTime > 0 && combatStatsScript.stun > 0)
                     {
                         UIManager.singleton.InitCountdownRing(_targetGameObject, 
@@ -556,7 +574,7 @@ namespace Arena
                     // ------- POISON-APPLY-START ----------
                     if (combatStatsScript.poison > 0)
                     {
-                        targetBattleCharacterScript.basePoisonPoints += combatStatsScript.poison;
+                        targetBattleCharacterScript.basePoisonPoints += combatStatsScript.poison * curCombatStatsReduction;
 
                         float newPoisonFrequency = poisonFrequencyMaxTime / targetBattleCharacterScript.basePoisonPoints;
 
