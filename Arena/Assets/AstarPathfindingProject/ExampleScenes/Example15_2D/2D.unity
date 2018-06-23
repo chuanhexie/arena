@@ -296,7 +296,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4353725108400276, guid: 6a4b45fa28855fa4db1288b4fac29203, type: 2}
       propertyPath: m_RootOrder
-      value: 11
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 114255411055307360, guid: 6a4b45fa28855fa4db1288b4fac29203,
         type: 2}
@@ -619,7 +619,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 12
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!61 &502842034
 BoxCollider2D:
@@ -836,7 +836,7 @@ MonoBehaviour:
   maxHealth: 3
   maxStamina: 100
   maxMana: 100
-  playerTopDownAimMaxDistance: 2
+  playerTopDownAimMaxDistance: 5
   playerTopDownAimMovementSpeed: 0.1
   playerTopDownAimOffset: {x: 0, y: -0.9}
   tempEnemySpeed: 1.5
@@ -852,8 +852,8 @@ MonoBehaviour:
   enemyCombatHitboxLayer:
     serializedVersion: 2
     m_Bits: 8192
-  baseTimeToSpawnEnemy: 0.5
-  amountOfEnemiesToSpawn: 0
+  baseTimeToSpawnEnemy: 2.5
+  amountOfEnemiesToSpawn: 3
   player: {fileID: 0}
   playerLeftTool: {fileID: 0}
   playerRightTool: {fileID: 0}
@@ -1106,7 +1106,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4353725108400276, guid: 6a4b45fa28855fa4db1288b4fac29203, type: 2}
       propertyPath: m_RootOrder
-      value: 7
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 114255411055307360, guid: 6a4b45fa28855fa4db1288b4fac29203,
         type: 2}
@@ -1557,7 +1557,7 @@ RectTransform:
   - {fileID: 376375078}
   - {fileID: 1665805673}
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -1759,7 +1759,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &999120925 stripped
 GameObject:
@@ -1855,7 +1855,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1301840925
 Prefab:
@@ -1894,7 +1894,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4353725108400276, guid: 6a4b45fa28855fa4db1288b4fac29203, type: 2}
       propertyPath: m_RootOrder
-      value: 13
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 114255411055307360, guid: 6a4b45fa28855fa4db1288b4fac29203,
         type: 2}
@@ -1973,6 +1973,21 @@ Prefab:
         type: 2}
       propertyPath: raycastLength
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114872245120006874, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: duration
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 114872245120006874, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: isChildOfPlayer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114872245120006874, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: startingSpeed
+      value: 13
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6a4b45fa28855fa4db1288b4fac29203, type: 2}
@@ -2262,7 +2277,7 @@ Prefab:
     - target: {fileID: 114255411055307360, guid: 6a4b45fa28855fa4db1288b4fac29203,
         type: 2}
       propertyPath: useSpeed
-      value: 30
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 114255411055307360, guid: 6a4b45fa28855fa4db1288b4fac29203,
         type: 2}
@@ -2387,7 +2402,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4353725108400276, guid: 6a4b45fa28855fa4db1288b4fac29203, type: 2}
       propertyPath: m_RootOrder
-      value: 9
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 114255411055307360, guid: 6a4b45fa28855fa4db1288b4fac29203,
         type: 2}
@@ -2507,7 +2522,7 @@ MonoBehaviour:
   CRtoolColor: {r: 1, g: 0.61703855, b: 0.13235295, a: 1}
   CRstunColor: {r: 0.291955, g: 0.7941176, b: 0.7941176, a: 1}
   CRpoisonColor: {r: 0, g: 1, b: 0.13103461, a: 1}
-  topDownAimBoundaryScale: 4.1
+  topDownAimBoundaryScale: 10
   spriteInactiveClockArrow: {fileID: 21300000, guid: 2eb4bd0220b831a44ae3943a68b05d32,
     type: 3}
   spriteActiveClockArrow: {fileID: 21300000, guid: d7f0a6c36b63c4049aac03f829e25730,

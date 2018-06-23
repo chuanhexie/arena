@@ -14,6 +14,7 @@ namespace Arena
         public bool isPassiveSpawn;
         public bool playerIsImmune;
         public bool enemyIsImmune;
+        public bool destroySelfOnCollision;
 
         [Header("General Stats")]
         public float duration;

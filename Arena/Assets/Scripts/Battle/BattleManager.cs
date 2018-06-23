@@ -170,6 +170,7 @@ namespace Arena
             }
             // ------ TOOL-LOGIC END ------
 
+
             // -------------- PLAYER-RUN-LOGIC START --------------------
             if (playerIsRunning && player.GetComponent<Rigidbody2D>().velocity != Vector2.zero)
             {
@@ -179,6 +180,7 @@ namespace Arena
             }
             // -------------- PLAYER-RUN-LOGIC END --------------------
 
+
             // IF THE MAX AMOUNT OF ENEMIES TO SPAWN HAS NOT BEEN REACHED, CHECK IF ENEMIES SHOULD BE SPAWNED
             if (amountOfEnemiesToSpawn > 0)
                 AdvanceEnemySpawners();
@@ -187,6 +189,19 @@ namespace Arena
 
             // ACTIVE FIRE LOGIC
             HandleActiveFireLogic();
+
+
+            // ---------- BATTLE-COLLIDER-(OFFENSIVE HITBOXES)-LOGIC START --------------
+            for (var i = battleColliders.Count - 1; i > -1; i--)
+            {
+                GameObject curBattleColliderGO = battleColliders[i];
+                var curBattleColliderScript = curBattleColliderGO.GetComponent<BattleCollider>();
+
+                if (curBattleColliderScript.curSpeed > 0)
+                    curBattleColliderGO.transform.position += curBattleColliderScript.curDirection * curBattleColliderScript.curSpeed * Time.deltaTime;
+            }
+            // ---------- BATTLE-COLLIDER-(OFFENSIVE HITBOXES)-LOGIC END --------------
+
 
             // ----- BATTLE-OBJECT-LOGIC START ------
             for (var i = battleObjects.Count - 1; i > -1; i--)
@@ -209,6 +224,7 @@ namespace Arena
                         curBattleCharacterScript.meleeTowardsPlayerCooldown = 0;
                     // --------- RANDOM TIMERS-START ------------
 
+
                     // ----------- STUN-LOGIC START ---------------
                     // DECREASE STUN COUNTDOWN IF STUNNED, IF COUNTDOWN IS BELOW ZERO THEN RESET TO 0
                     if (curBattleCharacterScript.remainingStunTime > 0)
@@ -228,6 +244,7 @@ namespace Arena
                     }
                     // ----------- STUN-LOGIC END -----------
 
+
                     // ---------- POISON-LOGIC START ---------------
                     if (curBattleCharacterScript.curPoisonDamageCountdown > 0)
                         curBattleCharacterScript.curPoisonDamageCountdown -= Time.deltaTime;
@@ -243,6 +260,7 @@ namespace Arena
                     }
                     // ---------- POISON-LOGIC END ---------------
 
+
                     // ----------- ENEMY-TO-PLAYER-DAMAGE START ----------------
 
                     if (battleObjectOffensiveHitbox.bounds.Intersects(player.GetComponent<BattleObject>().defensiveCombatHitbox.GetComponent<BoxCollider2D>().bounds) &&
@@ -252,6 +270,30 @@ namespace Arena
                     }
                     // ----------- ENEMY-TO-PLAYER-DAMAGE END ----------------
                 }
+
+
+                // ----------- COLLISIONS-WITH-BATTLE-COLLIDER-CHECK LOGIC START ------------------
+                for (var j = battleColliders.Count - 1; j > -1; j--)
+                {
+                    var curBattleColliderGO = battleColliders[j];
+
+                    if (battleObjectDefensiveHitbox.isActiveAndEnabled &&
+                        battleObjectDefensiveHitbox.bounds.Intersects(curBattleColliderGO.GetComponent<BoxCollider2D>().bounds))
+                    {
+                        var curBattleColliderScript = curBattleColliderGO.GetComponent<BattleCollider>();
+
+                        HandleAttackCompletion(
+                            curBattleObjectGameObject.transform,
+                            curBattleColliderGO.transform.position,
+                            curBattleColliderScript.combatStats,
+                            curBattleColliderScript.toolThisWasCreatedFrom);
+
+                        battleColliders.RemoveAt(j);
+                        Destroy(curBattleColliderGO);
+                    }
+                }
+                // ----------- COLLISIONS-WITH-BATTLE-COLLIDER-CHECK LOGIC END --------------------
+
 
                 // DISPLAY HP TEXT FOR BATTLE OBJECTS THAT DONT DISPLAY HP UNTIL THEY ARE UNDER THEIR MAX HP
                 if (battleObjectStatsDisplay != null)
@@ -407,9 +449,10 @@ namespace Arena
             {
                 Vector2 positionToSpawnBattleCollider = playerDirectionalAim.transform.position;
                 if (battleColliderInstructionsScript.usesAltAimReticule)
-                    Debug.Log("should use alt aim reticule here");
+                    positionToSpawnBattleCollider = playerTopDownAim.transform.position;
 
                 Vector2 forward = playerDirectionalAim.transform.up;
+                float aimCenterAngle = playerDirectionalAim.transform.eulerAngles.z + 90;
 
                 if (battleColliderInstructionsScript.isRaycast)
                 {
@@ -417,8 +460,6 @@ namespace Arena
                     if (raycastsToCreateCount <= 0)
                         raycastsToCreateCount = 1;
 
-                    float aimCenterAngle = playerDirectionalAim.transform.eulerAngles.z + 90;
-                    Debug.Log(aimCenterAngle);
                     float curRaycastAngle = aimCenterAngle - (battleColliderInstructionsScript.multiRaycastSpreadAngle / 2);
 
                     for (var i = 0; i < raycastsToCreateCount; i++)
@@ -445,35 +486,9 @@ namespace Arena
                         };
                         lineRendererScript.SetPositions(positions);
 
-                        // DEAL DAMAGE IF HIT
+                        // PERFORM HIT LOGIC WHETHER A HIT RETURNS AN OBJECT OR NOT (AS LONG AS THE COLLIDER DOESN'T INEXPLICABLY EQUAL NULL)
                         if (hit.collider != null)
-                        {
-                            var hitBattleObject = hit.collider.transform.parent;
-                            if (hitBattleObject != null)
-                            {
-                                HandleCombatCollision(hitBattleObject.gameObject, GetPlayer(), raycastEndLocation, toolScript);
-                            }
-                        }
-
-                        // ------- FIRE-SPAWN-START ---------
-                        if (combatStatsScript.fire > 0)
-                        {
-                            var newFireGameObject = Instantiate(prefabFire);
-                            var newFireBattleObjectScript = newFireGameObject.GetComponent<BattleObject>();
-
-                            activeFires.Add(newFireGameObject);
-
-                            newFireGameObject.transform.position = raycastEndLocation;
-                            newFireBattleObjectScript.maxHP = combatStatsScript.fire * 
-                                (toolScript.combatStatsReduction == 0 ? 1 : toolScript.combatStatsReduction);
-                            newFireBattleObjectScript.curHP = newFireBattleObjectScript.maxHP;
-                            newFireBattleObjectScript.defensiveCombatHitbox.GetComponent<BoxCollider2D>().enabled = false;
-
-                            UIManager.singleton.InitBattleObjectStatsDisplay(newFireGameObject);
-
-                            AstarPath.active.Scan();
-                        }
-                        // ------- FIRE-SPAWN-END ---------
+                            HandleAttackCompletion(hit.collider.transform.parent, hit.point, combatStatsScript, toolScript);
 
                         // ADVANCE RAYCAST SPAWN ANGLE FOR MULTIPLE RAYCAST SPAWN
                         curRaycastAngle += (battleColliderInstructionsScript.multiRaycastSpreadAngle / (battleColliderInstructionsScript.raycastCount - 1));
@@ -483,21 +498,30 @@ namespace Arena
                 {
                     var battleColliderGameObject = Instantiate(battleColliderInstructionsScript.prefabToSpawn);
                     battleColliders.Add(battleColliderGameObject);
+
                     battleColliderGameObject.transform.localRotation = playerDirectionalAim.transform.rotation;
                     battleColliderGameObject.transform.position = positionToSpawnBattleCollider + (forward * battleColliderInstructionsScript.forwardDistanceToSpawn);
+
                     var battleColliderScript = battleColliderGameObject.GetComponent<BattleCollider>();
+                    battleColliderScript.destroySelfOnCollision = battleColliderInstructionsScript.destroySelfOnCollision;
                     battleColliderScript.timeBeforeSelfDestroy = battleColliderInstructionsScript.duration;
+                    battleColliderScript.curSpeed = battleColliderInstructionsScript.startingSpeed;
+
+                    battleColliderScript.curDirection = forward;
+
+                    battleColliderScript.combatStats = toolScript.combatStats.GetComponent<CombatStats>();
+                    battleColliderScript.toolThisWasCreatedFrom = toolScript;
+
+                    battleColliderGameObject.layer = GameManager.layermaskToLayer(battleColliderInstructionsScript.layerMask);
                 }
 
                 // EXPEND AMMO IF APPLICABLE
                 if (toolScript.isReloadTool)
-                {
-                    Debug.Log("used action to reload");
                     toolScript.curAmmoClip = 0;
-                }
             }
             else if (toolScript.isReloadTool)
             {
+                Debug.Log("used action to reload");
                 toolScript.curAmmoClip = toolScript.maxAmmoCLip;
             }
         }
@@ -533,14 +557,16 @@ namespace Arena
             }
         }
 
-        public void HandleCombatCollision(GameObject _targetGameObject, GameObject _offensiveGameObject, Vector2 _hitPosition = new Vector2(), Tool _usedToolScript = null)
+        public void HandleCombatCollision(
+            GameObject _targetGameObject,
+            GameObject _offensiveGameObject,
+            Vector2 _hitPosition = new Vector2(),
+            CombatStats _usedCombatStatsScript = null,
+            Tool _usedToolScript = null)
         {
-            float curCombatStatsReduction = _usedToolScript.combatStatsReduction == 0 ? 1 : _usedToolScript.combatStatsReduction;
-
             var targetBattleObjectScript = _targetGameObject.GetComponent<BattleObject>();
             var targetBattleCharacterScript = _targetGameObject.GetComponent<BattleCharacter>();
             var offensiveBattleCharacterScript = _offensiveGameObject.GetComponent<BattleCharacter>();
-            CombatStats combatStatsScript = null;
 
             // DEFAULTS TO BE OVERIDDEN IF APPROPRIATE
             float damage = defaultEnemyDamage;
@@ -548,8 +574,8 @@ namespace Arena
 
             if (_usedToolScript != null)
             {
-                combatStatsScript = _usedToolScript.combatStats.GetComponent<CombatStats>();
-                damage = combatStatsScript.damage * curCombatStatsReduction;
+                float curCombatStatsReduction = _usedToolScript.combatStatsReduction == 0 ? 1 : _usedToolScript.combatStatsReduction;
+                damage = _usedCombatStatsScript.damage * curCombatStatsReduction;
 
                 // CHANGE PUSHBACK TO TOOL'S STAT
                 curKnockbackForce = _usedToolScript.knockbackForce;
@@ -558,8 +584,8 @@ namespace Arena
                 if (_targetGameObject.GetComponent<Tile>() == null)
                 {
                     // ------- STUN-APPLY-START ----------
-                    targetBattleCharacterScript.remainingStunTime += combatStatsScript.stun * curCombatStatsReduction;
-                    if (targetBattleCharacterScript.remainingStunTime > 0 && combatStatsScript.stun > 0)
+                    targetBattleCharacterScript.remainingStunTime += _usedCombatStatsScript.stun * curCombatStatsReduction;
+                    if (targetBattleCharacterScript.remainingStunTime > 0 && _usedCombatStatsScript.stun > 0)
                     {
                         UIManager.singleton.InitCountdownRing(_targetGameObject, 
                             targetBattleCharacterScript.remainingStunTime,
@@ -572,9 +598,9 @@ namespace Arena
                     // ------- STUN-APPLY-END ----------
 
                     // ------- POISON-APPLY-START ----------
-                    if (combatStatsScript.poison > 0)
+                    if (_usedCombatStatsScript.poison > 0)
                     {
-                        targetBattleCharacterScript.basePoisonPoints += combatStatsScript.poison * curCombatStatsReduction;
+                        targetBattleCharacterScript.basePoisonPoints += _usedCombatStatsScript.poison * curCombatStatsReduction;
 
                         float newPoisonFrequency = poisonFrequencyMaxTime / targetBattleCharacterScript.basePoisonPoints;
 
@@ -746,6 +772,37 @@ namespace Arena
         public bool DoesToolUseAltAim(GameObject toolToCheckForAltAimGO)
         {
             return toolToCheckForAltAimGO.GetComponent<Tool>().battleColliderInstructionPrefabs.Any(x => x.GetComponent<BattleColliderInstruction>().usesAltAimReticule);
+        }
+
+        public void HandleAttackCompletion(
+            Transform _hitBattleObjectTransform, 
+            Vector2 _hitPosition = new Vector2(), 
+            CombatStats _usedCombatStatsScript = null,
+            Tool _usedToolScript = null)
+        {
+            // DEAL DAMAGE AND APPLICABLE EFFECTS IF HIT
+            if (_hitBattleObjectTransform != null)
+                HandleCombatCollision(_hitBattleObjectTransform.gameObject, GetPlayer(), _hitPosition, _usedCombatStatsScript, _usedToolScript);
+
+            // ------- FIRE-SPAWN-START ---------
+            if (_usedCombatStatsScript.fire > 0)
+            {
+                var newFireGameObject = Instantiate(prefabFire);
+                var newFireBattleObjectScript = newFireGameObject.GetComponent<BattleObject>();
+
+                activeFires.Add(newFireGameObject);
+
+                newFireGameObject.transform.position = _hitPosition;
+                newFireBattleObjectScript.maxHP = _usedCombatStatsScript.fire * 
+                    (_usedToolScript.combatStatsReduction == 0 ? 1 : _usedToolScript.combatStatsReduction);
+                newFireBattleObjectScript.curHP = newFireBattleObjectScript.maxHP;
+                newFireBattleObjectScript.defensiveCombatHitbox.GetComponent<BoxCollider2D>().enabled = false;
+
+                UIManager.singleton.InitBattleObjectStatsDisplay(newFireGameObject);
+
+                AstarPath.active.Scan();
+            }
+            // ------- FIRE-SPAWN-END ---------
         }
     }
 }

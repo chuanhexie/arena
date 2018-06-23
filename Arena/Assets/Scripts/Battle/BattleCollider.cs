@@ -8,11 +8,14 @@ namespace Arena
     {
         public bool playerIsImmune;
         public bool enemyIsImmune;
+        public bool destroySelfOnCollision;
 
         public float curSpeed;
         public Vector3 curDirection;
         public float timeBeforeSelfDestroy;
 
+        public CombatStats combatStats;
+        public Tool toolThisWasCreatedFrom;
         public GameObject prefabToSpawn;
         public GameObject prefabBattleColliderInstructionOnSelfDestroy;
 
