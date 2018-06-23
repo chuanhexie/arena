@@ -1914,22 +1914,22 @@ Prefab:
     - target: {fileID: 114255411055307360, guid: 6a4b45fa28855fa4db1288b4fac29203,
         type: 2}
       propertyPath: damage
-      value: 0
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 114772331221177954, guid: 6a4b45fa28855fa4db1288b4fac29203,
         type: 2}
       propertyPath: thumbnail
       value: 
-      objectReference: {fileID: 21300000, guid: 1de3bc71ea5a5044cbe334c59faa113a,
+      objectReference: {fileID: 21300000, guid: 45434f5a76f664243a3cc7142d46788b,
         type: 3}
     - target: {fileID: 114772331221177954, guid: 6a4b45fa28855fa4db1288b4fac29203,
         type: 2}
       propertyPath: isBleed
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1832643332154174, guid: 6a4b45fa28855fa4db1288b4fac29203, type: 2}
       propertyPath: m_Name
-      value: BasicHammer
+      value: BasicCrossbow
       objectReference: {fileID: 0}
     - target: {fileID: 114255411055307360, guid: 6a4b45fa28855fa4db1288b4fac29203,
         type: 2}
@@ -1943,16 +1943,36 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1642935304434328, guid: 6a4b45fa28855fa4db1288b4fac29203, type: 2}
       propertyPath: m_Name
-      value: HammerBCI
+      value: CrossbowBCI
       objectReference: {fileID: 0}
     - target: {fileID: 1916454521884508, guid: 6a4b45fa28855fa4db1288b4fac29203, type: 2}
       propertyPath: m_Name
-      value: HammerCombatStats
+      value: CrossbowCombatStats
       objectReference: {fileID: 0}
     - target: {fileID: 114772331221177954, guid: 6a4b45fa28855fa4db1288b4fac29203,
         type: 2}
       propertyPath: knockbackForce
-      value: 25
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114772331221177954, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: battleColliderInstructionPrefabs.Array.data[0]
+      value: 
+      objectReference: {fileID: 1359553259}
+    - target: {fileID: 114772331221177954, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: isReloadTool
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114872245120006874, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: isRaycast
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114872245120006874, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: raycastLength
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6a4b45fa28855fa4db1288b4fac29203, type: 2}
@@ -2031,6 +2051,11 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1314452615}
+--- !u!1 &1359553259 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 1642935304434328, guid: 6a4b45fa28855fa4db1288b4fac29203,
+    type: 2}
+  m_PrefabInternal: {fileID: 1301840925}
 --- !u!1 &1542237099 stripped
 GameObject:
   m_PrefabParentObject: {fileID: 1832643332154174, guid: 6a4b45fa28855fa4db1288b4fac29203,
@@ -2459,6 +2484,7 @@ MonoBehaviour:
   customLineRenderers: []
   countdownRings: []
   curSpawnerGateSystem: {fileID: 0}
+  topDownAimBoundary: {fileID: 0}
 --- !u!4 &1918019942
 Transform:
   m_ObjectHideFlags: 0

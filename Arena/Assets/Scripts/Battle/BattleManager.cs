@@ -152,12 +152,9 @@ namespace Arena
             if ((playerToolCompletionCountdown <= 0 || 
                 (isPlayerCurrentlyUsingTool && playerToolInUse.GetComponent<Tool>().usesMana)) 
                 && curStamina < maxStamina
-                && !playerIsRunning)
+                && (!playerIsRunning || player.GetComponent<Rigidbody2D>().velocity == Vector2.zero))
             {
                 float curStaminaRegen = baseStaminaRegenRate;
-
-                if (player.GetComponent<Rigidbody2D>().velocity == Vector2.zero)
-                    curStaminaRegen += idleStaminaRegenBoost;
 
                 curStamina += curStaminaRegen * Time.deltaTime;
                 if (curStamina > maxStamina)
@@ -174,7 +171,7 @@ namespace Arena
             // ------ TOOL-LOGIC END ------
 
             // -------------- PLAYER-RUN-LOGIC START --------------------
-            if (playerIsRunning)
+            if (playerIsRunning && player.GetComponent<Rigidbody2D>().velocity != Vector2.zero)
             {
                 curStamina -= runningStaminaCost * Time.deltaTime;
                 if (curStamina < 0)
@@ -404,71 +401,88 @@ namespace Arena
             var battleColliderInstructionsScript = toolScript.battleColliderInstructionPrefabs[0].GetComponent<BattleColliderInstruction>();
             var combatStatsScript = toolScript.combatStats.GetComponent<CombatStats>();
 
-            Vector2 positionToSpawnBattleCollider = playerDirectionalAim.transform.position;
-            if (battleColliderInstructionsScript.usesAltAimReticule)
-                Debug.Log("should use alt aim reticule here");
-
-            Vector2 forward = playerDirectionalAim.transform.up;
-
-            if (battleColliderInstructionsScript.isRaycast)
+            // if tool doesn't have to reload, then perform function, otherwise use this action to reload clip
+            if (!toolScript.isReloadTool ||
+                toolScript.curAmmoClip >= toolScript.maxAmmoCLip)
             {
-                // RAYCAST
-                RaycastHit2D hit = Physics2D.Raycast(
-                    positionToSpawnBattleCollider,
-                    forward,
-                    battleColliderInstructionsScript.raycastLength,
-                    battleColliderInstructionsScript.layerMask);
-                Vector2 raycastEndLocation = hit.point;
-                if (hit.collider == null)
-                    raycastEndLocation = positionToSpawnBattleCollider + (forward  * battleColliderInstructionsScript.raycastLength);
+                Vector2 positionToSpawnBattleCollider = playerDirectionalAim.transform.position;
+                if (battleColliderInstructionsScript.usesAltAimReticule)
+                    Debug.Log("should use alt aim reticule here");
 
-                // RENDER RAYCAST LINE
-                var lineRenderer = Instantiate(prefabLineRenderer);
-                var lineRendererScript = lineRenderer.GetComponent<LineRenderer>();
-                UIManager.singleton.customLineRenderers.Add(lineRenderer);
-                Vector3[] positions = new Vector3[] { 
-                    new Vector3(positionToSpawnBattleCollider.x, positionToSpawnBattleCollider.y, -2),
-                    new Vector3(raycastEndLocation.x, raycastEndLocation.y, -2)
-                };
-                lineRendererScript.SetPositions(positions);
+                Vector2 forward = playerDirectionalAim.transform.up;
 
-                // DEAL DAMAGE IF HIT
-                if (hit.collider != null)
+                if (battleColliderInstructionsScript.isRaycast)
                 {
-                    var hitBattleObject = hit.collider.transform.parent;
-                    if (hitBattleObject != null)
+                    // RAYCAST
+                    RaycastHit2D hit = Physics2D.Raycast(
+                                           positionToSpawnBattleCollider,
+                                           forward,
+                                           battleColliderInstructionsScript.raycastLength,
+                                           battleColliderInstructionsScript.layerMask);
+                    Vector2 raycastEndLocation = hit.point;
+                    if (hit.collider == null)
+                        raycastEndLocation = positionToSpawnBattleCollider + (forward * battleColliderInstructionsScript.raycastLength);
+
+                    // RENDER RAYCAST LINE
+                    var lineRenderer = Instantiate(prefabLineRenderer);
+                    var lineRendererScript = lineRenderer.GetComponent<LineRenderer>();
+                    UIManager.singleton.customLineRenderers.Add(lineRenderer);
+                    Vector3[] positions = new Vector3[]
+                    { 
+                        new Vector3(positionToSpawnBattleCollider.x, positionToSpawnBattleCollider.y, -2),
+                        new Vector3(raycastEndLocation.x, raycastEndLocation.y, -2)
+                    };
+                    lineRendererScript.SetPositions(positions);
+
+                    // DEAL DAMAGE IF HIT
+                    if (hit.collider != null)
                     {
-                        HandleCombatCollision(hitBattleObject.gameObject, GetPlayer(), raycastEndLocation, toolScript);
+                        var hitBattleObject = hit.collider.transform.parent;
+                        if (hitBattleObject != null)
+                        {
+                            HandleCombatCollision(hitBattleObject.gameObject, GetPlayer(), raycastEndLocation, toolScript);
+                        }
                     }
-                }
 
-                // ------- FIRE-SPAWN-START ---------
-                if (combatStatsScript.fire > 0)
+                    // ------- FIRE-SPAWN-START ---------
+                    if (combatStatsScript.fire > 0)
+                    {
+                        var newFireGameObject = Instantiate(prefabFire);
+                        var newFireBattleObjectScript = newFireGameObject.GetComponent<BattleObject>();
+
+                        activeFires.Add(newFireGameObject);
+
+                        newFireGameObject.transform.position = raycastEndLocation;
+                        newFireBattleObjectScript.maxHP = combatStatsScript.fire;
+                        newFireBattleObjectScript.curHP = newFireBattleObjectScript.maxHP;
+                        newFireBattleObjectScript.defensiveCombatHitbox.GetComponent<BoxCollider2D>().enabled = false;
+
+                        UIManager.singleton.InitBattleObjectStatsDisplay(newFireGameObject);
+
+                        AstarPath.active.Scan();
+                    }
+                    // ------- FIRE-SPAWN-END ---------
+                }
+                else
                 {
-                    var newFireGameObject = Instantiate(prefabFire);
-                    var newFireBattleObjectScript = newFireGameObject.GetComponent<BattleObject>();
-
-                    activeFires.Add(newFireGameObject);
-
-                    newFireGameObject.transform.position = raycastEndLocation;
-                    newFireBattleObjectScript.maxHP = combatStatsScript.fire;
-                    newFireBattleObjectScript.curHP = newFireBattleObjectScript.maxHP;
-                    newFireBattleObjectScript.defensiveCombatHitbox.GetComponent<BoxCollider2D>().enabled = false;
-
-                    UIManager.singleton.InitBattleObjectStatsDisplay(newFireGameObject);
-
-                    AstarPath.active.Scan();
+                    var battleColliderGameObject = Instantiate(battleColliderInstructionsScript.prefabToSpawn);
+                    battleColliders.Add(battleColliderGameObject);
+                    battleColliderGameObject.transform.localRotation = playerDirectionalAim.transform.rotation;
+                    battleColliderGameObject.transform.position = positionToSpawnBattleCollider + (forward * battleColliderInstructionsScript.forwardDistanceToSpawn);
+                    var battleColliderScript = battleColliderGameObject.GetComponent<BattleCollider>();
+                    battleColliderScript.timeBeforeSelfDestroy = battleColliderInstructionsScript.duration;
                 }
-                // ------- FIRE-SPAWN-END ---------
+
+                // EXPEND AMMO IF APPLICABLE
+                if (toolScript.isReloadTool)
+                {
+                    Debug.Log("used action to reload");
+                    toolScript.curAmmoClip = 0;
+                }
             }
-            else
+            else if (toolScript.isReloadTool)
             {
-                var battleColliderGameObject = Instantiate(battleColliderInstructionsScript.prefabToSpawn);
-                battleColliders.Add(battleColliderGameObject);
-                battleColliderGameObject.transform.localRotation = playerDirectionalAim.transform.rotation;
-                battleColliderGameObject.transform.position = positionToSpawnBattleCollider + (forward * battleColliderInstructionsScript.forwardDistanceToSpawn);
-                var battleColliderScript = battleColliderGameObject.GetComponent<BattleCollider>();
-                battleColliderScript.timeBeforeSelfDestroy = battleColliderInstructionsScript.duration;
+                toolScript.curAmmoClip = toolScript.maxAmmoCLip;
             }
         }
 

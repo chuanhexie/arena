@@ -17,6 +17,12 @@ namespace Arena
         public GameObject combatStats;
         public bool usesMana;
         public bool isBleed;
+        public bool isReloadTool;
         public float knockbackForce;
+
+        [Header("(REFERENCE)")]
+        [Header("Reload")]
+        public int curAmmoClip = 1;
+        public int maxAmmoCLip = 1;
     }
 }
