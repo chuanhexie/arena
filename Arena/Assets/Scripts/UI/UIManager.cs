@@ -126,21 +126,6 @@ namespace Arena
                 }
             }
 
-            // LOOP THROUGH CUSTOM BATTLE COLLIDERS AND PERFORM APPROPRIATE LOGIC
-            for (var i = BattleManager.singleton.battleColliders.Count - 1; i > -1; i--)
-            {
-                var curBattleColliderObject = BattleManager.singleton.battleColliders[i];
-                var curBattleColliderCustomScript = curBattleColliderObject.GetComponent<BattleCollider>();
-
-                // RUN SELF DESTROY COUNTDOWN, IF BELOW ZERO, DESTROY LINE RENDERER
-                curBattleColliderCustomScript.timeBeforeSelfDestroy -= Time.deltaTime;
-                if (curBattleColliderCustomScript.timeBeforeSelfDestroy < 0)
-                {
-                    BattleManager.singleton.battleColliders.RemoveAt(i);
-                    Destroy(curBattleColliderObject);
-                }
-            }
-
             UpdateBattleObjectStatsDisplays();
             UpdateToolQuickSelectMenu(UIManager.singleton.toolQuickSelectMenuForBattle);
             UpdateCountdownRings();

@@ -16,6 +16,7 @@ namespace Arena
         public GameObject prefabDirectionalAim;
         public GameObject prefabTopDownAim;
         public GameObject prefabFire;
+        public GameObject prefabSmallHitbox;
 
         [Header("Sprites")]
         public Sprite playerSprite;
@@ -64,6 +65,9 @@ namespace Arena
         public Vector2[] defaultEnemyMovementEdgeColliderPoints;
         public Vector2 defaultEnemyCombatHitboxDimensions;
         public LayerMask enemyCombatHitboxLayer;
+
+        [Header("Physics Materials")]
+        public PhysicsMaterial2D physicsMaterialDefaultBattleCollider;
 
         [Header("Default Spawning")]
         public float baseTimeToSpawnEnemy;
@@ -197,8 +201,16 @@ namespace Arena
                 GameObject curBattleColliderGO = battleColliders[i];
                 var curBattleColliderScript = curBattleColliderGO.GetComponent<BattleCollider>();
 
-                if (curBattleColliderScript.curSpeed > 0)
-                    curBattleColliderGO.transform.position += curBattleColliderScript.curDirection * curBattleColliderScript.curSpeed * Time.deltaTime;
+                if (curBattleColliderScript.hasContinuousMovement || !curBattleColliderScript.hasHadInitialPush)
+                {
+                    curBattleColliderGO.GetComponent<Rigidbody2D>().velocity = curBattleColliderScript.curDirection * curBattleColliderScript.curSpeed * Time.deltaTime;
+                    curBattleColliderScript.hasHadInitialPush = true;
+                }
+
+                // RUN SELF DESTROY COUNTDOWN, IF BELOW ZERO, DESTROY COLLIDER
+                curBattleColliderScript.timeBeforeSelfDestroy -= Time.deltaTime;
+                if (curBattleColliderScript.timeBeforeSelfDestroy < 0)
+                    BattleColliderSelfDestroy(curBattleColliderScript, i);
             }
             // ---------- BATTLE-COLLIDER-(OFFENSIVE HITBOXES)-LOGIC END --------------
 
@@ -276,20 +288,23 @@ namespace Arena
                 for (var j = battleColliders.Count - 1; j > -1; j--)
                 {
                     var curBattleColliderGO = battleColliders[j];
+                    var curBattleColliderScript = curBattleColliderGO.GetComponent<BattleCollider>();
 
-                    if (battleObjectDefensiveHitbox.isActiveAndEnabled &&
+                    if (!curBattleColliderScript.collidedBattleObjects.Contains(curBattleObjectGameObject) &&
+                        curBattleColliderScript.hasContactEffects &&
+                        battleObjectDefensiveHitbox.isActiveAndEnabled &&
                         battleObjectDefensiveHitbox.bounds.Intersects(curBattleColliderGO.GetComponent<BoxCollider2D>().bounds))
                     {
-                        var curBattleColliderScript = curBattleColliderGO.GetComponent<BattleCollider>();
-
                         HandleAttackCompletion(
                             curBattleObjectGameObject.transform,
                             curBattleColliderGO.transform.position,
                             curBattleColliderScript.combatStats,
                             curBattleColliderScript.toolThisWasCreatedFrom);
 
-                        battleColliders.RemoveAt(j);
-                        Destroy(curBattleColliderGO);
+                        curBattleColliderScript.collidedBattleObjects.Add(curBattleObjectGameObject);
+
+                        if (curBattleColliderScript.destroySelfOnCollision)
+                            BattleColliderSelfDestroy(curBattleColliderScript, j);
                     }
                 }
                 // ----------- COLLISIONS-WITH-BATTLE-COLLIDER-CHECK LOGIC END --------------------
@@ -489,6 +504,7 @@ namespace Arena
                         // PERFORM HIT LOGIC WHETHER A HIT RETURNS AN OBJECT OR NOT (AS LONG AS THE COLLIDER DOESN'T INEXPLICABLY EQUAL NULL)
                         if (hit.collider != null)
                             HandleAttackCompletion(hit.collider.transform.parent, hit.point, combatStatsScript, toolScript);
+                        SpawnFires(raycastEndLocation, combatStatsScript, toolScript);
 
                         // ADVANCE RAYCAST SPAWN ANGLE FOR MULTIPLE RAYCAST SPAWN
                         curRaycastAngle += (battleColliderInstructionsScript.multiRaycastSpreadAngle / (battleColliderInstructionsScript.raycastCount - 1));
@@ -496,23 +512,7 @@ namespace Arena
                 }
                 else
                 {
-                    var battleColliderGameObject = Instantiate(battleColliderInstructionsScript.prefabToSpawn);
-                    battleColliders.Add(battleColliderGameObject);
-
-                    battleColliderGameObject.transform.localRotation = playerDirectionalAim.transform.rotation;
-                    battleColliderGameObject.transform.position = positionToSpawnBattleCollider + (forward * battleColliderInstructionsScript.forwardDistanceToSpawn);
-
-                    var battleColliderScript = battleColliderGameObject.GetComponent<BattleCollider>();
-                    battleColliderScript.destroySelfOnCollision = battleColliderInstructionsScript.destroySelfOnCollision;
-                    battleColliderScript.timeBeforeSelfDestroy = battleColliderInstructionsScript.duration;
-                    battleColliderScript.curSpeed = battleColliderInstructionsScript.startingSpeed;
-
-                    battleColliderScript.curDirection = forward;
-
-                    battleColliderScript.combatStats = toolScript.combatStats.GetComponent<CombatStats>();
-                    battleColliderScript.toolThisWasCreatedFrom = toolScript;
-
-                    battleColliderGameObject.layer = GameManager.layermaskToLayer(battleColliderInstructionsScript.layerMask);
+                    InitHitbox(battleColliderInstructionsScript, positionToSpawnBattleCollider, forward, toolScript);
                 }
 
                 // EXPEND AMMO IF APPLICABLE
@@ -783,26 +783,121 @@ namespace Arena
             // DEAL DAMAGE AND APPLICABLE EFFECTS IF HIT
             if (_hitBattleObjectTransform != null)
                 HandleCombatCollision(_hitBattleObjectTransform.gameObject, GetPlayer(), _hitPosition, _usedCombatStatsScript, _usedToolScript);
+        }
 
-            // ------- FIRE-SPAWN-START ---------
+        public void SpawnFires(Vector2 _hitPosition, CombatStats _usedCombatStatsScript, Tool _usedToolScript, BattleCollider _battleCollider = null)
+        {
             if (_usedCombatStatsScript.fire > 0)
             {
-                var newFireGameObject = Instantiate(prefabFire);
-                var newFireBattleObjectScript = newFireGameObject.GetComponent<BattleObject>();
+                int curFireGridCount = 1;
+                float fireGridSpacialSize = 1;
+                if (_battleCollider != null)
+                {
+                    curFireGridCount = _battleCollider.fireGridCount;
+                    fireGridSpacialSize = _battleCollider.fireGridSpacialSize;
+                }
+                float leftSideSpawnX = _hitPosition.x - (fireGridSpacialSize / 2);
+                float topSideSpawnY = _hitPosition.y + (fireGridSpacialSize / 2);
+                float spawnPadding = fireGridSpacialSize;
+                Debug.Log(leftSideSpawnX);
+                Vector2 curFireSpawnPoint = new Vector2(leftSideSpawnX, topSideSpawnY);
 
-                activeFires.Add(newFireGameObject);
+                if (curFireGridCount == 1)
+                    curFireSpawnPoint = _hitPosition;
 
-                newFireGameObject.transform.position = _hitPosition;
-                newFireBattleObjectScript.maxHP = _usedCombatStatsScript.fire * 
-                    (_usedToolScript.combatStatsReduction == 0 ? 1 : _usedToolScript.combatStatsReduction);
-                newFireBattleObjectScript.curHP = newFireBattleObjectScript.maxHP;
-                newFireBattleObjectScript.defensiveCombatHitbox.GetComponent<BoxCollider2D>().enabled = false;
+                for (var i = 0; i < curFireGridCount; i++)
+                {
+                    for (var j = 0; j < curFireGridCount; j++)
+                    {
+                        var newFireGameObject = Instantiate(prefabFire);
+                        var newFireBattleObjectScript = newFireGameObject.GetComponent<BattleObject>();
 
-                UIManager.singleton.InitBattleObjectStatsDisplay(newFireGameObject);
+                        activeFires.Add(newFireGameObject);
 
-                AstarPath.active.Scan();
+                        newFireGameObject.transform.position = curFireSpawnPoint;
+                        newFireBattleObjectScript.maxHP = _usedCombatStatsScript.fire *
+                        (_usedToolScript.combatStatsReduction == 0 ? 1 : _usedToolScript.combatStatsReduction);
+                        newFireBattleObjectScript.curHP = newFireBattleObjectScript.maxHP;
+                        newFireBattleObjectScript.defensiveCombatHitbox.GetComponent<BoxCollider2D>().enabled = false;
+
+                        UIManager.singleton.InitBattleObjectStatsDisplay(newFireGameObject);
+
+                        // TODO: don't scan every single time, kills performance (I think that's what's doing it, anyway)
+                        AstarPath.active.Scan();
+
+                        curFireSpawnPoint.x += spawnPadding;
+                    }
+
+                    curFireSpawnPoint.x = leftSideSpawnX;
+                    curFireSpawnPoint.y -= spawnPadding;
+                }
             }
-            // ------- FIRE-SPAWN-END ---------
+        }
+
+        public void InitHitbox(BattleColliderInstruction _battleColliderInstructionsScript, Vector2 _spawnPosition, Vector2 _spawnDirection, Tool _usedToolScript = null)
+        {
+            var battleColliderGameObject = Instantiate(prefabSmallHitbox);
+            battleColliders.Add(battleColliderGameObject);
+
+            Rigidbody2D battleColliderRigidbody = battleColliderGameObject.AddComponent<Rigidbody2D>();
+            battleColliderRigidbody.freezeRotation = true;
+            battleColliderRigidbody.mass = 5;
+            battleColliderRigidbody.angularDrag = 0.0f;
+            battleColliderRigidbody.drag = 5;
+            battleColliderRigidbody.sharedMaterial = physicsMaterialDefaultBattleCollider;
+
+            if (!_battleColliderInstructionsScript.usesEdgeCollider)
+            {
+                EdgeCollider2D curEdgeCollider = battleColliderGameObject.GetComponent<EdgeCollider2D>();
+                if (curEdgeCollider != null)
+                    curEdgeCollider.enabled = false;
+            }
+
+            battleColliderGameObject.transform.position = _spawnPosition + (_spawnDirection * _battleColliderInstructionsScript.forwardDistanceToSpawn);
+            battleColliderGameObject.transform.localScale = _battleColliderInstructionsScript.hitboxScale;
+
+            var battleColliderScript = battleColliderGameObject.GetComponent<BattleCollider>();
+            battleColliderScript.destroySelfOnCollision = _battleColliderInstructionsScript.destroySelfOnCollision;
+            battleColliderScript.timeBeforeSelfDestroy = _battleColliderInstructionsScript.duration;
+            battleColliderScript.curSpeed = _battleColliderInstructionsScript.startingSpeed;
+            battleColliderScript.hasContinuousMovement = _battleColliderInstructionsScript.hasContinuousMovement;
+            battleColliderScript.hasContactEffects = _battleColliderInstructionsScript.hasContactEffects;
+            battleColliderScript.prefabBattleColliderInstructionOnSelfDestroy = _battleColliderInstructionsScript.prefabBattleColliderInstructionOnSelfDestroy;
+
+            battleColliderScript.fireGridCount = _battleColliderInstructionsScript.fireGridCount;
+            battleColliderScript.fireGridSpacialSize = _battleColliderInstructionsScript.fireGridSpacialSize;
+            battleColliderScript.spawnsFireOnSelfDestroy = _battleColliderInstructionsScript.spawnsFireOnSelfDestroy;
+
+            battleColliderScript.curDirection = _spawnDirection;
+
+            battleColliderScript.combatStats = _usedToolScript.combatStats.GetComponent<CombatStats>();
+            battleColliderScript.toolThisWasCreatedFrom = _usedToolScript;
+
+            //battleColliderGameObject.layer = GameManager.layermaskToLayer(battleColliderInstructionsScript.layerMask);
+        }
+
+        public void BattleColliderSelfDestroy(BattleCollider _curBattleColliderScript, int battleColliderIndex)
+        {
+            if (_curBattleColliderScript.spawnsFireOnSelfDestroy)
+            {
+                SpawnFires(
+                    _curBattleColliderScript.transform.position,
+                    _curBattleColliderScript.combatStats,
+                    _curBattleColliderScript.toolThisWasCreatedFrom,
+                    _curBattleColliderScript);
+            }
+
+            if (_curBattleColliderScript.prefabBattleColliderInstructionOnSelfDestroy != null)
+            {
+                InitHitbox(
+                    _curBattleColliderScript.prefabBattleColliderInstructionOnSelfDestroy.GetComponent<BattleColliderInstruction>(),
+                    _curBattleColliderScript.transform.position,
+                    Vector2.zero,
+                    _curBattleColliderScript.toolThisWasCreatedFrom);
+            }
+
+            battleColliders.RemoveAt(battleColliderIndex);
+            Destroy(_curBattleColliderScript.gameObject);
         }
     }
 }

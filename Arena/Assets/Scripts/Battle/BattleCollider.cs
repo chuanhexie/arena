@@ -9,6 +9,10 @@ namespace Arena
         public bool playerIsImmune;
         public bool enemyIsImmune;
         public bool destroySelfOnCollision;
+        public bool hasContinuousMovement;
+        public bool hasContactEffects;
+
+        public bool hasHadInitialPush = false;
 
         public float curSpeed;
         public Vector3 curDirection;
@@ -18,6 +22,13 @@ namespace Arena
         public Tool toolThisWasCreatedFrom;
         public GameObject prefabToSpawn;
         public GameObject prefabBattleColliderInstructionOnSelfDestroy;
+
+        [Header("Fire")]
+        public bool spawnsFireOnSelfDestroy;
+        public int fireGridCount;
+        public float fireGridSpacialSize;
+
+        public List<GameObject> collidedBattleObjects;
 
         // Use this for initialization
         void Start () 

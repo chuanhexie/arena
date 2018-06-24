@@ -22,7 +22,8 @@ GameObject:
   - component: {fileID: 212429110611638610}
   - component: {fileID: 61318739903212028}
   - component: {fileID: 114901916654135240}
-  m_Layer: 13
+  - component: {fileID: 68771588652238484}
+  m_Layer: 8
   m_Name: SwordHitbox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -36,7 +37,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1010457515799194}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.1707232, y: 3.6982207, z: 0}
+  m_LocalPosition: {x: 4.003926, y: -0.4924712, z: 0}
   m_LocalScale: {x: 0.1, y: 0.1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -67,6 +68,26 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1.81, y: 1.81}
   m_EdgeRadius: 0
+--- !u!68 &68771588652238484
+EdgeCollider2D:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1010457515799194}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_EdgeRadius: 0
+  m_Points:
+  - {x: 0.8, y: 0.8}
+  - {x: 0.8, y: -0.8}
+  - {x: -0.8, y: -0.8}
+  - {x: -0.8, y: 0.8}
+  - {x: 0.8, y: 0.8}
 --- !u!114 &114901916654135240
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -81,6 +102,9 @@ MonoBehaviour:
   playerIsImmune: 1
   enemyIsImmune: 0
   destroySelfOnCollision: 0
+  hasContinuousMovement: 0
+  hasContactEffects: 0
+  hasHadInitialPush: 0
   curSpeed: 0
   curDirection: {x: 0, y: 0, z: 0}
   timeBeforeSelfDestroy: 5

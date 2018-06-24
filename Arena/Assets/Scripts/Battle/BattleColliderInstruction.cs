@@ -15,6 +15,7 @@ namespace Arena
         public bool playerIsImmune;
         public bool enemyIsImmune;
         public bool destroySelfOnCollision;
+        public bool hasContactEffects;
 
         [Header("General Stats")]
         public float duration;
@@ -22,6 +23,9 @@ namespace Arena
 
         [Header("Hitbox")]
         public float startingSpeed;
+        public bool hasContinuousMovement;
+        public Vector3 hitboxScale;
+        public bool usesEdgeCollider;
 
         [Header("Raycast")]
         public bool isRaycast;
@@ -29,8 +33,12 @@ namespace Arena
         public int raycastCount;
         public float multiRaycastSpreadAngle;
 
+        [Header("Fire")]
+        public bool spawnsFireOnSelfDestroy = true;
+        public int fireGridCount = 1;
+        public float fireGridSpacialSize;
+
         [Header("Prefabs")]
-        public GameObject prefabToSpawn;
         public GameObject prefabBattleColliderInstructionOnSelfDestroy;
 
         // Use this for initialization
