@@ -252,7 +252,19 @@ namespace Arena
                     // ALLOW AI TO MOVE AGAIN IF THEY FIT CRITERIA
                     if (curBattleCharacterScript.remainingStunTime <= 0 && curBattleCharacterScript.knockbackMovementDisabledCountdown <= 0)
                     {
-                        curBattleObjectGameObject.GetComponent<AILerp>().canMove = true;
+                        // ---------- FLYING-MOVEMENT-LOGIC START -------------
+                        if (curBattleCharacterScript.isFlyer)
+                        {
+                            var curBattleObjectRigidbody = curBattleObjectGameObject.GetComponent<Rigidbody2D>();
+                            if (curBattleObjectRigidbody != null)
+                                curBattleObjectRigidbody.position = Vector2.MoveTowards(
+                                    curBattleObjectGameObject.transform.position,
+                                    player.transform.position,
+                                    curBattleCharacterScript.walkSpeed * Time.deltaTime);
+                        }
+                        // ---------- FLYING-MOVEMENT-LOGIC END ---------------
+                        else
+                            curBattleObjectGameObject.GetComponent<AILerp>().canMove = true;
                     }
                     // ----------- STUN-LOGIC END -----------
 
@@ -271,6 +283,9 @@ namespace Arena
                         curBattleCharacterScript.curPoisonDamageCountdown = curBattleCharacterScript.poisonDamageFrequency;
                     }
                     // ---------- POISON-LOGIC END ---------------
+
+
+
 
 
                     // ----------- ENEMY-TO-PLAYER-DAMAGE START ----------------
@@ -926,8 +941,16 @@ namespace Arena
             // UI
             UIManager.singleton.InitBattleObjectStatsDisplay(_battleCharacter);
 
-            //HITBOXES
-            edgeCollider.points = defaultEnemyMovementEdgeColliderPoints;
+            // HITBOXES
+            // if a flying enemy, disabled movement hitboxes and pathfinding components
+            if (battleCharacterScript.isFlyer)
+            {
+                enemyAILerp.enabled = false;
+                enemyAIDestinationSetter.enabled = false;
+                edgeCollider.enabled = false;
+            }
+            else
+                edgeCollider.points = defaultEnemyMovementEdgeColliderPoints;
             defensiveCombatHitbox.size = defaultEnemyCombatHitboxDimensions;
             defensiveCombatHitbox.gameObject.layer = GameManager.layermaskToLayer(enemyCombatHitboxLayer);
             offensiveCombatHitbox.size = defaultEnemyCombatHitboxDimensions;

@@ -112,6 +112,10 @@ MonoBehaviour:
   toolThisWasCreatedFrom: {fileID: 0}
   prefabToSpawn: {fileID: 0}
   prefabBattleColliderInstructionOnSelfDestroy: {fileID: 0}
+  spawnsFireOnSelfDestroy: 0
+  fireGridCount: 0
+  fireGridSpacialSize: 0
+  collidedBattleObjects: []
 --- !u!212 &212429110611638610
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -145,7 +149,7 @@ SpriteRenderer:
   m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: c6fd395a94efc664aaf22772ba280f37, type: 3}
-  m_Color: {r: 1, g: 0, b: 0, a: 0.928}
+  m_Color: {r: 1, g: 0, b: 0, a: 0.491}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0

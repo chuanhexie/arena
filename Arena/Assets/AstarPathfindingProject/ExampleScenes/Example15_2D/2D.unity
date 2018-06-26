@@ -917,11 +917,14 @@ MonoBehaviour:
     type: 2}
   baseTimeToSpawnEnemy: 3
   enemyModelsToSpawn:
-  - {fileID: 1156973871}
+  - {fileID: 2126041046}
+  - {fileID: 2126041046}
   - {fileID: 1156973871}
   - {fileID: 453005593}
   - {fileID: 1156973871}
+  - {fileID: 2126041046}
   - {fileID: 1156973871}
+  - {fileID: 453005593}
   player: {fileID: 0}
   playerLeftTool: {fileID: 0}
   playerRightTool: {fileID: 0}
@@ -1983,8 +1986,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sprite: {fileID: 21300000, guid: ae5aa8b7075532c47bc61c2376a77910, type: 3}
-  maxHP: 30
-  walkSpeed: 0.4
+  maxHP: 35
+  walkSpeed: 1.2
   isFlyer: 0
   rangedAttackBCI: {fileID: 0}
   rangedAttackWindupTime: 0
@@ -3087,6 +3090,55 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6a4b45fa28855fa4db1288b4fac29203, type: 2}
   m_IsPrefabParent: 0
+--- !u!1 &2126041046
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 2126041047}
+  - component: {fileID: 2126041048}
+  m_Layer: 0
+  m_Name: EnemyInsect
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2126041047
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2126041046}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 2146289559}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2126041048
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2126041046}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19dcff7023309f9439297d27eae83a11, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sprite: {fileID: 21300000, guid: 5e3d2d8488b7e0b4c89d763dbb13818d, type: 3}
+  maxHP: 25
+  walkSpeed: 0.6
+  isFlyer: 1
+  rangedAttackBCI: {fileID: 0}
+  rangedAttackWindupTime: 0
+  rangedAttackDamage: 0
+  aiMovementBehavior: 0
+  aiFiringBehavior: 0
 --- !u!1 &2146289558
 GameObject:
   m_ObjectHideFlags: 0
@@ -3114,6 +3166,7 @@ Transform:
   m_Children:
   - {fileID: 1156973872}
   - {fileID: 453005594}
+  - {fileID: 2126041047}
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
