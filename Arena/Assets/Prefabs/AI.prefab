@@ -44,6 +44,7 @@ GameObject:
   - component: {fileID: 68945694687385954}
   - component: {fileID: 114512325816210410}
   - component: {fileID: 114757616653543388}
+  - component: {fileID: 114598170922090532}
   m_Layer: 8
   m_Name: AI
   m_TagString: Untagged
@@ -248,10 +249,34 @@ MonoBehaviour:
   sprite: {fileID: 0}
   walkSpeed: 0
   runSpeed: 0
+  isFlyer: 0
   remainingStunTime: 0
+  basePoisonPoints: 0
   poisonDamageFrequency: 0
-  poisonNextDamageCountdown: 0
+  curPoisonDamageCountdown: 0
+  meleeTowardsPlayerCooldown: 0
+  enemyModel: {fileID: 0}
   knockbackMovementDisabledCountdown: 0
+--- !u!114 &114598170922090532
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1404594924559292}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19dcff7023309f9439297d27eae83a11, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sprite: {fileID: 0}
+  maxHP: 0
+  walkSpeed: 0
+  isFlyer: 0
+  rangedAttackBCI: {fileID: 0}
+  rangedAttackWindupTime: 0
+  rangedAttackDamage: 0
+  aiMovementBehavior: 0
+  aiFiringBehavior: 0
 --- !u!114 &114724716664098964
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -349,4 +374,4 @@ SpriteRenderer:
   m_Size: {x: 1.81, y: 1.81}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0

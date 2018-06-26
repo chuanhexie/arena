@@ -14,6 +14,7 @@ namespace Arena
         public Sprite sprite;
         public float walkSpeed;
         public float runSpeed;
+        public bool isFlyer;
 
         [Header("Status Ailments")]
         public float remainingStunTime;
@@ -24,7 +25,8 @@ namespace Arena
         [Header("Relationship to Player")]
         public float meleeTowardsPlayerCooldown;
 
-        [Header("AI")]
+        [Header("AI / Enemy")]
+        public EnemyModel enemyModel;
         public float knockbackMovementDisabledCountdown;
 
     	// Use this for initialization

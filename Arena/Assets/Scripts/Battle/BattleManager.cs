@@ -71,7 +71,7 @@ namespace Arena
 
         [Header("Default Spawning")]
         public float baseTimeToSpawnEnemy;
-        public int amountOfEnemiesToSpawn;
+        public List<GameObject> enemyModelsToSpawn;
 
         [Space(10)]
 
@@ -186,7 +186,7 @@ namespace Arena
 
 
             // IF THE MAX AMOUNT OF ENEMIES TO SPAWN HAS NOT BEEN REACHED, CHECK IF ENEMIES SHOULD BE SPAWNED
-            if (amountOfEnemiesToSpawn > 0)
+            if (enemyModelsToSpawn.Count() > 0)
                 AdvanceEnemySpawners();
             else
                 UIManager.singleton.ActivateCurrentClockArrow(true);
@@ -388,23 +388,22 @@ namespace Arena
             }
         }
 
-        public void InitBattleCharacter(bool isPlayer, Vector2 spawnLocation)
+        public void InitBattleCharacter(bool _isPlayer, Vector2 _spawnLocation, EnemyModel _enemyModel = null)
         {
             var characterGameObject = Instantiate(prefabBattleCharacter);
             battleObjects.Add(characterGameObject);
-            var characterScript = characterGameObject.GetComponent<BattleCharacter>();
-            var characterAILerp = characterGameObject.GetComponent<AILerp>();
-            var characterAIDestinationSetter = characterGameObject.GetComponent<AIDestinationSetter>();
-            var characterSpriteRenderer = characterGameObject.GetComponent<SpriteRenderer>();
-            var battleObjectScript = characterGameObject.GetComponent<BattleObject>();
-            var edgeCollider = characterGameObject.GetComponent<EdgeCollider2D>();
-            var defensiveCombatHitbox = battleObjectScript.defensiveCombatHitbox.GetComponent<BoxCollider2D>();
-            var offensiveCombatHitbox = battleObjectScript.offensiveCombatHitbox.GetComponent<BoxCollider2D>();
 
-            characterGameObject.GetComponent<Rigidbody2D>().freezeRotation = true;
-
-            if (isPlayer == true)
+            if (_isPlayer == true)
             {
+                var characterScript = characterGameObject.GetComponent<BattleCharacter>();
+                var characterAILerp = characterGameObject.GetComponent<AILerp>();
+                var characterAIDestinationSetter = characterGameObject.GetComponent<AIDestinationSetter>();
+                var characterSpriteRenderer = characterGameObject.GetComponent<SpriteRenderer>();
+                var battleObjectScript = characterGameObject.GetComponent<BattleObject>();
+                var edgeCollider = characterGameObject.GetComponent<EdgeCollider2D>();
+                var defensiveCombatHitbox = battleObjectScript.defensiveCombatHitbox.GetComponent<BoxCollider2D>();
+                var offensiveCombatHitbox = battleObjectScript.offensiveCombatHitbox.GetComponent<BoxCollider2D>();
+
                 characterGameObject.name = "Player";
                 characterScript.isPlayer = true;
                 battleObjectScript.isPlayer = true;
@@ -431,25 +430,14 @@ namespace Arena
                 defensiveCombatHitbox.size = playerCombatHitboxDimensions;
                 defensiveCombatHitbox.gameObject.layer = GameManager.layermaskToLayer(playerCombatHitboxLayer);
                 offensiveCombatHitbox.gameObject.SetActive(false);
+
+                battleObjectScript.curHP = battleObjectScript.maxHP;
             }
             else
-            {
-                characterAILerp.speed = tempEnemySpeed;
-                characterAIDestinationSetter.target = player.transform;
-                characterSpriteRenderer.sprite = enemySprite;
-                UIManager.singleton.InitBattleObjectStatsDisplay(characterGameObject);
+                InitEnemy(characterGameObject, _enemyModel);
 
-                //HITBOXES
-                edgeCollider.points = defaultEnemyMovementEdgeColliderPoints;
-                defensiveCombatHitbox.size = defaultEnemyCombatHitboxDimensions;
-                defensiveCombatHitbox.gameObject.layer = GameManager.layermaskToLayer(enemyCombatHitboxLayer);
-                offensiveCombatHitbox.size = defaultEnemyCombatHitboxDimensions;
-                offensiveCombatHitbox.gameObject.layer = GameManager.layermaskToLayer(playerCombatHitboxLayer);
-            }
-
-            battleObjectScript.curHP = battleObjectScript.maxHP;
-
-            characterGameObject.transform.position = spawnLocation;
+            characterGameObject.GetComponent<Rigidbody2D>().freezeRotation = true;
+            characterGameObject.transform.position = _spawnLocation;
         }
 
         public void UseTool(GameObject toolGameObject)
@@ -546,8 +534,13 @@ namespace Arena
             if (enemySpawnCountdown >= baseTimeToSpawnEnemy)
             {
                 GameObject spawnerTile = enemySpawnerTiles[enemySpawnerTileIndex];
-                InitBattleCharacter(false, spawnerTile.transform.position);
-                amountOfEnemiesToSpawn -= 1;
+
+                // spawn enemy and remove from spawn list
+                InitBattleCharacter(
+                    false,
+                    spawnerTile.transform.position,
+                    enemyModelsToSpawn[0].GetComponent<EnemyModel>());
+                enemyModelsToSpawn.RemoveAt(0);
 
                 enemySpawnerTileIndex += 1;
                 if (enemySpawnerTileIndex > enemySpawnerTiles.Count() - 1)
@@ -899,5 +892,56 @@ namespace Arena
             battleColliders.RemoveAt(battleColliderIndex);
             Destroy(_curBattleColliderScript.gameObject);
         }
+
+        public void InitEnemy(GameObject _battleCharacter, EnemyModel _enemyModel)
+        {
+            var BCEnemyModelScript = _battleCharacter.GetComponent<EnemyModel>();
+            var battleCharacterScript = _battleCharacter.GetComponent<BattleCharacter>();
+            var battleObjectScript = _battleCharacter.GetComponent<BattleObject>();
+            var enemyAILerp = _battleCharacter.GetComponent<AILerp>();
+            var enemyAIDestinationSetter = _battleCharacter.GetComponent<AIDestinationSetter>();
+            var enemySpriteRenderer = _battleCharacter.GetComponent<SpriteRenderer>();
+            var edgeCollider = _battleCharacter.GetComponent<EdgeCollider2D>();
+            var defensiveCombatHitbox = battleObjectScript.defensiveCombatHitbox.GetComponent<BoxCollider2D>();
+            var offensiveCombatHitbox = battleObjectScript.offensiveCombatHitbox.GetComponent<BoxCollider2D>();
+
+            // ALTER MODELS (for possible future reference)
+            battleCharacterScript.sprite = _enemyModel.sprite;
+            battleCharacterScript.walkSpeed = _enemyModel.walkSpeed;
+            battleCharacterScript.isFlyer = _enemyModel.isFlyer;
+
+            battleObjectScript.maxHP = _enemyModel.maxHP;
+            battleObjectScript.curHP = battleObjectScript.maxHP;
+
+            BCEnemyModelScript.rangedAttackBCI = _enemyModel.rangedAttackBCI;
+            BCEnemyModelScript.rangedAttackWindupTime = _enemyModel.rangedAttackWindupTime;
+            BCEnemyModelScript.rangedAttackDamage = _enemyModel.rangedAttackDamage;
+            BCEnemyModelScript.aiFiringBehavior = _enemyModel.aiFiringBehavior;
+
+            // DIRECTLY ALTER STATS
+            enemyAILerp.speed = _enemyModel.walkSpeed;
+            enemyAIDestinationSetter.target = player.transform;
+            enemySpriteRenderer.sprite = _enemyModel.sprite;
+
+            // UI
+            UIManager.singleton.InitBattleObjectStatsDisplay(_battleCharacter);
+
+            //HITBOXES
+            edgeCollider.points = defaultEnemyMovementEdgeColliderPoints;
+            defensiveCombatHitbox.size = defaultEnemyCombatHitboxDimensions;
+            defensiveCombatHitbox.gameObject.layer = GameManager.layermaskToLayer(enemyCombatHitboxLayer);
+            offensiveCombatHitbox.size = defaultEnemyCombatHitboxDimensions;
+            offensiveCombatHitbox.gameObject.layer = GameManager.layermaskToLayer(playerCombatHitboxLayer);
+        }
+    }
+
+    public enum AIMovementBehavior
+    {
+        directAgressive,agressiveDefense
+    }
+
+    public enum AIFiringBehavior
+    {
+        none,alwaysFiring,fireOnSight
     }
 }

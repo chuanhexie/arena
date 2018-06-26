@@ -201,7 +201,7 @@ namespace Arena
             var battleManager = BattleManager.singleton;
 
             enemySpawnCountdownText.GetComponent<Text>().text = battleManager.enemySpawnCountdown.ToString("0.00");
-            remainingEnemiesCount.GetComponent<Text>().text = battleManager.amountOfEnemiesToSpawn.ToString();
+            remainingEnemiesCount.GetComponent<Text>().text = battleManager.enemyModelsToSpawn.Count().ToString();
             staminaText.GetComponent<Text>().text = battleManager.curStamina.ToString("0.00");
             manaText.GetComponent<Text>().text = battleManager.curMana.ToString("0.00");
             healthText.GetComponent<Text>().text = battleManager.GetPlayer().GetComponent<BattleObject>().curHP.ToString("0.00");
