@@ -16,11 +16,15 @@ namespace Arena
         [Header("Ranged Attacks")]
         public BattleColliderInstruction rangedAttackBCI;
         public float rangedAttackWindupTime;
+        public float rangedAttackCurWindupTimeRem;
+        public bool isWindingUpRangedAttack;
         public float rangedAttackDamage;
 
         [Header("Behaviors")]
         public AIMovementBehavior aiMovementBehavior;
         public AIFiringBehavior aiFiringBehavior;
 
+        [Header("Agressive Defense")]
+        public float agressiveDefenseDistance;
     }
 }

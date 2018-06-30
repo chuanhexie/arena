@@ -60,6 +60,7 @@ namespace Arena
         public float tempEnemySpeed;
         public float defaultEnemyDamage = 1;
         public float defaultMeleeTowardsPlayerCooldownTime;
+        public LayerMask defaultEnemyAttackLayermask;
 
         [Header("Default Hitboxes")]
         public Vector2[] defaultEnemyMovementEdgeColliderPoints;
@@ -219,6 +220,7 @@ namespace Arena
             for (var i = battleObjects.Count - 1; i > -1; i--)
             {
                 var curBattleObjectGameObject = battleObjects[i];
+                var curBattleObjectTransform = curBattleObjectGameObject.transform;
                 var curBattleObjectScript = curBattleObjectGameObject.GetComponent<BattleObject>();
                 var battleObjectStatsDisplay = UIManager.singleton.GetStatsDisplayByBattleObject(curBattleObjectGameObject);
                 var battleObjectDefensiveHitbox = curBattleObjectScript.defensiveCombatHitbox.GetComponent<BoxCollider2D>();
@@ -249,22 +251,75 @@ namespace Arena
                     else
                         curBattleCharacterScript.knockbackMovementDisabledCountdown = 0;
 
-                    // ALLOW AI TO MOVE AGAIN IF THEY FIT CRITERIA
+                    // ALLOW BATTLE CHARACTER TO MOVE AGAIN IF THEY FIT CRITERIA (ENEMY LOGIC)
                     if (curBattleCharacterScript.remainingStunTime <= 0 && curBattleCharacterScript.knockbackMovementDisabledCountdown <= 0)
                     {
-                        // ---------- FLYING-MOVEMENT-LOGIC START -------------
-                        if (curBattleCharacterScript.isFlyer)
+                        // --------------------- ENEMY-AI-LOGIC START ------------------------------
+                        var enemyModelScript = curBattleObjectGameObject.GetComponent<EnemyModel>();
+                        if (!curBattleCharacterScript.isPlayer && enemyModelScript != null && enemyModelScript.enabled)
                         {
-                            var curBattleObjectRigidbody = curBattleObjectGameObject.GetComponent<Rigidbody2D>();
-                            if (curBattleObjectRigidbody != null)
-                                curBattleObjectRigidbody.position = Vector2.MoveTowards(
-                                    curBattleObjectGameObject.transform.position,
-                                    player.transform.position,
-                                    curBattleCharacterScript.walkSpeed * Time.deltaTime);
+                            var isCurTargetInLineOfSight = false;
+                            var curDistanceFromPlayer = Vector2.Distance(curBattleObjectTransform.position, player.transform.position);
+                            var withinAgressiveDefenseArea = false;
+
+                            // check if player is in line of sight for various reasons (not checked every time for efficiency)
+                            if (enemyModelScript.aiMovementBehavior == AIMovementBehavior.agressiveDefense
+                                || enemyModelScript.aiFiringBehavior != AIFiringBehavior.none)
+                            {
+                                isCurTargetInLineOfSight = IsTargetInLineOfSight(
+                                    curBattleObjectGameObject,
+                                    player,
+                                    defaultEnemyAttackLayermask);
+                            }
+                                
+                            // stop an agressive defense enemy movement if they are close enough to the player and can get a shot at them
+                            if (enemyModelScript.aiMovementBehavior == AIMovementBehavior.agressiveDefense
+                                && curDistanceFromPlayer <= enemyModelScript.agressiveDefenseDistance
+                                && isCurTargetInLineOfSight)
+                                withinAgressiveDefenseArea = true;
+
+                            // ---------- ALLOWING-ENEMY-MOVEMENT-LOGIC START ----------------- 
+                            // ---------- FLYING-MOVEMENT-LOGIC START -------------
+                            if (curBattleCharacterScript.isFlyer && !withinAgressiveDefenseArea)
+                            {
+                                var curBattleObjectRigidbody = curBattleObjectGameObject.GetComponent<Rigidbody2D>();
+                                if (curBattleObjectRigidbody != null)
+                                    curBattleObjectRigidbody.position = Vector2.MoveTowards(
+                                        curBattleObjectTransform.position,
+                                        player.transform.position,
+                                        curBattleCharacterScript.walkSpeed * Time.deltaTime);
+                            }
+                            // ---------- FLYING-MOVEMENT-LOGIC END ---------------
+                            else
+                            {
+                                if (!withinAgressiveDefenseArea)
+                                    curBattleObjectGameObject.GetComponent<AILerp>().canMove = true;
+                                else
+                                    curBattleObjectGameObject.GetComponent<AILerp>().canMove = false;
+                            }
+                            // ---------- ALLOWING-ENEMY-MOVEMENT-LOGIC END -----------------
+
+
+                            // ---------- ENEMY-FIRING-BEHAVIOR-LOGIC START ----------------- 
+                            var enemyRangedAttackBCI = enemyModelScript.rangedAttackBCI;
+                            if (enemyRangedAttackBCI != null)
+                            {
+                                var enemyRangedAttackBCIScript = enemyRangedAttackBCI.GetComponent<BattleColliderInstruction>();
+
+                                if (enemyModelScript.aiFiringBehavior == AIFiringBehavior.fireOnSight)
+                                {
+                                    if (!enemyModelScript.isWindingUpRangedAttack)
+                                    {
+                                        if (isCurTargetInLineOfSight)   // function below will update ranged attack, but will also init it
+                                            HandleEnemyRangedAttack(enemyModelScript, curBattleObjectTransform.position, enemyRangedAttackBCIScript);
+                                    }
+                                    else
+                                        HandleEnemyRangedAttack(enemyModelScript, curBattleObjectTransform.position, enemyRangedAttackBCIScript);
+                                }
+                            }
+                            // ---------- ENEMY-FIRING-BEHAVIOR-LOGIC START ----------------- 
                         }
-                        // ---------- FLYING-MOVEMENT-LOGIC END ---------------
-                        else
-                            curBattleObjectGameObject.GetComponent<AILerp>().canMove = true;
+                        // --------------------- ENEMY-AI-LOGIC END ------------------------------
                     }
                     // ----------- STUN-LOGIC END -----------
 
@@ -283,9 +338,6 @@ namespace Arena
                         curBattleCharacterScript.curPoisonDamageCountdown = curBattleCharacterScript.poisonDamageFrequency;
                     }
                     // ---------- POISON-LOGIC END ---------------
-
-
-
 
 
                     // ----------- ENEMY-TO-PLAYER-DAMAGE START ----------------
@@ -311,7 +363,7 @@ namespace Arena
                         battleObjectDefensiveHitbox.bounds.Intersects(curBattleColliderGO.GetComponent<BoxCollider2D>().bounds))
                     {
                         HandleAttackCompletion(
-                            curBattleObjectGameObject.transform,
+                            curBattleObjectTransform,
                             curBattleColliderGO.transform.position,
                             curBattleColliderScript.combatStats,
                             curBattleColliderScript.toolThisWasCreatedFrom);
@@ -468,55 +520,16 @@ namespace Arena
                 Vector2 positionToSpawnBattleCollider = playerDirectionalAim.transform.position;
                 if (battleColliderInstructionsScript.usesAltAimReticule)
                     positionToSpawnBattleCollider = playerTopDownAim.transform.position;
-
-                Vector2 forward = playerDirectionalAim.transform.up;
                 float aimCenterAngle = playerDirectionalAim.transform.eulerAngles.z + 90;
 
-                if (battleColliderInstructionsScript.isRaycast)
-                {
-                    int raycastsToCreateCount = battleColliderInstructionsScript.raycastCount;
-                    if (raycastsToCreateCount <= 0)
-                        raycastsToCreateCount = 1;
-
-                    float curRaycastAngle = aimCenterAngle - (battleColliderInstructionsScript.multiRaycastSpreadAngle / 2);
-
-                    for (var i = 0; i < raycastsToCreateCount; i++)
-                    {
-                        // RAYCAST
-                        RaycastHit2D hit = Physics2D.Raycast(
-                                               positionToSpawnBattleCollider,
-                                               GameManager.radianToDirection(curRaycastAngle, true),
-                                               battleColliderInstructionsScript.raycastLength,
-                                               battleColliderInstructionsScript.layerMask);
-                        Vector2 raycastEndLocation = hit.point;
-                        if (hit.collider == null)
-                            raycastEndLocation = positionToSpawnBattleCollider +
-                                (GameManager.radianToDirection(curRaycastAngle, true) * battleColliderInstructionsScript.raycastLength);
-
-                        // RENDER RAYCAST LINE
-                        var lineRenderer = Instantiate(prefabLineRenderer);
-                        var lineRendererScript = lineRenderer.GetComponent<LineRenderer>();
-                        UIManager.singleton.customLineRenderers.Add(lineRenderer);
-                        Vector3[] positions = new Vector3[]
-                        { 
-                            new Vector3(positionToSpawnBattleCollider.x, positionToSpawnBattleCollider.y, -2),
-                            new Vector3(raycastEndLocation.x, raycastEndLocation.y, -2)
-                        };
-                        lineRendererScript.SetPositions(positions);
-
-                        // PERFORM HIT LOGIC WHETHER A HIT RETURNS AN OBJECT OR NOT (AS LONG AS THE COLLIDER DOESN'T INEXPLICABLY EQUAL NULL)
-                        if (hit.collider != null)
-                            HandleAttackCompletion(hit.collider.transform.parent, hit.point, combatStatsScript, toolScript);
-                        SpawnFires(raycastEndLocation, combatStatsScript, toolScript);
-
-                        // ADVANCE RAYCAST SPAWN ANGLE FOR MULTIPLE RAYCAST SPAWN
-                        curRaycastAngle += (battleColliderInstructionsScript.multiRaycastSpreadAngle / (battleColliderInstructionsScript.raycastCount - 1));
-                    }
-                }
-                else
-                {
-                    InitHitbox(battleColliderInstructionsScript, positionToSpawnBattleCollider, forward, toolScript);
-                }
+                InitBattleColliderInstruction(
+                    battleColliderInstructionsScript,
+                    positionToSpawnBattleCollider,
+                    GameManager.radianToDirection(aimCenterAngle, true),
+                    aimCenterAngle,
+                    combatStatsScript,
+                    toolScript
+                );
 
                 // EXPEND AMMO IF APPLICABLE
                 if (toolScript.isReloadTool)
@@ -878,8 +891,11 @@ namespace Arena
 
             battleColliderScript.curDirection = _spawnDirection;
 
-            battleColliderScript.combatStats = _usedToolScript.combatStats.GetComponent<CombatStats>();
-            battleColliderScript.toolThisWasCreatedFrom = _usedToolScript;
+            if (_usedToolScript != null)
+            {
+                battleColliderScript.combatStats = _usedToolScript.combatStats.GetComponent<CombatStats>();
+                battleColliderScript.toolThisWasCreatedFrom = _usedToolScript;
+            }
 
             //battleColliderGameObject.layer = GameManager.layermaskToLayer(battleColliderInstructionsScript.layerMask);
         }
@@ -932,6 +948,8 @@ namespace Arena
             BCEnemyModelScript.rangedAttackWindupTime = _enemyModel.rangedAttackWindupTime;
             BCEnemyModelScript.rangedAttackDamage = _enemyModel.rangedAttackDamage;
             BCEnemyModelScript.aiFiringBehavior = _enemyModel.aiFiringBehavior;
+            BCEnemyModelScript.aiMovementBehavior = _enemyModel.aiMovementBehavior;
+            BCEnemyModelScript.agressiveDefenseDistance = _enemyModel.agressiveDefenseDistance;
 
             // DIRECTLY ALTER STATS
             enemyAILerp.speed = _enemyModel.walkSpeed;
@@ -955,6 +973,129 @@ namespace Arena
             defensiveCombatHitbox.gameObject.layer = GameManager.layermaskToLayer(enemyCombatHitboxLayer);
             offensiveCombatHitbox.size = defaultEnemyCombatHitboxDimensions;
             offensiveCombatHitbox.gameObject.layer = GameManager.layermaskToLayer(playerCombatHitboxLayer);
+        }
+
+        public void InitBattleColliderInstruction(
+            BattleColliderInstruction _battleColliderInstructionScript,
+            Vector2 _spawnPosition,
+            Vector2 _spawnDirection,
+            float _optionalSpawnDirectionAngle = 0,
+            CombatStats _usedCombatStatsScript = null,
+            Tool _usedToolScript = null)
+        {
+            if (_battleColliderInstructionScript.isRaycast)
+            {
+                int raycastsToCreateCount = _battleColliderInstructionScript.raycastCount;
+                if (raycastsToCreateCount <= 0)
+                    raycastsToCreateCount = 1;
+
+                float curMultiRaycastAngle = 0;
+                if (raycastsToCreateCount > 1)
+                    curMultiRaycastAngle = _optionalSpawnDirectionAngle - (_battleColliderInstructionScript.multiRaycastSpreadAngle / 2);
+
+                Vector2 curRaycastSpawnDirection = _spawnDirection;
+
+                for (var i = 0; i < raycastsToCreateCount; i++)
+                {
+                    // if spawning multiple raycasts, generate spawn direction from changing spawn angle (reassigned at bottom of loop)
+                    curRaycastSpawnDirection = _spawnDirection;
+                    if (raycastsToCreateCount > 1)
+                        curRaycastSpawnDirection = GameManager.radianToDirection(curMultiRaycastAngle, true);
+
+                    // RAYCAST
+                    RaycastHit2D hit = Physics2D.Raycast(
+                        _spawnPosition,
+                        curRaycastSpawnDirection,
+                        _battleColliderInstructionScript.raycastLength,
+                        _battleColliderInstructionScript.layerMask);
+                    Vector2 raycastEndLocation = hit.point;
+                    if (hit.collider == null)
+                        raycastEndLocation = _spawnPosition +
+                            (curRaycastSpawnDirection * _battleColliderInstructionScript.raycastLength);
+
+                    // RENDER RAYCAST LINE
+                    var lineRenderer = Instantiate(prefabLineRenderer);
+                    var lineRendererScript = lineRenderer.GetComponent<LineRenderer>();
+                    UIManager.singleton.customLineRenderers.Add(lineRenderer);
+                    Vector3[] positions = new Vector3[]
+                        { 
+                            new Vector3(_spawnPosition.x, _spawnPosition.y, -2),
+                            new Vector3(raycastEndLocation.x, raycastEndLocation.y, -2)
+                        };
+                    lineRendererScript.SetPositions(positions);
+
+                    // PERFORM HIT LOGIC WHETHER A HIT RETURNS AN OBJECT OR NOT (AS LONG AS THE COLLIDER DOESN'T INEXPLICABLY EQUAL NULL)
+                    if (hit.collider != null)
+                        HandleAttackCompletion(hit.collider.transform.parent, hit.point, _usedCombatStatsScript, _usedToolScript);
+
+                    // SPAWN FIRE WHETHER ATTACK HITS OR NOT
+                    if (_usedCombatStatsScript != null && _usedToolScript != null)
+                        SpawnFires(raycastEndLocation, _usedCombatStatsScript, _usedToolScript);
+
+                    // ADVANCE MULTI RAYCAST SPAWN ANGLE FOR MULTIPLE RAYCAST SPAWN
+                    curMultiRaycastAngle += (_battleColliderInstructionScript.multiRaycastSpreadAngle / (_battleColliderInstructionScript.raycastCount - 1));
+                }
+            }
+            else
+            {
+                InitHitbox(
+                    _battleColliderInstructionScript,
+                    _spawnPosition,
+                    _spawnDirection,
+                    _usedToolScript);
+//                InitHitbox(_battleColliderInstructionScript, _spawnPosition, forward, _usedToolScript);
+            }
+        }
+
+        public bool IsTargetInLineOfSight (GameObject _sourceGO, GameObject _targetGO, LayerMask _layerMask)
+        {
+            Vector2 sourceTransformPosition = _sourceGO.transform.position;
+            var targetTransform = _targetGO.transform;
+            Vector2 directionTowardsTarget = GameManager.getDirectionTowardsPosition(sourceTransformPosition, targetTransform.position);
+
+            RaycastHit2D hit = Physics2D.Raycast(
+                sourceTransformPosition + (directionTowardsTarget * 0.8f),
+                directionTowardsTarget,
+                300,
+                _layerMask);
+
+            var output = false;
+            if (hit.collider != null)
+            {
+                if (hit.collider.transform.parent.gameObject != null)
+                    output = hit.collider.transform.parent.gameObject == _targetGO;
+            }
+            return output;
+        }
+
+        public void HandleEnemyRangedAttack(EnemyModel _enemyModelScript, Vector2 _enemyPosition, BattleColliderInstruction _rangedBCIScript)
+        {
+            if (_enemyModelScript.isWindingUpRangedAttack)
+            {
+                if (_enemyModelScript.rangedAttackCurWindupTimeRem <= 0)
+                {
+                    _enemyModelScript.isWindingUpRangedAttack = false;
+
+                    var curDir = GameManager.getDirectionTowardsPosition(_enemyPosition, player.transform.position);
+                    Vector2 curPos = _enemyPosition; 
+
+                    InitBattleColliderInstruction(
+                        _rangedBCIScript,
+                        curPos + (curDir * _rangedBCIScript.forwardDistanceToSpawn),
+                        curDir);
+                }
+                else
+                {
+                    _enemyModelScript.rangedAttackCurWindupTimeRem -= Time.deltaTime;
+                    if (_enemyModelScript.rangedAttackCurWindupTimeRem < 0)
+                        _enemyModelScript.rangedAttackCurWindupTimeRem = 0;
+                }
+            }
+            else
+            {
+                _enemyModelScript.isWindingUpRangedAttack = true;
+                _enemyModelScript.rangedAttackCurWindupTimeRem = _enemyModelScript.rangedAttackWindupTime;
+            }
         }
     }
 

@@ -250,6 +250,17 @@ namespace Arena
             return new Vector2((float)Mathf.Cos(_input), (float)Mathf.Sin(_input));
         }
 
+        public static float directionVectorToAngle (Vector2 _direction)
+        {
+            float output = Mathf.Atan(_direction.y/_direction.x);
+            if (_direction.x < 0)
+                output *= -1;
+            if (_direction.y < 0)
+                output += 180;
+
+            return output;
+        }
+
         public static int layermaskToLayer(LayerMask _layerMask)
         {
             int layerNumber = 0;
@@ -259,6 +270,12 @@ namespace Arena
                 layerNumber++;
             }
             return layerNumber - 1;
+        }
+
+        public static Vector2 getDirectionTowardsPosition(Vector2 _sourceGO, Vector2 _targetGO)
+        {
+            Vector2 dir = (_targetGO - _sourceGO).normalized;
+            return dir;
         }
     }
 }
