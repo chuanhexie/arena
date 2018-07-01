@@ -12,5 +12,8 @@ namespace Arena
         [Header("Child Plugins")]
         public GameObject gateGraphicObject;
         public GameObject enemyGraphicObject;
+
+        [Header("References")]
+        public GameObject linkedSpawner;
     }
 }

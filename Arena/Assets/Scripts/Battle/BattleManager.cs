@@ -568,7 +568,26 @@ namespace Arena
                     false,
                     spawnerTile.transform.position,
                     enemyModelsToSpawn[0].GetComponent<EnemyModel>());
+
                 enemyModelsToSpawn.RemoveAt(0);
+
+                // update enemy graphic in spawner gate
+                var curSpawnerGates = UIManager.singleton.curSpawnerGateSystem.GetComponent<SpawnerGateSystem>().spawnerGates;;
+                var curSpawnerGate = curSpawnerGates[enemySpawnerTileIndex];
+                if (curSpawnerGate != null)
+                {
+                    if (enemyModelsToSpawn.Count() >= enemySpawnerTiles.Count())
+                    {
+                        var nextEnemyModelIndex = enemySpawnerTiles.Count() - 1;
+                        if (nextEnemyModelIndex > enemyModelsToSpawn.Count() - 1)
+                            nextEnemyModelIndex = enemyModelsToSpawn.Count() - 1;
+                        UIManager.singleton.UpdateSpawnerGateEnemy(true, curSpawnerGate, enemyModelsToSpawn[nextEnemyModelIndex]);
+                    }
+                    else
+                        UIManager.singleton.UpdateSpawnerGateEnemy(false, curSpawnerGate);
+                }
+                else
+                    Debug.Log("A spawner gate had no linked spawner tile when trying to update its visuals.");
 
                 enemySpawnerTileIndex += 1;
                 if (enemySpawnerTileIndex > enemySpawnerTiles.Count() - 1)

@@ -921,7 +921,7 @@ MonoBehaviour:
     m_Bits: 8192
   physicsMaterialDefaultBattleCollider: {fileID: 6200000, guid: c77386f178582b846b5b850575e75452,
     type: 2}
-  baseTimeToSpawnEnemy: 7
+  baseTimeToSpawnEnemy: 3
   enemyModelsToSpawn:
   - {fileID: 1156973871}
   - {fileID: 1359144433}

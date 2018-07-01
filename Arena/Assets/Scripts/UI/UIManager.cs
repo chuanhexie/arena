@@ -428,6 +428,8 @@ namespace Arena
 
                 newSpawnerGateScript.enemyGraphicObject.transform.rotation = Quaternion.Euler(0, 0, 0);
 
+                newSpawnerGateScript.linkedSpawner = curSpawnerGameObject;
+
                 newSpawnerGateSystemScript.spawnerGates.Add(newSpawnerGateGameObject);
                 newSpawnerGateGameObject.transform.SetParent(newSpawnerGateSystemGameObject.transform);
 
@@ -464,6 +466,17 @@ namespace Arena
                 isCurSpawnerGateHor);
 
             curSpawnerGateSystem = newSpawnerGateSystemGameObject;
+            var curSpawnerGateSystemScript = curSpawnerGateSystem.GetComponent<SpawnerGateSystem>();
+
+            // move first list item to the end, to fix the gate order due to the out of order way they needed to be constructed to order the arrows properly
+            var tempFirstSpawnerGate = curSpawnerGateSystemScript.spawnerGates[0];
+            curSpawnerGateSystemScript.spawnerGates.RemoveAt(0);
+            curSpawnerGateSystemScript.spawnerGates.Add(tempFirstSpawnerGate);
+
+            // update gate enemy graphics
+            var battleEnemyLineup = BattleManager.singleton.enemyModelsToSpawn;
+            for (var i = 0; i < spawnersInGrid.Count(); i++)
+                UpdateSpawnerGateEnemy(true, curSpawnerGateSystemScript.spawnerGates[i], battleEnemyLineup[i]);
         }
 
         public void AddClockArrowsToOneSideOfGate(GameObject spawnerGateSystemGameObject, GameObject parentSpawnerGateGameObject, bool addOnLeft, bool isHorEdge)
@@ -528,6 +541,20 @@ namespace Arena
             topDownAimBoundaryTransform.transform.localPosition = Vector2.zero;
             topDownAimBoundary = newTopDownAimBoundary;
             topDownAimBoundary.SetActive(false);
+        }
+
+        public void UpdateSpawnerGateEnemy(bool isNewEnemy, GameObject _curSpawnerGate, GameObject _enemyModel = null)
+        {
+            var curSpawnerGateScript = _curSpawnerGate.GetComponent<SpawnerGate>();
+
+            if (isNewEnemy)
+            {
+                Sprite enemySprite = _enemyModel.GetComponent<EnemyModel>().sprite;
+                curSpawnerGateScript.enemyGraphicObject.GetComponent<SpriteRenderer>().sprite = enemySprite;
+                curSpawnerGateScript.enemyGraphicObject.transform.rotation = Quaternion.Euler(0, 0, 0);
+            }
+            else
+                curSpawnerGateScript.enemyGraphicObject.GetComponent<SpriteRenderer>().sprite = null;
         }
     }
 
