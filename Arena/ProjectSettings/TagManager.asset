@@ -16,15 +16,15 @@ TagManager:
   - UI
   - 
   - 
-  - Player
-  - Debug
-  - CombatHitbox
-  - RaycastHitbox
+  - GroundedMovement
+  - FlyingMovement
+  - ObjectCombat
+  - WholeObstacles
+  - PartialObstacles
+  - Invincible
+  - Projectiles
+  - OuterBarrier
   - PlayerCombat
-  - EnemyCombat
-  - NeutralCombat
-  - 
-  - 
   - 
   - 
   - 

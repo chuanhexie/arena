@@ -145,24 +145,27 @@ namespace Arena
 
         public void InitBattleObjectStatsDisplay(GameObject battleObject)
         {
-            var battleObjectStatsDisplay = Instantiate(prefabBattleObjectStatsDisplay);
-            var battleObjectStatsDisplayScript = battleObjectStatsDisplay.GetComponent<BattleObjectStatsDisplay>();
-            var tileScript = battleObject.GetComponent<Tile>();
-            var battleCharacterScript = battleObject.GetComponent<BattleCharacter>();
-
-            battleObjectStatsDisplay.transform.parent = canvas.transform;
-            battleObjectStatsDisplays.Add(battleObjectStatsDisplay);
-            battleObjectStatsDisplayScript.representedBattleObject = battleObject;
-
-
-            if (tileScript != null && tileScript.isBlock)
+            if (!battleObject.GetComponent<BattleObject>().isInvincible)
             {
-                battleObjectStatsDisplayScript.hpText.SetActive(false);
-            }
+                var battleObjectStatsDisplay = Instantiate(prefabBattleObjectStatsDisplay);
+                var battleObjectStatsDisplayScript = battleObjectStatsDisplay.GetComponent<BattleObjectStatsDisplay>();
+                var tileScript = battleObject.GetComponent<Tile>();
+                var battleCharacterScript = battleObject.GetComponent<BattleCharacter>();
 
-            if (battleCharacterScript != null && battleCharacterScript.isPlayer)
-            {
-                battleObjectStatsDisplayScript.hpText.SetActive(false);
+                battleObjectStatsDisplay.transform.parent = canvas.transform;
+                battleObjectStatsDisplays.Add(battleObjectStatsDisplay);
+                battleObjectStatsDisplayScript.representedBattleObject = battleObject;
+
+
+                if (tileScript != null && tileScript.isBlock)
+                {
+                    battleObjectStatsDisplayScript.hpText.SetActive(false);
+                }
+
+                if (battleCharacterScript != null && battleCharacterScript.isPlayer)
+                {
+                    battleObjectStatsDisplayScript.hpText.SetActive(false);
+                }
             }
         }
 
@@ -475,7 +478,7 @@ namespace Arena
 
             // update gate enemy graphics
             var battleEnemyLineup = BattleManager.singleton.enemyModelsToSpawn;
-            for (var i = 0; i < spawnersInGrid.Count(); i++)
+            for (var i = 0; i < spawnersInGrid.Count() && i < battleEnemyLineup.Count(); i++)
                 UpdateSpawnerGateEnemy(true, curSpawnerGateSystemScript.spawnerGates[i], battleEnemyLineup[i]);
         }
 

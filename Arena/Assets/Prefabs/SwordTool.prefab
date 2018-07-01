@@ -79,7 +79,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1832643332154174}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.042812, y: 0.0033703924, z: 0}
+  m_LocalPosition: {x: 1.5313323, y: -3.1719606, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4494504214061500}
@@ -130,10 +130,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   battleColliderInstructionPrefabs:
   - {fileID: 1642935304434328}
+  thumbnail: {fileID: 0}
   combatStats: {fileID: 1916454521884508}
+  combatStatsReduction: 0
   usesMana: 0
   isBleed: 0
-  thumbnail: {fileID: 0}
+  isReloadTool: 0
+  knockbackForce: 0
+  curAmmoClip: 1
+  maxAmmoCLip: 1
 --- !u!114 &114872245120006874
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -153,11 +158,19 @@ MonoBehaviour:
   isPassiveSpawn: 0
   playerIsImmune: 1
   enemyIsImmune: 0
-  startingSpeed: 0
+  destroySelfOnCollision: 0
+  hasContactEffects: 0
   duration: 0.01
   forwardDistanceToSpawn: 0.5
+  startingSpeed: 0
+  hasContinuousMovement: 0
+  hitboxScale: {x: 0, y: 0, z: 0}
+  usesEdgeCollider: 0
   isRaycast: 1
   raycastLength: 1
-  prefabToSpawn: {fileID: 1010457515799194, guid: 39fe474da82334647b8f72c2d5097033,
-    type: 2}
+  raycastCount: 0
+  multiRaycastSpreadAngle: 0
+  spawnsFireOnSelfDestroy: 1
+  fireGridCount: 1
+  fireGridSpacialSize: 0
   prefabBattleColliderInstructionOnSelfDestroy: {fileID: 0}

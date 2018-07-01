@@ -7,9 +7,9 @@ namespace Arena
     public class BattleObject : MonoBehaviour 
     {
         [Header("(EDITABLE)")]
+        public bool isInvincible = false;
         public float maxHP;
-        public GameObject defensiveCombatHitbox;
-        public GameObject offensiveCombatHitbox;
+        public GameObject combatHitbox;
 
         [Space(10)]
 

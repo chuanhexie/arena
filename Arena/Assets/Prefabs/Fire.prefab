@@ -24,7 +24,7 @@ GameObject:
   - component: {fileID: 68860245594546770}
   - component: {fileID: 61437582478305452}
   - component: {fileID: 114875377487364496}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Fire
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -40,8 +40,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4563910322398180}
   - component: {fileID: 61270261147521668}
-  m_Layer: 13
-  m_Name: DefensiveCombatHitbox
+  m_Layer: 12
+  m_Name: CombatHitbox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -54,7 +54,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1015484970473178}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.18548775, y: -0.553886, z: 0}
+  m_LocalPosition: {x: 0.06714368, y: -2.606835, z: 0}
   m_LocalScale: {x: 0.55, y: 0.55, z: 0.55}
   m_Children:
   - {fileID: 4563910322398180}
@@ -171,8 +171,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHP: 10
-  defensiveCombatHitbox: {fileID: 1427509389325710}
-  offensiveCombatHitbox: {fileID: 0}
+  combatHitbox: {fileID: 1427509389325710}
   curHP: 0
   isDead: 0
   isPlayer: 0
