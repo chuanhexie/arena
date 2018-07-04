@@ -250,6 +250,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d09decbeb5a723b47a30b1c29ab786dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isInvincible: 0
   maxHP: 10
   combatHitbox: {fileID: 1872863731887940}
   curHP: 0

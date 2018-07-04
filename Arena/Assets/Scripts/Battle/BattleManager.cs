@@ -41,6 +41,7 @@ namespace Arena
         [Header("Player Hitboxes")]
         public Vector2[] playerMovementEdgeColliderPoints;
         public Vector2 playerCombatHitboxDimensions;
+        public Vector2 playerCombatHitboxOffset;
         public LayerMask playerCombatHitboxLayer;
 
         [Header("Player Tools")]
@@ -50,6 +51,9 @@ namespace Arena
         public float maxHealth;
         public float maxStamina;
         public float maxMana;
+
+        [Header("Player Directional Aim")]
+        public Vector2 playerDirectionalAimCenter;
 
         [Header("Player Top Down Aim")]
         public float playerTopDownAimMaxDistance;
@@ -67,6 +71,12 @@ namespace Arena
         public Vector2 defaultEnemyCombatHitboxDimensions;
         public LayerMask enemyCombatHitboxLayer;
         public LayerMask flyerHitboxLayer;
+
+        [Header("Default Shield")]
+        public GameObject mainShieldBCI;
+        public float dualShieldHorOffset;
+        public float singleShieldVertOffset;
+        public float dualShieldRotationOffset;
 
         [Header("Physics Materials")]
         public PhysicsMaterial2D physicsMaterialDefaultBattleCollider;
@@ -103,6 +113,10 @@ namespace Arena
         public GameObject playerToolInUse;
         public float currentToolSpeedFinal = 0;
         public float playerToolCompletionCountdown = 0;
+
+        [Header("Player Shields")]
+        public ShieldState playerShieldState;
+        public List<GameObject> playerShields;
 
         [Header("Tool Quickselect")]
         public bool battleToolQuickSelectActive = false;
@@ -141,10 +155,15 @@ namespace Arena
 
             // INIT PLAYER CHARACTER
             InitBattleCharacter(true, playerSpawnLocation);
+
+            // INIT PLAYER SHIELDS
+            InitPlayerShields();
         }
 
         public void UpdateBattleLogic()
         {
+            CheckPlayerShields();
+
             // ---- TOOL-LOGIC START -----
             // DECREASE TOOL COMPLETION COUNTDOWN IF TOOL IS CURRENTLY BEING USED
             if (playerToolCompletionCountdown > 0)
@@ -209,9 +228,22 @@ namespace Arena
                     curBattleColliderScript.hasHadInitialPush = true;
                 }
 
+                if (curBattleColliderScript.canCollideWithBCs)
+                {
+                    for (var j = battleColliders.Count - 1; j > -1; j--)
+                    {
+                        CheckBattleColliderCollisionsWithInput(
+                            curBattleColliderGO,
+                            curBattleColliderGO.transform,
+                            curBattleColliderGO.GetComponent<BoxCollider2D>(),
+                            false,
+                            true);
+                    }
+                }
+
                 // RUN SELF DESTROY COUNTDOWN, IF BELOW ZERO, DESTROY COLLIDER
                 curBattleColliderScript.timeBeforeSelfDestroy -= Time.deltaTime;
-                if (curBattleColliderScript.timeBeforeSelfDestroy < 0)
+                if (!curBattleColliderScript.infiniteDuration && curBattleColliderScript.timeBeforeSelfDestroy < 0)
                     BattleColliderSelfDestroy(curBattleColliderScript, i);
             }
             // ---------- BATTLE-COLLIDER-(OFFENSIVE HITBOXES)-LOGIC END --------------
@@ -354,7 +386,8 @@ namespace Arena
                     curBattleObjectGameObject,
                     curBattleObjectTransform,
                     battleObjectCombatHitbox,
-                    curBattleObjectScript);
+                    curBattleObjectScript.isPlayer,
+                    false);
                 // ----------- COLLISIONS-WITH-BATTLE-COLLIDER-CHECK LOGIC END --------------------
 
 
@@ -475,6 +508,7 @@ namespace Arena
                 // HITBOXES
                 edgeCollider.points = playerMovementEdgeColliderPoints;
                 combatHitbox.size = playerCombatHitboxDimensions;
+                combatHitbox.offset = playerCombatHitboxOffset;
                 combatHitbox.gameObject.layer = GameManager.layermaskToLayer(playerCombatHitboxLayer);
 
                 battleObjectScript.curHP = battleObjectScript.maxHP;
@@ -500,6 +534,8 @@ namespace Arena
                 if (battleColliderInstructionsScript.usesAltAimReticule)
                     positionToSpawnBattleCollider = playerTopDownAim.transform.position;
                 float aimCenterAngle = playerDirectionalAim.transform.eulerAngles.z + 90;
+
+                Debug.Log("Initial Position: " + positionToSpawnBattleCollider);
 
                 InitBattleColliderInstruction(
                     battleColliderInstructionsScript,
@@ -642,10 +678,6 @@ namespace Arena
                                     / originalPoisonFreq;
                                 targetBattleCharacterScript.curPoisonDamageCountdown = newCurPoisonCountdown;
                             }
-
-                            Debug.Log("Max: " + targetBattleCharacterScript.poisonDamageFrequency);
-                            Debug.Log("Cur: " + targetBattleCharacterScript.curPoisonDamageCountdown);
-                            Debug.Log("----------------");
 
                             UIManager.singleton.InitCountdownRing(_targetGameObject, 
                                 targetBattleCharacterScript.curPoisonDamageCountdown, 
@@ -819,7 +851,6 @@ namespace Arena
                 float leftSideSpawnX = _hitPosition.x - (fireGridSpacialSize / 2);
                 float topSideSpawnY = _hitPosition.y + (fireGridSpacialSize / 2);
                 float spawnPadding = fireGridSpacialSize;
-                Debug.Log(leftSideSpawnX);
                 Vector2 curFireSpawnPoint = new Vector2(leftSideSpawnX, topSideSpawnY);
 
                 if (curFireGridCount == 1)
@@ -854,7 +885,7 @@ namespace Arena
             }
         }
 
-        public void InitHitbox(BattleColliderInstruction _battleColliderInstructionsScript, Vector2 _spawnPosition, Vector2 _spawnDirection, Tool _usedToolScript = null)
+        public GameObject InitHitbox(BattleColliderInstruction _battleColliderInstructionsScript, Vector2 _spawnPosition, Vector2 _spawnDirection, Tool _usedToolScript = null)
         {
             var battleColliderGameObject = Instantiate(prefabSmallHitbox);
             battleColliders.Add(battleColliderGameObject);
@@ -873,11 +904,28 @@ namespace Arena
                     curEdgeCollider.enabled = false;
             }
 
+            Debug.Log("Final Position: " + _spawnPosition);
             battleColliderGameObject.transform.position = _spawnPosition + (_spawnDirection * _battleColliderInstructionsScript.forwardDistanceToSpawn);
             battleColliderGameObject.transform.localScale = _battleColliderInstructionsScript.hitboxScale;
+            if (_battleColliderInstructionsScript.isChildOfPlayer)
+            {
+                battleColliderGameObject.transform.parent = playerDirectionalAim.transform;
+                battleColliderGameObject.transform.localPosition = new Vector2(0, .07f);
+            }
 
             var battleColliderScript = battleColliderGameObject.GetComponent<BattleCollider>();
             battleColliderScript.destroySelfOnCollision = _battleColliderInstructionsScript.destroySelfOnCollision;
+
+            battleColliderScript.isShield = _battleColliderInstructionsScript.isShield;
+            battleColliderScript.isDestroyedByShield = _battleColliderInstructionsScript.isDestroyedByShield;
+            if (battleColliderScript.isShield)
+            {
+                Destroy(battleColliderRigidbody);
+            }
+
+            battleColliderScript.canCollideWithBCs = _battleColliderInstructionsScript.canCollideWithBCs;
+
+            battleColliderScript.infiniteDuration = _battleColliderInstructionsScript.infiniteDuration;
             battleColliderScript.timeBeforeSelfDestroy = _battleColliderInstructionsScript.duration;
             battleColliderScript.curSpeed = _battleColliderInstructionsScript.startingSpeed;
             battleColliderScript.hasContinuousMovement = _battleColliderInstructionsScript.hasContinuousMovement;
@@ -898,6 +946,8 @@ namespace Arena
             }
 
             battleColliderGameObject.layer = GameManager.layermaskToLayer(_battleColliderInstructionsScript.layerMask);
+
+            return battleColliderGameObject;
         }
 
         public void BattleColliderSelfDestroy(BattleCollider _curBattleColliderScript, int battleColliderIndex)
@@ -1099,24 +1149,33 @@ namespace Arena
             }
         }
 
-        public void CheckBattleColliderCollisionsWithInput(GameObject _curObjectGO, Transform _curTransform, BoxCollider2D _curHitbox, BattleObject _curBattleObjectScript)
+        public void CheckBattleColliderCollisionsWithInput(GameObject _curObjectGO, Transform _curTransform, BoxCollider2D _curHitbox, bool curObjectIsPlayer, bool curObjectIsBC)
         {
             for (var j = battleColliders.Count - 1; j > -1; j--)
             {
                 var curBattleColliderGO = battleColliders[j];
                 var curBattleColliderScript = curBattleColliderGO.GetComponent<BattleCollider>();
 
-                if ((!curBattleColliderScript.playerIsImmune || !_curBattleObjectScript.isPlayer) &&
+                if ((!curBattleColliderScript.playerIsImmune || !curObjectIsPlayer) &&
                     !curBattleColliderScript.collidedBattleObjects.Contains(_curObjectGO) &&
                     curBattleColliderScript.hasContactEffects &&
                     _curHitbox.isActiveAndEnabled &&
                     _curHitbox.bounds.Intersects(curBattleColliderGO.GetComponent<BoxCollider2D>().bounds))
                 {
-                    HandleAttackCompletion(
-                        _curTransform,
-                        curBattleColliderGO.transform.position,
-                        curBattleColliderScript.combatStats,
-                        curBattleColliderScript.toolThisWasCreatedFrom);
+                    var isCurGOAffected = true;
+                    if (curBattleColliderScript.isDestroyedByShield)
+                    {
+                        var curObjectPossibleBCScript = _curObjectGO.GetComponent<BattleCollider>();
+                        if (curObjectPossibleBCScript != null && curObjectPossibleBCScript.isShield)
+                            isCurGOAffected = false;
+                    }
+
+                    if (isCurGOAffected)
+                        HandleAttackCompletion(
+                            _curTransform,
+                            curBattleColliderGO.transform.position,
+                            curBattleColliderScript.combatStats,
+                            curBattleColliderScript.toolThisWasCreatedFrom);
 
                     curBattleColliderScript.collidedBattleObjects.Add(_curObjectGO);
 
@@ -1124,6 +1183,77 @@ namespace Arena
                         BattleColliderSelfDestroy(curBattleColliderScript, j);
                 }
             }
+        }
+
+        public void InitPlayerShields()
+        {
+            float aimCenterAngle = playerDirectionalAim.transform.eulerAngles.z + 90;
+
+            for (var i = 1; i <= 2; i++)
+            {
+                GameObject newPlayerShield = InitHitbox(
+                      mainShieldBCI.GetComponent<BattleColliderInstruction>(),
+                      player.transform.position,
+                      GameManager.radianToDirection(aimCenterAngle, true));
+                playerShields.Add(newPlayerShield);
+                newPlayerShield.SetActive(false);
+            }
+        }
+
+        public void CheckPlayerShields()
+        {
+            Tool playerLeftToolScript = playerLeftTool.GetComponent<Tool>();
+            Tool playerRightToolScript = playerRightTool.GetComponent<Tool>();
+
+            if (playerShieldState != ShieldState.none
+                && ((!playerLeftToolScript.isShield && !playerRightToolScript.isShield)
+                    || isPlayerCurrentlyUsingTool))
+            {
+                playerShieldState = ShieldState.none;
+                bool willKeepOneShield = false;
+                if ((playerLeftToolScript.isShield && playerLeftTool == playerToolInUse) 
+                    || (playerRightToolScript.isShield && playerRightTool == playerToolInUse))
+                    willKeepOneShield = true;
+
+                foreach (GameObject curShieldGO in playerShields)
+                {
+                    if (willKeepOneShield)
+                    {
+                        playerShieldState = ShieldState.singlewield;
+                        RepositionShield(curShieldGO, new Vector2(0, singleShieldVertOffset), 0);
+                    }
+                    else
+                        curShieldGO.SetActive(false);
+                }
+            }
+            else if (!isPlayerCurrentlyUsingTool && playerLeftToolScript.isShield && playerRightToolScript.isShield)
+            {
+                if (playerShieldState != ShieldState.dualwield)
+                {
+                    playerShieldState = ShieldState.dualwield;
+
+                    RepositionShield(playerShields[0], new Vector2(dualShieldHorOffset, 0), -dualShieldRotationOffset);
+                    RepositionShield(playerShields[1], new Vector2(-dualShieldHorOffset, 0), dualShieldRotationOffset);
+                }
+            }
+            else if (!isPlayerCurrentlyUsingTool &&
+                playerShieldState != ShieldState.singlewield
+                && (playerLeftToolScript.isShield || playerRightToolScript.isShield))
+            {
+                playerShieldState = ShieldState.singlewield;
+
+                playerShields[1].SetActive(false);
+                var curShieldGO = playerShields[0];
+                RepositionShield(curShieldGO, new Vector2(0, singleShieldVertOffset), 0);
+            }
+        }
+
+        public void RepositionShield(GameObject _shieldGO, Vector2 _position, float rotation)
+        {
+            var curShieldTransform = _shieldGO.transform;
+            curShieldTransform.localPosition = _position;
+            curShieldTransform.localEulerAngles = new Vector3(0, 0, rotation);
+            _shieldGO.SetActive(true);
         }
     }
 
@@ -1135,5 +1265,10 @@ namespace Arena
     public enum AIFiringBehavior
     {
         none,alwaysFiring,fireOnSight
+    }
+
+    public enum ShieldState
+    {
+        none,singlewield,dualwield
     }
 }

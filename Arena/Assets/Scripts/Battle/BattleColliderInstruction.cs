@@ -16,8 +16,12 @@ namespace Arena
         public bool enemyIsImmune;
         public bool destroySelfOnCollision;
         public bool hasContactEffects;
+        public bool isShield;
+        public bool isDestroyedByShield;
+        public bool canCollideWithBCs;
 
         [Header("General Stats")]
+        public bool infiniteDuration = false;
         public float duration;
         public float forwardDistanceToSpawn;
 

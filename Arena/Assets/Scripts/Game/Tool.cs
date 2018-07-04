@@ -21,6 +21,9 @@ namespace Arena
         public bool isReloadTool;
         public float knockbackForce;
 
+        [Header("Shield")]
+        public bool isShield;
+
         [Header("(REFERENCE)")]
         [Header("Reload")]
         public int curAmmoClip = 1;

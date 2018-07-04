@@ -11,11 +11,15 @@ namespace Arena
         public bool destroySelfOnCollision;
         public bool hasContinuousMovement;
         public bool hasContactEffects;
+        public bool isShield;
+        public bool isDestroyedByShield;
+        public bool canCollideWithBCs;
 
         public bool hasHadInitialPush = false;
 
         public float curSpeed;
         public Vector3 curDirection;
+        public bool infiniteDuration = false;
         public float timeBeforeSelfDestroy;
 
         public CombatStats combatStats;

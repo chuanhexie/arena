@@ -186,7 +186,8 @@ namespace Arena
                     battleManagerSingleton.playerDirectionalAim.transform.localRotation = Quaternion.Euler(0, 0, aimRotation);
                 }
 
-                battleManagerSingleton.playerDirectionalAim.transform.localPosition = new Vector2(battleManagerSingleton.curDirectionX / 2, battleManagerSingleton.curDirectionY / 2 - 0.5f);
+                Vector2 directionalAimOffset = new Vector2(battleManagerSingleton.curDirectionX / 2, battleManagerSingleton.curDirectionY / 2 - 0.5f);
+                battleManagerSingleton.playerDirectionalAim.transform.localPosition = battleManagerSingleton.playerDirectionalAimCenter + directionalAimOffset;
 
                 // TOP DOWN AIM (ALT AIM)
                 if (battleManagerSingleton.playerTopDownAim.activeInHierarchy)
