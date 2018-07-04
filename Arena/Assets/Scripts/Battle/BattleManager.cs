@@ -32,6 +32,7 @@ namespace Arena
         [Header("Player General")]
         public float playerWalkSpeed;
         public float playerRunSpeed;
+        public float playerMirageMovementSpeed;
         public Vector2 playerSpawnLocation;
         public float baseToolUseSpeed;
         public float baseStaminaRegenRate;
@@ -59,6 +60,9 @@ namespace Arena
         public float playerTopDownAimMaxDistance;
         public float playerTopDownAimMovementSpeed;
         public Vector2 playerTopDownAimOffset;
+
+        [Header("Player Mirage Sheet")]
+        public float defaultMirageDuration;
 
         [Header("Default Enemy General")]
         public float tempEnemySpeed;
@@ -93,6 +97,7 @@ namespace Arena
         public GameObject playerLeftTool;
         public GameObject playerRightTool;
         public bool playerIsRunning;
+        public bool canPlayerPerformAnyAction;
 
         [Header("Player Stats")]
         public float curStamina;
@@ -117,6 +122,11 @@ namespace Arena
         [Header("Player Shields")]
         public ShieldState playerShieldState;
         public List<GameObject> playerShields;
+
+        [Header("Player Mirage Sheet")]
+        public bool isPlayerUsingMirage;
+        public float remainingPlayerMirageTime;
+        public GameObject playerMirageBC;
 
         [Header("Tool Quickselect")]
         public bool battleToolQuickSelectActive = false;
@@ -163,6 +173,7 @@ namespace Arena
         public void UpdateBattleLogic()
         {
             CheckPlayerShields();
+            UpdateMirage();
 
             // ---- TOOL-LOGIC START -----
             // DECREASE TOOL COMPLETION COUNTDOWN IF TOOL IS CURRENTLY BEING USED
@@ -373,7 +384,8 @@ namespace Arena
 
                     // ----------- ENEMY-TO-PLAYER-DAMAGE START ----------------
 
-                    if (battleObjectCombatHitbox.bounds.Intersects(player.GetComponent<BattleObject>().combatHitbox.GetComponent<BoxCollider2D>().bounds) &&
+                    if (!isPlayerUsingMirage &&
+                        battleObjectCombatHitbox.bounds.Intersects(player.GetComponent<BattleObject>().combatHitbox.GetComponent<BoxCollider2D>().bounds) &&
                         !curBattleCharacterScript.isPlayer)
                     {
                         HandleCombatCollision(player, curBattleObjectGameObject);
@@ -530,12 +542,14 @@ namespace Arena
             if (!toolScript.isReloadTool ||
                 toolScript.curAmmoClip >= toolScript.maxAmmoCLip)
             {
+                // ACTIVATE MIRAGE SHEET ABILITY IF APPLICABLE
+                if (toolScript.isMirageSheet)
+                    ActivateMirage();
+
                 Vector2 positionToSpawnBattleCollider = playerDirectionalAim.transform.position;
                 if (battleColliderInstructionsScript.usesAltAimReticule)
                     positionToSpawnBattleCollider = playerTopDownAim.transform.position;
                 float aimCenterAngle = playerDirectionalAim.transform.eulerAngles.z + 90;
-
-                Debug.Log("Initial Position: " + positionToSpawnBattleCollider);
 
                 InitBattleColliderInstruction(
                     battleColliderInstructionsScript,
@@ -903,14 +917,14 @@ namespace Arena
                 if (curEdgeCollider != null)
                     curEdgeCollider.enabled = false;
             }
-
-            Debug.Log("Final Position: " + _spawnPosition);
+                
             battleColliderGameObject.transform.position = _spawnPosition + (_spawnDirection * _battleColliderInstructionsScript.forwardDistanceToSpawn);
             battleColliderGameObject.transform.localScale = _battleColliderInstructionsScript.hitboxScale;
-            if (_battleColliderInstructionsScript.isChildOfPlayer)
+            if (_battleColliderInstructionsScript.isChildOfPlayerDirectionalAim)
             {
                 battleColliderGameObject.transform.parent = playerDirectionalAim.transform;
                 battleColliderGameObject.transform.localPosition = new Vector2(0, .07f);
+                Destroy(battleColliderRigidbody);
             }
 
             var battleColliderScript = battleColliderGameObject.GetComponent<BattleCollider>();
@@ -918,10 +932,6 @@ namespace Arena
 
             battleColliderScript.isShield = _battleColliderInstructionsScript.isShield;
             battleColliderScript.isDestroyedByShield = _battleColliderInstructionsScript.isDestroyedByShield;
-            if (battleColliderScript.isShield)
-            {
-                Destroy(battleColliderRigidbody);
-            }
 
             battleColliderScript.canCollideWithBCs = _battleColliderInstructionsScript.canCollideWithBCs;
 
@@ -1052,11 +1062,15 @@ namespace Arena
                         curRaycastSpawnDirection = GameManager.radianToDirection(curMultiRaycastAngle, true);
 
                     // RAYCAST
+                    var curRaycastLayerMask = _battleColliderInstructionScript.layerMask;
+                    if (isPlayerUsingMirage)
+                        curRaycastLayerMask = GameManager.RemoveFromLayerMask(curRaycastLayerMask, playerCombatHitboxLayer);
+
                     RaycastHit2D hit = Physics2D.Raycast(
                         _spawnPosition,
                         curRaycastSpawnDirection,
                         _battleColliderInstructionScript.raycastLength,
-                        _battleColliderInstructionScript.layerMask);
+                        curRaycastLayerMask);
                     Vector2 raycastEndLocation = hit.point;
                     if (hit.collider == null)
                         raycastEndLocation = _spawnPosition +
@@ -1087,7 +1101,14 @@ namespace Arena
             }
             else
             {
-                InitHitbox(
+                // if a fire mirage sheet was used, spawn a fire at the player's position on usage
+                if (_usedToolScript.isMirageSheet && _usedCombatStatsScript.fire > 0)
+                    SpawnFires(
+                        player.transform.position,
+                        _usedCombatStatsScript,
+                        _usedToolScript);
+
+                playerMirageBC = InitHitbox(
                     _battleColliderInstructionScript,
                     _spawnPosition,
                     _spawnDirection,
@@ -1156,7 +1177,8 @@ namespace Arena
                 var curBattleColliderGO = battleColliders[j];
                 var curBattleColliderScript = curBattleColliderGO.GetComponent<BattleCollider>();
 
-                if ((!curBattleColliderScript.playerIsImmune || !curObjectIsPlayer) &&
+                if ((!isPlayerUsingMirage || !curObjectIsPlayer) &&
+                    (!curBattleColliderScript.playerIsImmune || !curObjectIsPlayer) &&
                     !curBattleColliderScript.collidedBattleObjects.Contains(_curObjectGO) &&
                     curBattleColliderScript.hasContactEffects &&
                     _curHitbox.isActiveAndEnabled &&
@@ -1205,9 +1227,11 @@ namespace Arena
             Tool playerLeftToolScript = playerLeftTool.GetComponent<Tool>();
             Tool playerRightToolScript = playerRightTool.GetComponent<Tool>();
 
-            if (playerShieldState != ShieldState.none
+            // REMOVE ALL SHIELDS (IF ATTACKING WITH SHIELD, RETAIN ONE SHIELD
+            if ((playerShieldState != ShieldState.none
                 && ((!playerLeftToolScript.isShield && !playerRightToolScript.isShield)
                     || isPlayerCurrentlyUsingTool))
+                || isPlayerUsingMirage)
             {
                 playerShieldState = ShieldState.none;
                 bool willKeepOneShield = false;
@@ -1226,6 +1250,7 @@ namespace Arena
                         curShieldGO.SetActive(false);
                 }
             }
+            // DUAL WIELD SHIELDS
             else if (!isPlayerCurrentlyUsingTool && playerLeftToolScript.isShield && playerRightToolScript.isShield)
             {
                 if (playerShieldState != ShieldState.dualwield)
@@ -1236,6 +1261,7 @@ namespace Arena
                     RepositionShield(playerShields[1], new Vector2(-dualShieldHorOffset, 0), dualShieldRotationOffset);
                 }
             }
+            // SINGLE WIELD SHIELD
             else if (!isPlayerCurrentlyUsingTool &&
                 playerShieldState != ShieldState.singlewield
                 && (playerLeftToolScript.isShield || playerRightToolScript.isShield))
@@ -1254,6 +1280,31 @@ namespace Arena
             curShieldTransform.localPosition = _position;
             curShieldTransform.localEulerAngles = new Vector3(0, 0, rotation);
             _shieldGO.SetActive(true);
+        }
+
+        public void ActivateMirage()
+        {
+            isPlayerUsingMirage = true;
+            remainingPlayerMirageTime = defaultMirageDuration;
+            player.GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 130) / 255;
+        }
+
+        public void UpdateMirage()
+        {
+            remainingPlayerMirageTime -= Time.deltaTime;
+            if (remainingPlayerMirageTime <= 0)
+            {
+                // if mirage attack hitbox never hit anything, destroy it
+                if (playerMirageBC != null)
+                {
+                    battleColliders.Remove(playerMirageBC);
+                    Destroy(playerMirageBC);
+                }
+
+                isPlayerUsingMirage = false;
+                remainingPlayerMirageTime = 0;
+                player.GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 255) / 255;
+            }
         }
     }
 

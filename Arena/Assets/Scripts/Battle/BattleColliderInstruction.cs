@@ -10,7 +10,7 @@ namespace Arena
         [Header("General Flags")]
         public LayerMask layerMask;
         public bool usesAltAimReticule;
-        public bool isChildOfPlayer;
+        public bool isChildOfPlayerDirectionalAim;
         public bool isPassiveSpawn;
         public bool playerIsImmune;
         public bool enemyIsImmune;

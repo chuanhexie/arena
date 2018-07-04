@@ -139,7 +139,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1248513422}
-  m_RootOrder: 10
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &48630558
 MonoBehaviour:
@@ -157,7 +157,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 131072
   usesAltAimReticule: 0
-  isChildOfPlayer: 1
+  isChildOfPlayerDirectionalAim: 1
   isPassiveSpawn: 0
   playerIsImmune: 1
   enemyIsImmune: 0
@@ -496,6 +496,11 @@ Prefab:
         type: 2}
       propertyPath: isShield
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114872245120006874, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: isChildOfPlayerDirectionalAim
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6a4b45fa28855fa4db1288b4fac29203, type: 2}
@@ -1138,6 +1143,7 @@ MonoBehaviour:
   poisonFrequencyMaxTime: 60
   playerWalkSpeed: 70
   playerRunSpeed: 140
+  playerMirageMovementSpeed: 400
   playerSpawnLocation: {x: -0.3, y: 3.5}
   baseToolUseSpeed: 5
   baseStaminaRegenRate: 6
@@ -1155,8 +1161,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 65536
   playerTools:
+  - {fileID: 699408574}
   - {fileID: 1542237099}
-  - {fileID: 633596594}
   - {fileID: 1194458172}
   - {fileID: 953317417}
   - {fileID: 1013987485}
@@ -1170,12 +1176,13 @@ MonoBehaviour:
   playerTopDownAimMaxDistance: 5
   playerTopDownAimMovementSpeed: 0.15
   playerTopDownAimOffset: {x: 0, y: -0.9}
+  defaultMirageDuration: 0.385
   tempEnemySpeed: 1.5
   defaultEnemyDamage: 1
   defaultMeleeTowardsPlayerCooldownTime: 1
   defaultEnemyLineOfSightLayermask:
     serializedVersion: 2
-    m_Bits: 101376
+    m_Bits: 101632
   defaultEnemyMovementEdgeColliderPoints:
   - {x: 0.45, y: 0.45}
   - {x: 0.45, y: -0.45}
@@ -1197,12 +1204,12 @@ MonoBehaviour:
     type: 2}
   baseTimeToSpawnEnemy: 0.3
   enemyModelsToSpawn:
-  - {fileID: 1359144433}
   - {fileID: 663128661}
   player: {fileID: 0}
   playerLeftTool: {fileID: 0}
   playerRightTool: {fileID: 0}
   playerIsRunning: 0
+  canPlayerPerformAnyAction: 0
   curStamina: 0
   curMana: 0
   playerDirectionalAim: {fileID: 0}
@@ -1217,6 +1224,9 @@ MonoBehaviour:
   playerToolCompletionCountdown: 0
   playerShieldState: 0
   playerShields: []
+  isPlayerUsingMirage: 0
+  remainingPlayerMirageTime: 0
+  playerMirageBC: {fileID: 0}
   battleToolQuickSelectActive: 0
   battleObjects:
   - {fileID: 502842031}
@@ -1453,17 +1463,17 @@ Prefab:
       propertyPath: isShield
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114872245120006874, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: isChildOfPlayerDirectionalAim
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6a4b45fa28855fa4db1288b4fac29203, type: 2}
   m_IsPrefabParent: 0
 --- !u!4 &633596593 stripped
 Transform:
   m_PrefabParentObject: {fileID: 4353725108400276, guid: 6a4b45fa28855fa4db1288b4fac29203,
-    type: 2}
-  m_PrefabInternal: {fileID: 633596592}
---- !u!1 &633596594 stripped
-GameObject:
-  m_PrefabParentObject: {fileID: 1832643332154174, guid: 6a4b45fa28855fa4db1288b4fac29203,
     type: 2}
   m_PrefabInternal: {fileID: 633596592}
 --- !u!1 &639496564
@@ -1655,6 +1665,183 @@ Transform:
   m_Father: {fileID: 621705665}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &699408572
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 1248513422}
+    m_Modifications:
+    - target: {fileID: 4353725108400276, guid: 6a4b45fa28855fa4db1288b4fac29203, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: -0.1276247
+      objectReference: {fileID: 0}
+    - target: {fileID: 4353725108400276, guid: 6a4b45fa28855fa4db1288b4fac29203, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: -0.3000154
+      objectReference: {fileID: 0}
+    - target: {fileID: 4353725108400276, guid: 6a4b45fa28855fa4db1288b4fac29203, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4353725108400276, guid: 6a4b45fa28855fa4db1288b4fac29203, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4353725108400276, guid: 6a4b45fa28855fa4db1288b4fac29203, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4353725108400276, guid: 6a4b45fa28855fa4db1288b4fac29203, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4353725108400276, guid: 6a4b45fa28855fa4db1288b4fac29203, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4353725108400276, guid: 6a4b45fa28855fa4db1288b4fac29203, type: 2}
+      propertyPath: m_RootOrder
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 114255411055307360, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: useSpeed
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 114255411055307360, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: resourceEfficiency
+      value: 3000
+      objectReference: {fileID: 0}
+    - target: {fileID: 114772331221177954, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: usesMana
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114255411055307360, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: damage
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 114772331221177954, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: thumbnail
+      value: 
+      objectReference: {fileID: 21300000, guid: 69e968f104e3a62408884bf05318c1d9,
+        type: 3}
+    - target: {fileID: 114772331221177954, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: isBleed
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1832643332154174, guid: 6a4b45fa28855fa4db1288b4fac29203, type: 2}
+      propertyPath: m_Name
+      value: MirageSheet
+      objectReference: {fileID: 0}
+    - target: {fileID: 114255411055307360, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: poison
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114255411055307360, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: stun
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 114255411055307360, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: fire
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114872245120006874, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: layerMask.m_Bits
+      value: 1024
+      objectReference: {fileID: 0}
+    - target: {fileID: 114872245120006874, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: isRaycast
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114872245120006874, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: raycastLength
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114872245120006874, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: spawnsFireOnSelfDestroy
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114872245120006874, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: duration
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 114872245120006874, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: forwardDistanceToSpawn
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114772331221177954, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: isMirageSheet
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114872245120006874, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: fireGridCount
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114872245120006874, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: isChildOfPlayerDirectionalAim
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114872245120006874, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: infiniteDuration
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114872245120006874, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: destroySelfOnCollision
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114872245120006874, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: hasContactEffects
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114872245120006874, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: hitboxScale.x
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114872245120006874, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: hitboxScale.y
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114872245120006874, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: hitboxScale.z
+      value: 0.1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: 6a4b45fa28855fa4db1288b4fac29203, type: 2}
+  m_IsPrefabParent: 0
+--- !u!4 &699408573 stripped
+Transform:
+  m_PrefabParentObject: {fileID: 4353725108400276, guid: 6a4b45fa28855fa4db1288b4fac29203,
+    type: 2}
+  m_PrefabInternal: {fileID: 699408572}
+--- !u!1 &699408574 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 1832643332154174, guid: 6a4b45fa28855fa4db1288b4fac29203,
+    type: 2}
+  m_PrefabInternal: {fileID: 699408572}
 --- !u!1 &740862147
 GameObject:
   m_ObjectHideFlags: 0
@@ -2350,7 +2537,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 16384
   usesAltAimReticule: 0
-  isChildOfPlayer: 0
+  isChildOfPlayerDirectionalAim: 0
   isPassiveSpawn: 0
   playerIsImmune: 0
   enemyIsImmune: 0
@@ -2732,7 +2919,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 197632
   usesAltAimReticule: 0
-  isChildOfPlayer: 1
+  isChildOfPlayerDirectionalAim: 0
   isPassiveSpawn: 0
   playerIsImmune: 0
   enemyIsImmune: 0
@@ -2886,6 +3073,7 @@ Transform:
   - {fileID: 1542237101}
   - {fileID: 252732219}
   - {fileID: 1172797421}
+  - {fileID: 699408573}
   - {fileID: 48630557}
   m_Father: {fileID: 0}
   m_RootOrder: 5
@@ -3499,7 +3687,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1024
   usesAltAimReticule: 0
-  isChildOfPlayer: 0
+  isChildOfPlayerDirectionalAim: 0
   isPassiveSpawn: 0
   playerIsImmune: 0
   enemyIsImmune: 0

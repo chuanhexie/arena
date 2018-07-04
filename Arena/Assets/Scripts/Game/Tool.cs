@@ -19,6 +19,7 @@ namespace Arena
         public bool usesMana;
         public bool isBleed;
         public bool isReloadTool;
+        public bool isMirageSheet;
         public float knockbackForce;
 
         [Header("Shield")]

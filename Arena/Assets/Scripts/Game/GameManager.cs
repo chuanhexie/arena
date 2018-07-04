@@ -82,6 +82,7 @@ namespace Arena
 
             // RUN BUTTON
             BattleManager.singleton.playerIsRunning = ((
+                !BattleManager.singleton.isPlayerUsingMirage &&
                 (Input.GetAxisRaw("RightTrigger") > 0) || Input.GetButton("RightControl")) && 
                 !BattleManager.singleton.isPlayerCurrentlyUsingTool &&
                 BattleManager.singleton.curStamina > 0);
@@ -118,6 +119,8 @@ namespace Arena
                 verticalInputDirection = -1;
 
             var movementSpeed = battleManagerSingleton.playerWalkSpeed;
+            if (battleManagerSingleton.isPlayerUsingMirage)
+                movementSpeed = battleManagerSingleton.playerMirageMovementSpeed;
             if (battleManagerSingleton.playerIsRunning)
                 movementSpeed = battleManagerSingleton.playerRunSpeed;
 
@@ -196,11 +199,14 @@ namespace Arena
                         verticalInputDirection * battleManagerSingleton.playerTopDownAimMovementSpeed));
 
                 //TOOLS
-                if (leftToolButtonActive)
-                    battleManagerSingleton.InitToolUse(battleManagerSingleton.playerLeftTool);
+                if (!battleManagerSingleton.isPlayerUsingMirage)
+                {
+                    if (leftToolButtonActive)
+                        battleManagerSingleton.InitToolUse(battleManagerSingleton.playerLeftTool);
 
-                if (rightToolButtonActive)
-                    battleManagerSingleton.InitToolUse(battleManagerSingleton.playerRightTool);
+                    if (rightToolButtonActive)
+                        battleManagerSingleton.InitToolUse(battleManagerSingleton.playerRightTool);
+                }
             }
             else
             {
@@ -277,6 +283,12 @@ namespace Arena
         {
             Vector2 dir = (_targetGO - _sourceGO).normalized;
             return dir;
+        }
+
+        public static LayerMask RemoveFromLayerMask(LayerMask _inputMask, LayerMask _maskToRemove)
+        {
+            LayerMask invertedInputMask = ~_inputMask;
+            return ~(invertedInputMask | _maskToRemove);
         }
     }
 }
