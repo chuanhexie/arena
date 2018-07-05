@@ -97,26 +97,26 @@ namespace Arena
 
             // --------------- SHOULDER BUTTONS END --------------------
 
-            var rawHorizontalInput = Input.GetAxisRaw("LeftJoystickHorizontal");
-            var rawVerticalInput = -Input.GetAxisRaw("LeftJoystickVertical");
+            var rawHorizontalInputLeft = Input.GetAxisRaw("LeftJoystickHorizontal");
+            var rawVerticalInputLeft = -Input.GetAxisRaw("LeftJoystickVertical");
 
             // LEFT JOYSTICK
-            if (rawHorizontalInput == 0)
-                rawHorizontalInput = Input.GetAxisRaw("LeftKeysHorizontal");
-            if (rawVerticalInput == 0)
-                rawVerticalInput = Input.GetAxisRaw("LeftKeysVertical");
-            var horizontalInputDirection = 0;
-            var verticalInputDirection = 0;
+            if (rawHorizontalInputLeft == 0)
+                rawHorizontalInputLeft = Input.GetAxisRaw("LeftKeysHorizontal");
+            if (rawVerticalInputLeft == 0)
+                rawVerticalInputLeft = Input.GetAxisRaw("LeftKeysVertical");
+            var horizontalInputDirectionLeft = 0;
+            var verticalInputDirectionLeft = 0;
 
-            if (rawHorizontalInput > 0)
-                horizontalInputDirection = 1;
-            else if (rawHorizontalInput < 0)
-                horizontalInputDirection = -1;
+            if (rawHorizontalInputLeft > 0)
+                horizontalInputDirectionLeft = 1;
+            else if (rawHorizontalInputLeft < 0)
+                horizontalInputDirectionLeft = -1;
 
-            if (rawVerticalInput > 0)
-                verticalInputDirection = 1;
-            else if (rawVerticalInput < 0)
-                verticalInputDirection = -1;
+            if (rawVerticalInputLeft > 0)
+                verticalInputDirectionLeft = 1;
+            else if (rawVerticalInputLeft < 0)
+                verticalInputDirectionLeft = -1;
 
             var movementSpeed = battleManagerSingleton.playerWalkSpeed;
             if (battleManagerSingleton.isPlayerUsingMirage)
@@ -124,38 +124,38 @@ namespace Arena
             if (battleManagerSingleton.playerIsRunning)
                 movementSpeed = battleManagerSingleton.playerRunSpeed;
 
-            Vector2 movement = new Vector2(rawHorizontalInput * movementSpeed * Time.deltaTime, 
-                rawVerticalInput * movementSpeed * Time.deltaTime);
+            Vector2 movement = new Vector2(rawHorizontalInputLeft * movementSpeed * Time.deltaTime, 
+                rawVerticalInputLeft * movementSpeed * Time.deltaTime);
             
             battleManagerSingleton.player.GetComponent<Rigidbody2D>().velocity = movement;
 
             // RIGHT JOYSTICK
-            rawHorizontalInput = Input.GetAxisRaw("RightJoystickHorizontal");
-            rawVerticalInput = -Input.GetAxisRaw("RightJoystickVertical");
-            if (rawHorizontalInput == 0)
-                rawHorizontalInput = Input.GetAxisRaw("RightKeysHorizontal");
-            if (rawVerticalInput == 0)
-                rawVerticalInput = Input.GetAxisRaw("RightKeysVertical");
-            horizontalInputDirection = 0;
-            verticalInputDirection = 0;
+            var rawHorizontalInputRight = Input.GetAxisRaw("RightJoystickHorizontal");
+            var rawVerticalInputRight = -Input.GetAxisRaw("RightJoystickVertical");
+            if (rawHorizontalInputRight == 0)
+                rawHorizontalInputRight = Input.GetAxisRaw("RightKeysHorizontal");
+            if (rawVerticalInputRight == 0)
+                rawVerticalInputRight = Input.GetAxisRaw("RightKeysVertical");
+            var horizontalInputDirectionRight = 0;
+            var verticalInputDirectionRight = 0;
 
-            if (rawHorizontalInput > 0)
-                horizontalInputDirection = 1;
-            else if (rawHorizontalInput < 0)
-                horizontalInputDirection = -1;
+            if (rawHorizontalInputRight > 0)
+                horizontalInputDirectionRight = 1;
+            else if (rawHorizontalInputRight < 0)
+                horizontalInputDirectionRight = -1;
 
-            if (rawVerticalInput > 0)
-                verticalInputDirection = 1;
-            else if (rawVerticalInput < 0)
-                verticalInputDirection = -1;
+            if (rawVerticalInputRight > 0)
+                verticalInputDirectionRight = 1;
+            else if (rawVerticalInputRight < 0)
+                verticalInputDirectionRight = -1;
 
-            var rawInputAngle = Mathf.Atan2(-rawHorizontalInput, rawVerticalInput) * Mathf.Rad2Deg;
+            var rawInputAngle = Mathf.Atan2(-rawHorizontalInputRight, rawVerticalInputRight) * Mathf.Rad2Deg;
             rawInputAngle += 90;
             if (rawInputAngle < 0)
                 rawInputAngle += 360;
             if (rawInputAngle > 360)
                 rawInputAngle -= 360;
-            if (battleToolQuickSelectInit && rawHorizontalInput == 0 && rawVerticalInput == 0)
+            if (battleToolQuickSelectInit && rawHorizontalInputRight == 0 && rawVerticalInputRight == 0)
                 rawInputAngle = 90;
             
             if (!battleManagerSingleton.battleToolQuickSelectActive)
@@ -163,27 +163,36 @@ namespace Arena
                 // HIDE TOOL QUICKSELECT
                 UIManager.singleton.toolQuickSelectMenuForBattle.SetActive(false);
 
+
                 //DIRECTIONAL AIM
-                if (horizontalInputDirection != 0 || verticalInputDirection != 0)
+                var dirAimHorInput = horizontalInputDirectionRight;
+                var dirAimVertInput = verticalInputDirectionRight;
+                if (battleManagerSingleton.isPlayerUsingMirage)
                 {
-                    battleManagerSingleton.curDirectionX = horizontalInputDirection;
-                    battleManagerSingleton.curDirectionY = verticalInputDirection;
+                    dirAimHorInput = horizontalInputDirectionLeft;
+                    dirAimVertInput = verticalInputDirectionLeft;
+                }
+
+                if (dirAimHorInput != 0 || dirAimVertInput != 0)
+                {
+                    battleManagerSingleton.curDirectionX = dirAimHorInput;
+                    battleManagerSingleton.curDirectionY = dirAimVertInput;
 
                     var aimRotation = 0;
 
-                    if (horizontalInputDirection == 1 && verticalInputDirection == 1)
+                    if (dirAimHorInput == 1 && dirAimVertInput == 1)
                         aimRotation = 315;
-                    else if (horizontalInputDirection == 1 && verticalInputDirection == 0)
+                    else if (dirAimHorInput == 1 && dirAimVertInput == 0)
                         aimRotation = 270;
-                    else if (horizontalInputDirection == 1 && verticalInputDirection == -1)
+                    else if (dirAimHorInput == 1 && dirAimVertInput == -1)
                         aimRotation = 225;
-                    else if (horizontalInputDirection == 0 && verticalInputDirection == -1)
+                    else if (dirAimHorInput == 0 && dirAimVertInput == -1)
                         aimRotation = 180;
-                    else if (horizontalInputDirection == -1 && verticalInputDirection == -1)
+                    else if (dirAimHorInput == -1 && dirAimVertInput == -1)
                         aimRotation = 135;
-                    else if (horizontalInputDirection == -1 && verticalInputDirection == 0)
+                    else if (dirAimHorInput == -1 && dirAimVertInput == 0)
                         aimRotation = 90;
-                    else if (horizontalInputDirection == -1 && verticalInputDirection == 1)
+                    else if (dirAimHorInput == -1 && dirAimVertInput == 1)
                         aimRotation = 45;
 
                     battleManagerSingleton.playerDirectionalAim.transform.localRotation = Quaternion.Euler(0, 0, aimRotation);
@@ -195,8 +204,8 @@ namespace Arena
                 // TOP DOWN AIM (ALT AIM)
                 if (battleManagerSingleton.playerTopDownAim.activeInHierarchy)
                     battleManagerSingleton.UpdatePlayerTopDownAim(new Vector2(
-                        horizontalInputDirection * battleManagerSingleton.playerTopDownAimMovementSpeed,
-                        verticalInputDirection * battleManagerSingleton.playerTopDownAimMovementSpeed));
+                        horizontalInputDirectionRight * battleManagerSingleton.playerTopDownAimMovementSpeed,
+                        verticalInputDirectionRight * battleManagerSingleton.playerTopDownAimMovementSpeed));
 
                 //TOOLS
                 if (!battleManagerSingleton.isPlayerUsingMirage)
@@ -213,7 +222,7 @@ namespace Arena
                 var toolQuickSelectMenuForBattle = UIManager.singleton.toolQuickSelectMenuForBattle;
                 var toolQuickSelectMenuForBattleScript = toolQuickSelectMenuForBattle.GetComponent<ToolQuickSelectMenu>();
                 toolQuickSelectMenuForBattle.SetActive(true);
-                if (rawHorizontalInput != 0 || rawVerticalInput != 0)
+                if (rawHorizontalInputRight != 0 || rawVerticalInputRight != 0)
                     toolQuickSelectMenuForBattleScript.selectionAngle = rawInputAngle;
                 else if (battleToolQuickSelectInit)
                     toolQuickSelectMenuForBattleScript.selectionAngle = 90;
