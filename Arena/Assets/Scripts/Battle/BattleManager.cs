@@ -510,11 +510,11 @@ namespace Arena
                 playerDirectionalAim.transform.parent = player.transform;
                 playerDirectionalAim.transform.localRotation = Quaternion.Euler(0, 0, 180);
 
-
                 // PLAYER TOP DOWN AIM
                 var topDownAimGameObject = Instantiate(prefabTopDownAim);
                 playerTopDownAim = topDownAimGameObject;
                 playerTopDownAim.transform.parent = player.transform;
+                UIManager.singleton.InitPlayerTopDownAimBoundary();
                 SetPlayerTopDownAim();
 
                 // HITBOXES
@@ -1102,17 +1102,20 @@ namespace Arena
             else
             {
                 // if a fire mirage sheet was used, spawn a fire at the player's position on usage
-                if (_usedToolScript.isMirageSheet && _usedCombatStatsScript.fire > 0)
+                if (_usedToolScript != null && _usedToolScript.isMirageSheet && _usedCombatStatsScript.fire > 0)
                     SpawnFires(
                         player.transform.position,
                         _usedCombatStatsScript,
                         _usedToolScript);
 
-                playerMirageBC = InitHitbox(
+                var curNewHitbox = InitHitbox(
                     _battleColliderInstructionScript,
                     _spawnPosition,
                     _spawnDirection,
                     _usedToolScript);
+
+                if (isPlayerUsingMirage)
+                    playerMirageBC = curNewHitbox;
             }
         }
 
@@ -1185,11 +1188,15 @@ namespace Arena
                     _curHitbox.bounds.Intersects(curBattleColliderGO.GetComponent<BoxCollider2D>().bounds))
                 {
                     var isCurGOAffected = true;
-                    if (curBattleColliderScript.isDestroyedByShield)
+                    var isCurGOShield = false;
+                    if (curBattleColliderScript.isDestroyedByShield || curBattleColliderScript.destroySelfOnCollision)
                     {
                         var curObjectPossibleBCScript = _curObjectGO.GetComponent<BattleCollider>();
                         if (curObjectPossibleBCScript != null && curObjectPossibleBCScript.isShield)
+                        {
                             isCurGOAffected = false;
+                            isCurGOShield = true;
+                        }
                     }
 
                     if (isCurGOAffected)
@@ -1201,8 +1208,12 @@ namespace Arena
 
                     curBattleColliderScript.collidedBattleObjects.Add(_curObjectGO);
 
-                    if (curBattleColliderScript.destroySelfOnCollision)
+                    if (curBattleColliderScript.destroySelfOnCollision &&
+                        (!isCurGOShield || (isCurGOShield && curBattleColliderScript.isDestroyedByShield)))
+                    {
+                        Debug.Log(isCurGOShield);
                         BattleColliderSelfDestroy(curBattleColliderScript, j);
+                    }
                 }
             }
         }

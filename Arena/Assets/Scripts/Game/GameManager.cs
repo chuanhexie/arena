@@ -30,9 +30,6 @@ namespace Arena
             // INIT BATTLE MANAGER
             battleManagerSingleton.InitBattle();
 
-            // INIT TOP DOWN AIM BOUNDARY
-            UIManagerSingleton.InitPlayerTopDownAimBoundary();
-
             // INIT HP & STATUS DISPLAYS (ON CANVAS) TO FOLLOW ENEMIES & BLOCKS
             UIManagerSingleton.InitBattleObjectStatsDisplays();
 
