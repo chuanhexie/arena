@@ -24,6 +24,7 @@ GameObject:
   - component: {fileID: 68860245594546770}
   - component: {fileID: 61437582478305452}
   - component: {fileID: 114875377487364496}
+  - component: {fileID: 114193178173450852}
   m_Layer: 12
   m_Name: Fire
   m_TagString: Untagged
@@ -40,7 +41,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4563910322398180}
   - component: {fileID: 61270261147521668}
-  m_Layer: 12
+  m_Layer: 16
   m_Name: CombatHitbox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -159,6 +160,35 @@ MonoBehaviour:
   isSpawner: 0
   locationX: 0
   locationY: 0
+--- !u!114 &114193178173450852
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1015484970473178}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b35e0a14e6a5b314d921df953b7a7e8d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hasCustomDamage: 1
+  customDamage: 0
+  hasCustomKnockback: 1
+  customKnockback: 25
+  hasCustomMeleeCooldown: 1
+  customMeleeCooldown: 0.15
+  isPlayer: 0
+  sprite: {fileID: 0}
+  walkSpeed: 0
+  runSpeed: 0
+  isFlyer: 0
+  remainingStunTime: 0
+  basePoisonPoints: 0
+  poisonDamageFrequency: 0
+  curPoisonDamageCountdown: 0
+  meleeTowardsPlayerCooldown: 0
+  enemyModel: {fileID: 0}
+  knockbackMovementDisabledCountdown: 0
 --- !u!114 &114875377487364496
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -170,6 +200,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d09decbeb5a723b47a30b1c29ab786dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isInvincible: 0
   maxHP: 10
   combatHitbox: {fileID: 1427509389325710}
   curHP: 0

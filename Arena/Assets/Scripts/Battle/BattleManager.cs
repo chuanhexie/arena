@@ -89,6 +89,9 @@ namespace Arena
         public float baseTimeToSpawnEnemy;
         public List<GameObject> enemyModelsToSpawn;
 
+        [Header("Fire")]
+        public float fireScanDelay;
+
         [Space(10)]
 
         [Header("(REFERENCE)")]
@@ -139,6 +142,9 @@ namespace Arena
 
         [Header("Fires")]
         public List<GameObject> activeFires;
+        public List<GameObject> unscannedFires;
+        public float curFireScanCountdown;
+        public bool isFireScanCountdownStarted;
 
         [Header("Enemy Spawning")]
         public float enemySpawnCountdown;
@@ -641,7 +647,14 @@ namespace Arena
 
                 // DEFAULTS TO BE OVERIDDEN IF APPROPRIATE
                 float damage = defaultEnemyDamage;
+                if (offensiveBattleCharacterScript.hasCustomDamage)
+                    damage = offensiveBattleCharacterScript.customDamage;
                 float curKnockbackForce = defaultKnockbackForce;
+                if (offensiveBattleCharacterScript.hasCustomKnockback)
+                    curKnockbackForce = offensiveBattleCharacterScript.customKnockback;
+                float curMeleeTowardsCooldownTime = defaultMeleeTowardsPlayerCooldownTime;
+                if (offensiveBattleCharacterScript.hasCustomMeleeCooldown)
+                    curMeleeTowardsCooldownTime = offensiveBattleCharacterScript.customMeleeCooldown;
 
                 if (_usedToolScript != null)
                 {
@@ -720,12 +733,12 @@ namespace Arena
 
                     // KNOCKBACK
                     if (targetBattleObjectScript.isPlayer ||
-                        (_usedToolScript != null && _usedToolScript.knockbackForce > 0))
+                        (_usedToolScript != null && curKnockbackForce > 0))
                         HandleKnockback(_targetGameObject, _offensiveGameObject.transform.position, curKnockbackForce);
 
                     // IF AI IS ATTACKING, SET COOLDOWN BEFORE THEY CAN HIT WITH MELEE AGAIN
                     if (!offensiveBattleCharacterScript.isPlayer)
-                        offensiveBattleCharacterScript.meleeTowardsPlayerCooldown = defaultMeleeTowardsPlayerCooldownTime;
+                        offensiveBattleCharacterScript.meleeTowardsPlayerCooldown = curMeleeTowardsCooldownTime;
                 }
             }
         }
@@ -762,10 +775,31 @@ namespace Arena
 
         public void HandleActiveFireLogic()
         {
+            // ------------ FIRE SCAN START ---------------
+            if (unscannedFires.Count() > 0)
+            {
+                if (!isFireScanCountdownStarted)
+                {
+                    curFireScanCountdown = fireScanDelay;
+                    isFireScanCountdownStarted = true;
+                }
+
+                curFireScanCountdown -= Time.deltaTime;
+
+                if (curFireScanCountdown <= 0)
+                {
+                    unscannedFires.Clear();
+                    AstarPath.active.Scan();
+                    isFireScanCountdownStarted = false;
+                }
+            }
+            // ------------ FIRE SCAN END ---------------
+
             for (var i = activeFires.Count - 1; i > -1; i--)
             {
                 GameObject curFireGameObject = activeFires[i];
                 var curFireBattleObjectScript = curFireGameObject.GetComponent<BattleObject>();
+                var curFireCombatHitbox = curFireGameObject.GetComponent<BoxCollider2D>();
 
                 // DECREASE FIRE LIFE COUNTDOWN, DESTROY AT 0
                 if (curFireBattleObjectScript.curHP > 0)
@@ -776,6 +810,7 @@ namespace Arena
                     UIManager.singleton.battleObjectStatsDisplays.Remove(fireStatsDisplay);
                     Destroy(fireStatsDisplay);
                     curFireBattleObjectScript.curHP = 0;
+                    battleObjects.Remove(curFireGameObject);
                     activeFires.RemoveAt(i);
                     Destroy(curFireGameObject);
                     AstarPath.active.Scan();
@@ -878,17 +913,17 @@ namespace Arena
                         var newFireBattleObjectScript = newFireGameObject.GetComponent<BattleObject>();
 
                         activeFires.Add(newFireGameObject);
+                        battleObjects.Add(newFireGameObject);
 
                         newFireGameObject.transform.position = curFireSpawnPoint;
                         newFireBattleObjectScript.maxHP = _usedCombatStatsScript.fire *
                         (_usedToolScript.combatStatsReduction == 0 ? 1 : _usedToolScript.combatStatsReduction);
                         newFireBattleObjectScript.curHP = newFireBattleObjectScript.maxHP;
-                        newFireBattleObjectScript.combatHitbox.GetComponent<BoxCollider2D>().enabled = false;
 
                         UIManager.singleton.InitBattleObjectStatsDisplay(newFireGameObject);
 
-                        // TODO: don't scan every single time, kills performance (I think that's what's doing it, anyway)
-                        AstarPath.active.Scan();
+                        // put fire in docket to be scanned in a small amount of time, instead of scanning every time a fire is created
+                        unscannedFires.Add(newFireGameObject);
 
                         curFireSpawnPoint.x += spawnPadding;
                     }
@@ -1210,10 +1245,7 @@ namespace Arena
 
                     if (curBattleColliderScript.destroySelfOnCollision &&
                         (!isCurGOShield || (isCurGOShield && curBattleColliderScript.isDestroyedByShield)))
-                    {
-                        Debug.Log(isCurGOShield);
                         BattleColliderSelfDestroy(curBattleColliderScript, j);
-                    }
                 }
             }
         }

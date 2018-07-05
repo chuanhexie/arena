@@ -7,6 +7,14 @@ namespace Arena
 {
     public class BattleCharacter : MonoBehaviour 
     {
+        [Header("(EDITABLE)")]
+        public bool hasCustomDamage;
+        public float customDamage;
+        public bool hasCustomKnockback;
+        public float customKnockback;
+        public bool hasCustomMeleeCooldown;
+        public float customMeleeCooldown;
+
         [Header("(REFERENCE)")]
         public bool isPlayer;
 

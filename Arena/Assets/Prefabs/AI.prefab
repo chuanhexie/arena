@@ -23,7 +23,6 @@ GameObject:
   - component: {fileID: 114507868336779526}
   - component: {fileID: 114290482582218032}
   - component: {fileID: 50132069283862768}
-  - component: {fileID: 114724716664098964}
   - component: {fileID: 212865322414970448}
   - component: {fileID: 68945694687385954}
   - component: {fileID: 114512325816210410}
@@ -169,7 +168,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 2
-  repathRate: 0
+  repathRate: 0.25
   canSearch: 1
   canMove: 1
   speed: 1.8
@@ -225,20 +224,6 @@ MonoBehaviour:
   aiMovementBehavior: 0
   aiFiringBehavior: 0
   agressiveDefenseDistance: 0
---- !u!114 &114724716664098964
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1404594924559292}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 77f586f285b3847808d79083bd19ef1f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  version: 1
-  unwrap: 1
-  splitAtEveryPortal: 0
 --- !u!114 &114757616653543388
 MonoBehaviour:
   m_ObjectHideFlags: 1
