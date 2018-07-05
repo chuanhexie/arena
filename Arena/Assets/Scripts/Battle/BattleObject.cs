@@ -8,6 +8,7 @@ namespace Arena
     {
         [Header("(EDITABLE)")]
         public bool isInvincible = false;
+        public bool isFire;
         public float maxHP;
         public GameObject combatHitbox;
 

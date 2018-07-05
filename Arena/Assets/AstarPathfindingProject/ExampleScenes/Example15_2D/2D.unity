@@ -284,6 +284,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isInvincible: 1
+  isFire: 0
   maxHP: 1000
   combatHitbox: {fileID: 1313362361}
   curHP: 1000
@@ -641,6 +642,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isInvincible: 1
+  isFire: 0
   maxHP: 1000
   combatHitbox: {fileID: 1359142356}
   curHP: 1000
@@ -984,6 +986,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isInvincible: 1
+  isFire: 0
   maxHP: 1000
   combatHitbox: {fileID: 764008431}
   curHP: 1000
@@ -1203,8 +1206,9 @@ MonoBehaviour:
   physicsMaterialDefaultBattleCollider: {fileID: 6200000, guid: c77386f178582b846b5b850575e75452,
     type: 2}
   baseTimeToSpawnEnemy: 0.1
-  enemyModelsToSpawn: []
-  fireScanDelay: 0.01
+  enemyModelsToSpawn:
+  - {fileID: 1359144433}
+  fireScanDelay: 0.25
   player: {fileID: 0}
   playerLeftTool: {fileID: 0}
   playerRightTool: {fileID: 0}
@@ -1323,6 +1327,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isInvincible: 1
+  isFire: 0
   maxHP: 1000
   combatHitbox: {fileID: 677753796}
   curHP: 1000
@@ -1630,6 +1635,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isInvincible: 0
+  isFire: 0
   maxHP: 1000
   combatHitbox: {fileID: 0}
   curHP: 1000
@@ -1730,7 +1736,7 @@ Prefab:
     - target: {fileID: 114255411055307360, guid: 6a4b45fa28855fa4db1288b4fac29203,
         type: 2}
       propertyPath: damage
-      value: 3
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114772331221177954, guid: 6a4b45fa28855fa4db1288b4fac29203,
         type: 2}
@@ -1750,17 +1756,17 @@ Prefab:
     - target: {fileID: 114255411055307360, guid: 6a4b45fa28855fa4db1288b4fac29203,
         type: 2}
       propertyPath: poison
-      value: 3
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114255411055307360, guid: 6a4b45fa28855fa4db1288b4fac29203,
         type: 2}
       propertyPath: stun
-      value: 10
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114255411055307360, guid: 6a4b45fa28855fa4db1288b4fac29203,
         type: 2}
       propertyPath: fire
-      value: 0
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 114872245120006874, guid: 6a4b45fa28855fa4db1288b4fac29203,
         type: 2}
@@ -2050,6 +2056,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isInvincible: 0
+  isFire: 0
   maxHP: 1000
   combatHitbox: {fileID: 0}
   curHP: 1000
@@ -3285,6 +3292,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isInvincible: 0
+  isFire: 0
   maxHP: 1000
   combatHitbox: {fileID: 0}
   curHP: 1000
@@ -3463,6 +3471,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isInvincible: 0
+  isFire: 0
   maxHP: 1000
   combatHitbox: {fileID: 0}
   curHP: 1000

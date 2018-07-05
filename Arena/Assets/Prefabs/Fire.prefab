@@ -174,7 +174,7 @@ MonoBehaviour:
   hasCustomDamage: 1
   customDamage: 0
   hasCustomKnockback: 1
-  customKnockback: 25
+  customKnockback: 18
   hasCustomMeleeCooldown: 1
   customMeleeCooldown: 0.15
   isPlayer: 0
@@ -201,6 +201,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isInvincible: 0
+  isFire: 1
   maxHP: 10
   combatHitbox: {fileID: 1427509389325710}
   curHP: 0

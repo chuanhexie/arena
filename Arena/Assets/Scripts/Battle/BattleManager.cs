@@ -400,12 +400,13 @@ namespace Arena
                 }
                     
                 // ----------- COLLISIONS-WITH-BATTLE-COLLIDER-CHECK LOGIC START ------------------
-                CheckBattleColliderCollisionsWithInput(
-                    curBattleObjectGameObject,
-                    curBattleObjectTransform,
-                    battleObjectCombatHitbox,
-                    curBattleObjectScript.isPlayer,
-                    false);
+                if (!curBattleObjectScript.isFire)
+                    CheckBattleColliderCollisionsWithInput(
+                        curBattleObjectGameObject,
+                        curBattleObjectTransform,
+                        battleObjectCombatHitbox,
+                        curBattleObjectScript.isPlayer,
+                        false);
                 // ----------- COLLISIONS-WITH-BATTLE-COLLIDER-CHECK LOGIC END --------------------
 
 
