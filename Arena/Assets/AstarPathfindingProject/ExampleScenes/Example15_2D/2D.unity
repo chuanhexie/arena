@@ -139,7 +139,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1248513422}
-  m_RootOrder: 11
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &48630558
 MonoBehaviour:
@@ -883,6 +883,173 @@ MonoBehaviour:
   aiMovementBehavior: 0
   aiFiringBehavior: 0
   agressiveDefenseDistance: 0
+--- !u!1001 &462806212
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 1248513422}
+    m_Modifications:
+    - target: {fileID: 114772331221177954, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: battleColliderInstructionPrefabs.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4353725108400276, guid: 6a4b45fa28855fa4db1288b4fac29203, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: -0.1276247
+      objectReference: {fileID: 0}
+    - target: {fileID: 4353725108400276, guid: 6a4b45fa28855fa4db1288b4fac29203, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: -0.3000154
+      objectReference: {fileID: 0}
+    - target: {fileID: 4353725108400276, guid: 6a4b45fa28855fa4db1288b4fac29203, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4353725108400276, guid: 6a4b45fa28855fa4db1288b4fac29203, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4353725108400276, guid: 6a4b45fa28855fa4db1288b4fac29203, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4353725108400276, guid: 6a4b45fa28855fa4db1288b4fac29203, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4353725108400276, guid: 6a4b45fa28855fa4db1288b4fac29203, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4353725108400276, guid: 6a4b45fa28855fa4db1288b4fac29203, type: 2}
+      propertyPath: m_RootOrder
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 114255411055307360, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: useSpeed
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 114255411055307360, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: resourceEfficiency
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 114772331221177954, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: usesMana
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114255411055307360, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: damage
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114772331221177954, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: thumbnail
+      value: 
+      objectReference: {fileID: 21300000, guid: 050953cefd094084292f5191edd69483,
+        type: 3}
+    - target: {fileID: 114772331221177954, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: isBleed
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1832643332154174, guid: 6a4b45fa28855fa4db1288b4fac29203, type: 2}
+      propertyPath: m_Name
+      value: Bottle
+      objectReference: {fileID: 0}
+    - target: {fileID: 114255411055307360, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: poison
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114255411055307360, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: stun
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114255411055307360, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: fire
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114872245120006874, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: layerMask.m_Bits
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114872245120006874, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: isRaycast
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114872245120006874, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: raycastLength
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114872245120006874, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: spawnsFireOnSelfDestroy
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114872245120006874, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: fireGridCount
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114872245120006874, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: forwardDistanceToSpawn
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114872245120006874, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: duration
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114872245120006874, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: playerIsImmune
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114772331221177954, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: battleColliderInstructionPrefabs.Array.data[0]
+      value: 
+      objectReference: {fileID: 511666259}
+    - target: {fileID: 114772331221177954, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: isAmmoBasedTool
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114772331221177954, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: isReloadTool
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114772331221177954, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: maxAmmoCLip
+      value: 1000
+      objectReference: {fileID: 0}
+    - target: {fileID: 114772331221177954, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: curAmmoClip
+      value: 1000
+      objectReference: {fileID: 0}
+    - target: {fileID: 114772331221177954, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: isBottle
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: 6a4b45fa28855fa4db1288b4fac29203, type: 2}
+  m_IsPrefabParent: 0
 --- !u!1 &479234577
 GameObject:
   m_ObjectHideFlags: 0
@@ -1031,6 +1198,11 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 8.82}
   m_EdgeRadius: 0
+--- !u!1 &511666259 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 1642935304434328, guid: 6a4b45fa28855fa4db1288b4fac29203,
+    type: 2}
+  m_PrefabInternal: {fileID: 462806212}
 --- !u!1 &544608126
 GameObject:
   m_ObjectHideFlags: 0
@@ -1164,12 +1336,12 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 65536
   playerTools:
-  - {fileID: 252732217}
-  - {fileID: 633596594}
+  - {fileID: 999120925}
+  - {fileID: 1192251170}
   - {fileID: 1793618245}
   - {fileID: 953317417}
   - {fileID: 1542237099}
-  - {fileID: 999120925}
+  - {fileID: 252732217}
   - {fileID: 1172797419}
   - {fileID: 699408574}
   maxHealth: 3
@@ -1206,14 +1378,18 @@ MonoBehaviour:
   physicsMaterialDefaultBattleCollider: {fileID: 6200000, guid: c77386f178582b846b5b850575e75452,
     type: 2}
   baseTimeToSpawnEnemy: 0.1
-  enemyModelsToSpawn:
-  - {fileID: 1359144433}
+  enemyModelsToSpawn: []
+  bottleDrinkDuration: 0.2
+  bottleBuffDefaultDuration: 10
   fireScanDelay: 0.25
   player: {fileID: 0}
   playerLeftTool: {fileID: 0}
   playerRightTool: {fileID: 0}
   playerIsRunning: 0
   canPlayerPerformAnyAction: 0
+  playerCurArmor: []
+  playerAllBuffs: []
+  playerCurTotalBuff: {fileID: 0}
   curStamina: 0
   curMana: 0
   playerDirectionalAim: {fileID: 0}
@@ -1224,6 +1400,7 @@ MonoBehaviour:
   playerTopDownCurAimDistance: 0
   isPlayerCurrentlyUsingTool: 0
   playerToolInUse: {fileID: 0}
+  playerToolInUseCombatStats: {fileID: 0}
   currentToolSpeedFinal: 0
   playerToolCompletionCountdown: 0
   playerShieldState: 0
@@ -1482,11 +1659,6 @@ Prefab:
 --- !u!4 &633596593 stripped
 Transform:
   m_PrefabParentObject: {fileID: 4353725108400276, guid: 6a4b45fa28855fa4db1288b4fac29203,
-    type: 2}
-  m_PrefabInternal: {fileID: 633596592}
---- !u!1 &633596594 stripped
-GameObject:
-  m_PrefabParentObject: {fileID: 1832643332154174, guid: 6a4b45fa28855fa4db1288b4fac29203,
     type: 2}
   m_PrefabInternal: {fileID: 633596592}
 --- !u!1 &639496564
@@ -1972,12 +2144,12 @@ Prefab:
     - target: {fileID: 114255411055307360, guid: 6a4b45fa28855fa4db1288b4fac29203,
         type: 2}
       propertyPath: useSpeed
-      value: 6
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 114255411055307360, guid: 6a4b45fa28855fa4db1288b4fac29203,
         type: 2}
       propertyPath: resourceEfficiency
-      value: 6
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 114772331221177954, guid: 6a4b45fa28855fa4db1288b4fac29203,
         type: 2}
@@ -1987,7 +2159,7 @@ Prefab:
     - target: {fileID: 114255411055307360, guid: 6a4b45fa28855fa4db1288b4fac29203,
         type: 2}
       propertyPath: damage
-      value: 8
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114772331221177954, guid: 6a4b45fa28855fa4db1288b4fac29203,
         type: 2}
@@ -3015,6 +3187,16 @@ Transform:
   m_PrefabParentObject: {fileID: 4353725108400276, guid: 6a4b45fa28855fa4db1288b4fac29203,
     type: 2}
   m_PrefabInternal: {fileID: 1872897813}
+--- !u!1 &1192251170 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 1832643332154174, guid: 6a4b45fa28855fa4db1288b4fac29203,
+    type: 2}
+  m_PrefabInternal: {fileID: 462806212}
+--- !u!4 &1192251171 stripped
+Transform:
+  m_PrefabParentObject: {fileID: 4353725108400276, guid: 6a4b45fa28855fa4db1288b4fac29203,
+    type: 2}
+  m_PrefabInternal: {fileID: 462806212}
 --- !u!1 &1215890923
 GameObject:
   m_ObjectHideFlags: 0
@@ -3079,6 +3261,7 @@ Transform:
   - {fileID: 252732219}
   - {fileID: 1172797421}
   - {fileID: 699408573}
+  - {fileID: 1192251171}
   - {fileID: 48630557}
   m_Father: {fileID: 0}
   m_RootOrder: 5
@@ -3140,7 +3323,7 @@ Prefab:
     - target: {fileID: 114255411055307360, guid: 6a4b45fa28855fa4db1288b4fac29203,
         type: 2}
       propertyPath: damage
-      value: 4
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114772331221177954, guid: 6a4b45fa28855fa4db1288b4fac29203,
         type: 2}
@@ -3259,6 +3442,11 @@ Prefab:
         type: 2}
       propertyPath: forwardDistanceToSpawn
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114772331221177954, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: isAmmoBasedTool
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6a4b45fa28855fa4db1288b4fac29203, type: 2}
@@ -3944,6 +4132,11 @@ Prefab:
       propertyPath: isReloadTool
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114772331221177954, guid: 6a4b45fa28855fa4db1288b4fac29203,
+        type: 2}
+      propertyPath: isAmmoBasedTool
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6a4b45fa28855fa4db1288b4fac29203, type: 2}
   m_IsPrefabParent: 0
@@ -4262,7 +4455,7 @@ Prefab:
     - target: {fileID: 114255411055307360, guid: 6a4b45fa28855fa4db1288b4fac29203,
         type: 2}
       propertyPath: fire
-      value: 5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114872245120006874, guid: 6a4b45fa28855fa4db1288b4fac29203,
         type: 2}

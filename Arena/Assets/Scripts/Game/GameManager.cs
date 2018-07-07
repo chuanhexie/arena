@@ -296,5 +296,13 @@ namespace Arena
             LayerMask invertedInputMask = ~_inputMask;
             return ~(invertedInputMask | _maskToRemove);
         }
+
+        public static float NegativeToZero(float _input)
+        {
+            if (_input < 0)
+                _input = 0;
+
+            return _input;
+        }
     }
 }

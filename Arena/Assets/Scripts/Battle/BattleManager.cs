@@ -89,6 +89,10 @@ namespace Arena
         public float baseTimeToSpawnEnemy;
         public List<GameObject> enemyModelsToSpawn;
 
+        [Header("Bottle")]
+        public float bottleDrinkDuration;
+        public float bottleBuffDefaultDuration;
+
         [Header("Fire")]
         public float fireScanDelay;
 
@@ -101,6 +105,11 @@ namespace Arena
         public GameObject playerRightTool;
         public bool playerIsRunning;
         public bool canPlayerPerformAnyAction;
+
+        [Header("Player Buffs")]
+        public List<Tool> playerCurArmor;
+        public List<CombatStats> playerAllBuffs;
+        public CombatStats playerCurTotalBuff;
 
         [Header("Player Stats")]
         public float curStamina;
@@ -119,6 +128,7 @@ namespace Arena
         [Header("Player Tools")]
         public bool isPlayerCurrentlyUsingTool;
         public GameObject playerToolInUse;
+        public CombatStats playerToolInUseCombatStats;
         public float currentToolSpeedFinal = 0;
         public float playerToolCompletionCountdown = 0;
 
@@ -190,6 +200,15 @@ namespace Arena
                     playerToolCompletionCountdown = 0;
             }
 
+            // PLAYER ACTIVE BUFF LOGIC
+            for (var i = playerAllBuffs.Count - 1; i > -1; i--)
+            {
+                var curCombatStats = playerAllBuffs[i];
+                curCombatStats.tempBuffDuration -= Time.deltaTime;
+                if (curCombatStats.tempBuffDuration <= 0)
+                    EndPlayerBuff(curCombatStats);
+            }
+
             // REGEN STAMINA IF NOT USING STAMINA TOOL OR RUNNING
             if ((playerToolCompletionCountdown <= 0 || 
                 (isPlayerCurrentlyUsingTool && playerToolInUse.GetComponent<Tool>().usesMana)) 
@@ -206,7 +225,7 @@ namespace Arena
             // IF TOOL USE COUNTDOWN IS COMPLETE, USE TOOL
             if (isPlayerCurrentlyUsingTool && playerToolCompletionCountdown <= 0)
             {
-                UseTool(playerToolInUse);
+                UseTool(playerToolInUse, playerToolInUseCombatStats);
                 currentToolSpeedFinal = 0;
                 isPlayerCurrentlyUsingTool = false;
             }
@@ -460,31 +479,54 @@ namespace Arena
 
         public void InitToolUse (GameObject tool)
         {
-            var toolScript = tool.GetComponent<Tool>();
-            var toolStatsScript = toolScript.combatStats.GetComponent<CombatStats>();
-            var requiredResource = maxStamina;
-            if (toolScript.usesMana)
-                requiredResource = maxMana;
-            requiredResource /= toolStatsScript.resourceEfficiency;
-
-            if (playerToolCompletionCountdown <= 0
-                && ((!toolScript.usesMana && curStamina >= requiredResource) 
-                    || ((toolScript.usesMana && curMana >= requiredResource))))
+            if (playerToolCompletionCountdown <= 0)
             {
-                if (!toolScript.usesMana)
-                    curStamina -= requiredResource;
-                else
-                    curMana -= requiredResource;
+                var toolScript = tool.GetComponent<Tool>();
 
-                playerToolInUse = tool;
-                isPlayerCurrentlyUsingTool = true;
-                float currentToolSpeedStat = toolStatsScript.useSpeed;
-                if (currentToolSpeedStat <= 0)
-                    currentToolSpeedStat = 0.01f;
-                var toolSpeedFinal = baseToolUseSpeed / currentToolSpeedStat;
-                currentToolSpeedFinal = toolSpeedFinal;
-                playerToolCompletionCountdown = toolSpeedFinal;
-                UIManager.singleton.InitCountdownRing(player, toolSpeedFinal, toolSpeedFinal, UIManager.singleton.CRtoolColor);
+                // APPLY BUFFS TO BASE COMBAT STATS
+                var baseToolStatsScript = toolScript.combatStats.GetComponent<CombatStats>();
+                var finalCombatStatsScript = Instantiate(baseToolStatsScript);
+                if (playerAllBuffs.Count() > 0)
+                    finalCombatStatsScript = AddOrRemoveCombatStats(finalCombatStatsScript, playerCurTotalBuff, false);
+                
+                float requiredResource = 0;
+                if (!toolScript.isBottle)
+                {
+                    requiredResource = maxStamina;
+                    if (toolScript.usesMana)
+                        requiredResource = maxMana;
+                    requiredResource /= finalCombatStatsScript.resourceEfficiency;
+                }
+
+                if (playerToolCompletionCountdown <= 0
+                    && ((!toolScript.usesMana && curStamina >= requiredResource)
+                    || ((toolScript.usesMana && curMana >= requiredResource)))
+                    && (!toolScript.isAmmoBasedTool || toolScript.curAmmoClip > 0 || toolScript.isReloadTool))
+                {
+                    if (!toolScript.usesMana)
+                        curStamina -= requiredResource;
+                    else
+                        curMana -= requiredResource;
+
+                    playerToolInUse = tool;
+                    playerToolInUseCombatStats = finalCombatStatsScript;
+                    isPlayerCurrentlyUsingTool = true;
+
+                    // tool usage speed
+                    var toolSpeedFinal = bottleDrinkDuration;
+                    if (!toolScript.isBottle)
+                    {
+                        float currentToolSpeedStat = finalCombatStatsScript.useSpeed;
+                        if (currentToolSpeedStat <= 0)
+                            currentToolSpeedStat = 0.01f;
+                        toolSpeedFinal = baseToolUseSpeed / currentToolSpeedStat;
+                    }
+                    currentToolSpeedFinal = toolSpeedFinal;
+                    playerToolCompletionCountdown = toolSpeedFinal;
+                    UIManager.singleton.InitCountdownRing(player, toolSpeedFinal, toolSpeedFinal, UIManager.singleton.CRtoolColor);
+                }
+                else
+                    Destroy(finalCombatStatsScript);
             }
         }
 
@@ -539,38 +581,46 @@ namespace Arena
             characterGameObject.transform.position = _spawnLocation;
         }
 
-        public void UseTool(GameObject toolGameObject)
+        public void UseTool(GameObject _toolGameObject, CombatStats _toolCombatStats)
         {
-            var toolScript = toolGameObject.GetComponent<Tool>();
-            var battleColliderInstructionsScript = toolScript.battleColliderInstructionPrefabs[0].GetComponent<BattleColliderInstruction>();
-            var combatStatsScript = toolScript.combatStats.GetComponent<CombatStats>();
+            var toolScript = _toolGameObject.GetComponent<Tool>();
+            var toolBattleColliderInstructions = toolScript.battleColliderInstructionPrefabs;
 
             // if tool doesn't have to reload, then perform function, otherwise use this action to reload clip
-            if (!toolScript.isReloadTool ||
-                toolScript.curAmmoClip >= toolScript.maxAmmoCLip)
+            if (!toolScript.isAmmoBasedTool ||
+                toolScript.curAmmoClip > 0)
             {
                 // ACTIVATE MIRAGE SHEET ABILITY IF APPLICABLE
                 if (toolScript.isMirageSheet)
                     ActivateMirage();
 
-                Vector2 positionToSpawnBattleCollider = playerDirectionalAim.transform.position;
-                if (battleColliderInstructionsScript.usesAltAimReticule)
-                    positionToSpawnBattleCollider = playerTopDownAim.transform.position;
-                float aimCenterAngle = playerDirectionalAim.transform.eulerAngles.z + 90;
+                // ACTIVATE BOTTLE ABILITY IF APPLICABLE
+                if (toolScript.isBottle)
+                    InitPlayerBuff(_toolCombatStats);
 
-                InitBattleColliderInstruction(
-                    battleColliderInstructionsScript,
-                    positionToSpawnBattleCollider,
-                    GameManager.radianToDirection(aimCenterAngle, true),
-                    aimCenterAngle,
-                    combatStatsScript,
-                    toolScript
-                );
+                // if tool has a battle collider instruction, perform instructions
+                if (toolBattleColliderInstructions.Count() > 0)
+                {
+                    var battleColliderInstructionsScript = toolBattleColliderInstructions[0].GetComponent<BattleColliderInstruction>();
+                    Vector2 positionToSpawnBattleCollider = playerDirectionalAim.transform.position;
+                    if (battleColliderInstructionsScript.usesAltAimReticule)
+                        positionToSpawnBattleCollider = playerTopDownAim.transform.position;
+                    float aimCenterAngle = playerDirectionalAim.transform.eulerAngles.z + 90;
+
+                    InitBattleColliderInstruction(
+                        battleColliderInstructionsScript,
+                        positionToSpawnBattleCollider,
+                        GameManager.radianToDirection(aimCenterAngle, true),
+                        aimCenterAngle,
+                        _toolCombatStats,
+                        toolScript);
+                }
 
                 // EXPEND AMMO IF APPLICABLE
-                if (toolScript.isReloadTool)
-                    toolScript.curAmmoClip = 0;
+                if (toolScript.isAmmoBasedTool && toolScript.curAmmoClip > 0)
+                    toolScript.curAmmoClip -= 1;
             }
+            // if tool can be reloaded, and has an empty clip, reload
             else if (toolScript.isReloadTool)
             {
                 Debug.Log("used action to reload");
@@ -935,7 +985,12 @@ namespace Arena
             }
         }
 
-        public GameObject InitHitbox(BattleColliderInstruction _battleColliderInstructionsScript, Vector2 _spawnPosition, Vector2 _spawnDirection, Tool _usedToolScript = null)
+        public GameObject InitHitbox(
+            BattleColliderInstruction _battleColliderInstructionsScript,
+            Vector2 _spawnPosition,
+            Vector2 _spawnDirection,
+            CombatStats _usedCombatStats = null,
+            Tool _usedToolScript = null)
         {
             var battleColliderGameObject = Instantiate(prefabSmallHitbox);
             battleColliders.Add(battleColliderGameObject);
@@ -987,7 +1042,7 @@ namespace Arena
 
             if (_usedToolScript != null)
             {
-                battleColliderScript.combatStats = _usedToolScript.combatStats.GetComponent<CombatStats>();
+                battleColliderScript.combatStats = _usedCombatStats;
                 battleColliderScript.toolThisWasCreatedFrom = _usedToolScript;
             }
 
@@ -1013,6 +1068,7 @@ namespace Arena
                     _curBattleColliderScript.prefabBattleColliderInstructionOnSelfDestroy.GetComponent<BattleColliderInstruction>(),
                     _curBattleColliderScript.transform.position,
                     Vector2.zero,
+                    _curBattleColliderScript.combatStats,
                     _curBattleColliderScript.toolThisWasCreatedFrom);
             }
 
@@ -1148,6 +1204,7 @@ namespace Arena
                     _battleColliderInstructionScript,
                     _spawnPosition,
                     _spawnDirection,
+                    _usedCombatStatsScript,
                     _usedToolScript);
 
                 if (isPlayerUsingMirage)
@@ -1349,6 +1406,51 @@ namespace Arena
                 remainingPlayerMirageTime = 0;
                 player.GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 255) / 255;
             }
+        }
+
+        public void InitPlayerBuff(CombatStats _combatStatsScript, bool isInfinite = false)
+        {
+            CombatStats newPlayerBuffGO = Instantiate(_combatStatsScript);
+            CombatStats newPlayerBuffScript = newPlayerBuffGO.GetComponent<CombatStats>();
+
+            newPlayerBuffScript.isBuff = true;
+            newPlayerBuffScript.isBuffInfinite = isInfinite;
+            if (!isInfinite)
+                newPlayerBuffScript.tempBuffDuration = bottleBuffDefaultDuration;
+
+            playerAllBuffs.Add(newPlayerBuffScript);
+            newPlayerBuffGO.name = "PlayerBuff-" + playerAllBuffs.Count();
+
+            if (playerCurTotalBuff != null)
+                playerCurTotalBuff = AddOrRemoveCombatStats(playerCurTotalBuff, newPlayerBuffScript, false);
+            else
+                playerCurTotalBuff = newPlayerBuffScript;
+
+            Destroy(_combatStatsScript);
+        }
+
+        public void EndPlayerBuff(CombatStats _buffScript)
+        {
+            GameObject buffGO = _buffScript.gameObject;
+            playerCurTotalBuff = AddOrRemoveCombatStats(playerCurTotalBuff, _buffScript, true);
+            playerAllBuffs.Remove(_buffScript);
+            Destroy(buffGO);
+        }
+
+        public CombatStats AddOrRemoveCombatStats(CombatStats _baseStats, CombatStats _statsToAddOrRemove, bool removeStats = false)
+        {
+            float posOrNegMultiplier = 1;
+            if (removeStats)
+                posOrNegMultiplier = -1;
+
+            _baseStats.damage = GameManager.NegativeToZero(_baseStats.damage + (_statsToAddOrRemove.damage * posOrNegMultiplier));
+            _baseStats.stun = GameManager.NegativeToZero(_baseStats.stun + (_statsToAddOrRemove.stun * posOrNegMultiplier));
+            _baseStats.fire = GameManager.NegativeToZero(_baseStats.fire + (_statsToAddOrRemove.fire * posOrNegMultiplier));
+            _baseStats.poison = GameManager.NegativeToZero(_baseStats.poison + (_statsToAddOrRemove.poison * posOrNegMultiplier));
+            _baseStats.useSpeed = GameManager.NegativeToZero(_baseStats.useSpeed + (_statsToAddOrRemove.useSpeed * posOrNegMultiplier));
+            _baseStats.resourceEfficiency = GameManager.NegativeToZero(_baseStats.resourceEfficiency + (_statsToAddOrRemove.resourceEfficiency * posOrNegMultiplier));
+
+            return _baseStats;
         }
     }
 

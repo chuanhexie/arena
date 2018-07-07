@@ -19,7 +19,6 @@ namespace Arena
         public bool isDead;
         public bool isPlayer;
 
-
         // Use this for initialization
         void Start () 
         {

@@ -18,9 +18,16 @@ namespace Arena
         public float combatStatsReduction;
         public bool usesMana;
         public bool isBleed;
-        public bool isReloadTool;
         public bool isMirageSheet;
         public float knockbackForce;
+
+        [Header("Ammo")]
+        public bool isAmmoBasedTool;
+        public bool isReloadTool;
+        public int maxAmmoCLip = 1;
+
+        [Header("Shield")]
+        public bool isBottle;
 
         [Header("Shield")]
         public bool isShield;
@@ -28,6 +35,5 @@ namespace Arena
         [Header("(REFERENCE)")]
         [Header("Reload")]
         public int curAmmoClip = 1;
-        public int maxAmmoCLip = 1;
     }
 }
