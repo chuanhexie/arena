@@ -26,11 +26,14 @@ namespace Arena
         public bool isReloadTool;
         public int maxAmmoCLip = 1;
 
-        [Header("Shield")]
+        [Header("Bottle")]
         public bool isBottle;
 
         [Header("Shield")]
         public bool isShield;
+
+        [Header("Armor")]
+        public bool isArmor;
 
         [Header("(REFERENCE)")]
         [Header("Reload")]

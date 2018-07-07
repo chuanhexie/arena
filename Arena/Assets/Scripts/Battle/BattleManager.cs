@@ -93,6 +93,9 @@ namespace Arena
         public float bottleDrinkDuration;
         public float bottleBuffDefaultDuration;
 
+        [Header("Armor")]
+        public float armorDefaultStatEffectiveness;
+
         [Header("Fire")]
         public float fireScanDelay;
 
@@ -107,7 +110,7 @@ namespace Arena
         public bool canPlayerPerformAnyAction;
 
         [Header("Player Buffs")]
-        public List<Tool> playerCurArmor;
+        public GameObject playerCurArmor;
         public List<CombatStats> playerAllBuffs;
         public CombatStats playerCurTotalBuff;
 
@@ -184,6 +187,13 @@ namespace Arena
 
             // INIT PLAYER SHIELDS
             InitPlayerShields();
+
+            // INIT PLAYER ARMOR
+            if (playerCurArmor != null)
+            {
+                CombatStats armorReducedCombatStats = MultiplyCombatStats(Instantiate(playerCurArmor.GetComponent<Tool>().combatStats.GetComponent<CombatStats>()));
+                InitPlayerBuff(armorReducedCombatStats, true);
+            }
         }
 
         public void UpdateBattleLogic()
@@ -204,9 +214,12 @@ namespace Arena
             for (var i = playerAllBuffs.Count - 1; i > -1; i--)
             {
                 var curCombatStats = playerAllBuffs[i];
-                curCombatStats.tempBuffDuration -= Time.deltaTime;
-                if (curCombatStats.tempBuffDuration <= 0)
-                    EndPlayerBuff(curCombatStats);
+                if (!curCombatStats.isBuffInfinite)
+                {
+                    curCombatStats.tempBuffDuration -= Time.deltaTime;
+                    if (curCombatStats.tempBuffDuration <= 0)
+                        EndPlayerBuff(curCombatStats);
+                }
             }
 
             // REGEN STAMINA IF NOT USING STAMINA TOOL OR RUNNING
@@ -1426,7 +1439,7 @@ namespace Arena
             else
                 playerCurTotalBuff = newPlayerBuffScript;
 
-            Destroy(_combatStatsScript);
+            Destroy(_combatStatsScript.gameObject);
         }
 
         public void EndPlayerBuff(CombatStats _buffScript)
@@ -1449,6 +1462,18 @@ namespace Arena
             _baseStats.poison = GameManager.NegativeToZero(_baseStats.poison + (_statsToAddOrRemove.poison * posOrNegMultiplier));
             _baseStats.useSpeed = GameManager.NegativeToZero(_baseStats.useSpeed + (_statsToAddOrRemove.useSpeed * posOrNegMultiplier));
             _baseStats.resourceEfficiency = GameManager.NegativeToZero(_baseStats.resourceEfficiency + (_statsToAddOrRemove.resourceEfficiency * posOrNegMultiplier));
+
+            return _baseStats;
+        }
+
+        public CombatStats MultiplyCombatStats(CombatStats _baseStats)
+        {
+            _baseStats.damage *= armorDefaultStatEffectiveness;
+            _baseStats.stun *= armorDefaultStatEffectiveness;
+            _baseStats.fire *= armorDefaultStatEffectiveness;
+            _baseStats.poison *= armorDefaultStatEffectiveness;
+            _baseStats.useSpeed *= armorDefaultStatEffectiveness;
+            _baseStats.resourceEfficiency *= armorDefaultStatEffectiveness;
 
             return _baseStats;
         }
