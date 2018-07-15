@@ -4,17 +4,40 @@ using UnityEngine;
 using System.Linq;
 using System;
 using Pathfinding;
+using Rewired;
 
 namespace Arena
 {
+    [RequireComponent(typeof(CharacterController))]
     public class GameManager : MonoBehaviour 
     {
-        // INIT SINGLETON VARIABLES
+        [Header("(EDITABLE)")]
+        [Header("General")]
+        public List<GameObject> defaultPlayerToolModels;
+
+        [Header("Input")]
+        public GameObject inputValuesContainerGO;
+
+        [Header("Singletons")]
         private BattleManager battleManagerSingleton;
         private GridManager gridManagerSingleton;
         private UIManager UIManagerSingleton;
+        private MenuManager menuManagerSingleton;
+
+        [Header("(REFERENCE)")]
+        public GameState curGameState;
+        public int playerId = 0; // The Rewired player id of the main (and only) player
+        public bool isPaused;
 
         public bool isLeftTriggerAxisInUse;
+
+        private Player inputPlayer; // The Rewired Player
+
+        // gameplay reference
+        public List<Tool> playerAllTools;
+
+        [Header("Input")]
+        public InputValues inputValuesScript;
 
         // Use this for initialization
         void Start () 
@@ -23,18 +46,35 @@ namespace Arena
             battleManagerSingleton = BattleManager.singleton;
             gridManagerSingleton = GridManager.singleton;
             UIManagerSingleton = UIManager.singleton;
-
-            // GENERATE TILES & ADD ALL BLOCKS TO BATTLE OBJECTS LIST
-            gridManagerSingleton.GenerateTiles();
-
-            // INIT BATTLE MANAGER
-            battleManagerSingleton.InitBattle();
-
-            // INIT HP & STATUS DISPLAYS (ON CANVAS) TO FOLLOW ENEMIES & BLOCKS
-            UIManagerSingleton.InitBattleObjectStatsDisplays();
+            menuManagerSingleton = MenuManager.singleton;
 
             // INPUT
-            isLeftTriggerAxisInUse = false;
+            inputValuesScript = inputValuesContainerGO.GetComponent<InputValues>();
+
+            // PLAYER TOOLS
+            InitPlayerDefaultTools();
+
+            if (curGameState == GameState.shop)
+            {
+                // MENU MANAGER
+                menuManagerSingleton.mainCanvas = UIManagerSingleton.canvas;
+                menuManagerSingleton.mainCanvasTransform = UIManagerSingleton.canvas.GetComponent<Transform>();
+                menuManagerSingleton.InitMenuManager();
+            }
+            else if (curGameState == GameState.battle)
+            {
+                // GENERATE TILES & ADD ALL BLOCKS TO BATTLE OBJECTS LIST
+                gridManagerSingleton.GenerateTiles();
+
+                // INIT BATTLE MANAGER
+                battleManagerSingleton.InitBattle();
+
+                // UI: INIT HP & STATUS DISPLAYS (ON CANVAS) TO FOLLOW ENEMIES & BLOCKS
+                UIManagerSingleton.InitBattleObjectStatsDisplays();
+
+                // UI: tool quickselect in-battle
+                UIManagerSingleton.toolQuickSelectMenuForBattle = UIManagerSingleton.InitToolQuickSelectMenu();
+            }
         }
 
 
@@ -42,217 +82,58 @@ namespace Arena
         void FixedUpdate () 
         {
             // CHECK PLAYER INPUT & PERFORM APPROPRIATE ACTIONS
-            CheckInput();
+            UpdatePlayerInputValues();
 
-            // BATTLE LOGIC
-            battleManagerSingleton.UpdateBattleLogic();
+            if (curGameState == GameState.battle)
+            {
+                // BATTLE LOGIC
+                battleManagerSingleton.UpdateBattleLogic();
 
-            // UI LOGIC: BATTLE
-            UIManagerSingleton.UpdateUILogic();
+                // UI LOGIC: BATTLE
+                UIManagerSingleton.UpdateUILogic();
+            }
         }
 
         public static GameManager singleton;
         void Awake()
         {
             singleton = this;
+
+            // Get the Rewired Player object for this player and keep it for the duration of the character's lifetime
+            inputPlayer = ReInput.players.GetPlayer(playerId);
         }
 
         // CHECK PLAYER INPUT & PERFORM APPROPRIATE ACTIONS
-        public void CheckInput()
+        public void UpdatePlayerInputValues()
         {
-            // --------------- SHOULDER BUTTONS START --------------------
-            // LEFT TRIGGER, LOGIC TO CHECK IF FIRST DOWN OR NOT FOR INITIALIZING QUICKSELECT
-            var battleToolQuickSelectInit = false;
-            if (Input.GetAxisRaw("LeftTrigger") > 0)
-            {
-                if (isLeftTriggerAxisInUse == false)
-                {
-                    isLeftTriggerAxisInUse = true;
-                    battleToolQuickSelectInit = true;
-                }
-            }
-            if (Input.GetAxisRaw("LeftTrigger") == 0)
-            {
-                isLeftTriggerAxisInUse = false;
-            }
-            battleManagerSingleton.battleToolQuickSelectActive = isLeftTriggerAxisInUse;
+            // AXES
+            inputValuesScript.vertMovement = RoundAxisVal(inputPlayer.GetAxis("Move Vertical"));
+            inputValuesScript.horMovement = RoundAxisVal(inputPlayer.GetAxis("Move Horizontal"));
+            inputValuesScript.vertAim = RoundAxisVal(inputPlayer.GetAxis("Aim Vertical"));
+            inputValuesScript.horAim = RoundAxisVal(inputPlayer.GetAxis("Aim Horizontal"));
 
-            // RUN BUTTON
-            BattleManager.singleton.playerIsRunning = ((
-                !BattleManager.singleton.isPlayerUsingMirage &&
-                (Input.GetAxisRaw("RightTrigger") > 0) || Input.GetButton("RightControl")) && 
-                !BattleManager.singleton.isPlayerCurrentlyUsingTool &&
-                BattleManager.singleton.curStamina > 0);
+            // BUTTONS
+            inputValuesScript.leftToolOrPageLeft = inputPlayer.GetButton("Left Tool / Page Left");
+            inputValuesScript.rightToolOrPageRight = inputPlayer.GetButton("Right Tool / Page Right");
+            inputValuesScript.quickselectOrMoreInfo = inputPlayer.GetButton("Quickselect / More Info");
+            inputValuesScript.runOrCursorSpeed = inputPlayer.GetButton("Run / Menu Speed");
+            inputValuesScript.heal = inputPlayer.GetButton("Heal");
+        }
 
-            // TOOL BUTTONS
-            bool leftToolButtonActive = Input.GetButton("LeftBumper");
-            if (!leftToolButtonActive)
-                leftToolButtonActive = Input.GetButton("LeftControl");
-            bool rightToolButtonActive = Input.GetButton("RightBumper");
-            if (!rightToolButtonActive)
-                rightToolButtonActive = Input.GetButton("Space");
+        public float RoundAxisVal(float _baseAxisVal)
+        {
+            float output = 0;
+            if (_baseAxisVal > 0)
+                output = 1;
+            else if (_baseAxisVal < 0)
+                output = -1;
+            return output;
+        }
 
-            // --------------- SHOULDER BUTTONS END --------------------
-
-            var rawHorizontalInputLeft = Input.GetAxisRaw("LeftJoystickHorizontal");
-            var rawVerticalInputLeft = -Input.GetAxisRaw("LeftJoystickVertical");
-
-            // LEFT JOYSTICK
-            if (rawHorizontalInputLeft == 0)
-                rawHorizontalInputLeft = Input.GetAxisRaw("LeftKeysHorizontal");
-            if (rawVerticalInputLeft == 0)
-                rawVerticalInputLeft = Input.GetAxisRaw("LeftKeysVertical");
-            var horizontalInputDirectionLeft = 0;
-            var verticalInputDirectionLeft = 0;
-
-            if (rawHorizontalInputLeft > 0)
-                horizontalInputDirectionLeft = 1;
-            else if (rawHorizontalInputLeft < 0)
-                horizontalInputDirectionLeft = -1;
-
-            if (rawVerticalInputLeft > 0)
-                verticalInputDirectionLeft = 1;
-            else if (rawVerticalInputLeft < 0)
-                verticalInputDirectionLeft = -1;
-
-            var movementSpeed = battleManagerSingleton.playerWalkSpeed;
-            if (battleManagerSingleton.isPlayerUsingMirage)
-                movementSpeed = battleManagerSingleton.playerMirageMovementSpeed;
-            if (battleManagerSingleton.playerIsRunning)
-                movementSpeed = battleManagerSingleton.playerRunSpeed;
-
-            Vector2 movement = new Vector2(rawHorizontalInputLeft * movementSpeed * Time.deltaTime, 
-                rawVerticalInputLeft * movementSpeed * Time.deltaTime);
-            
-            battleManagerSingleton.player.GetComponent<Rigidbody2D>().velocity = movement;
-
-            // RIGHT JOYSTICK
-            var rawHorizontalInputRight = Input.GetAxisRaw("RightJoystickHorizontal");
-            var rawVerticalInputRight = -Input.GetAxisRaw("RightJoystickVertical");
-            if (rawHorizontalInputRight == 0)
-                rawHorizontalInputRight = Input.GetAxisRaw("RightKeysHorizontal");
-            if (rawVerticalInputRight == 0)
-                rawVerticalInputRight = Input.GetAxisRaw("RightKeysVertical");
-            var horizontalInputDirectionRight = 0;
-            var verticalInputDirectionRight = 0;
-
-            if (rawHorizontalInputRight > 0)
-                horizontalInputDirectionRight = 1;
-            else if (rawHorizontalInputRight < 0)
-                horizontalInputDirectionRight = -1;
-
-            if (rawVerticalInputRight > 0)
-                verticalInputDirectionRight = 1;
-            else if (rawVerticalInputRight < 0)
-                verticalInputDirectionRight = -1;
-
-            var rawInputAngle = Mathf.Atan2(-rawHorizontalInputRight, rawVerticalInputRight) * Mathf.Rad2Deg;
-            rawInputAngle += 90;
-            if (rawInputAngle < 0)
-                rawInputAngle += 360;
-            if (rawInputAngle > 360)
-                rawInputAngle -= 360;
-            if (battleToolQuickSelectInit && rawHorizontalInputRight == 0 && rawVerticalInputRight == 0)
-                rawInputAngle = 90;
-            
-            if (!battleManagerSingleton.battleToolQuickSelectActive)
-            {
-                // HIDE TOOL QUICKSELECT
-                UIManager.singleton.toolQuickSelectMenuForBattle.SetActive(false);
-
-
-                //DIRECTIONAL AIM
-                var dirAimHorInput = horizontalInputDirectionRight;
-                var dirAimVertInput = verticalInputDirectionRight;
-                if (battleManagerSingleton.isPlayerUsingMirage)
-                {
-                    dirAimHorInput = horizontalInputDirectionLeft;
-                    dirAimVertInput = verticalInputDirectionLeft;
-                }
-
-                if (dirAimHorInput != 0 || dirAimVertInput != 0)
-                {
-                    battleManagerSingleton.curDirectionX = dirAimHorInput;
-                    battleManagerSingleton.curDirectionY = dirAimVertInput;
-
-                    var aimRotation = 0;
-
-                    if (dirAimHorInput == 1 && dirAimVertInput == 1)
-                        aimRotation = 315;
-                    else if (dirAimHorInput == 1 && dirAimVertInput == 0)
-                        aimRotation = 270;
-                    else if (dirAimHorInput == 1 && dirAimVertInput == -1)
-                        aimRotation = 225;
-                    else if (dirAimHorInput == 0 && dirAimVertInput == -1)
-                        aimRotation = 180;
-                    else if (dirAimHorInput == -1 && dirAimVertInput == -1)
-                        aimRotation = 135;
-                    else if (dirAimHorInput == -1 && dirAimVertInput == 0)
-                        aimRotation = 90;
-                    else if (dirAimHorInput == -1 && dirAimVertInput == 1)
-                        aimRotation = 45;
-
-                    battleManagerSingleton.playerDirectionalAim.transform.localRotation = Quaternion.Euler(0, 0, aimRotation);
-                }
-
-                Vector2 directionalAimOffset = new Vector2(battleManagerSingleton.curDirectionX / 2, battleManagerSingleton.curDirectionY / 2 - 0.5f);
-                battleManagerSingleton.playerDirectionalAim.transform.localPosition = battleManagerSingleton.playerDirectionalAimCenter + directionalAimOffset;
-
-                // TOP DOWN AIM (ALT AIM)
-                if (battleManagerSingleton.playerTopDownAim.activeInHierarchy)
-                    battleManagerSingleton.UpdatePlayerTopDownAim(new Vector2(
-                        horizontalInputDirectionRight * battleManagerSingleton.playerTopDownAimMovementSpeed,
-                        verticalInputDirectionRight * battleManagerSingleton.playerTopDownAimMovementSpeed));
-
-                //TOOLS
-                if (!battleManagerSingleton.isPlayerUsingMirage)
-                {
-                    if (leftToolButtonActive)
-                        battleManagerSingleton.InitToolUse(battleManagerSingleton.playerLeftTool);
-
-                    if (rightToolButtonActive)
-                        battleManagerSingleton.InitToolUse(battleManagerSingleton.playerRightTool);
-                }
-            }
-            else
-            {
-                var toolQuickSelectMenuForBattle = UIManager.singleton.toolQuickSelectMenuForBattle;
-                var toolQuickSelectMenuForBattleScript = toolQuickSelectMenuForBattle.GetComponent<ToolQuickSelectMenu>();
-                toolQuickSelectMenuForBattle.SetActive(true);
-                if (rawHorizontalInputRight != 0 || rawVerticalInputRight != 0)
-                    toolQuickSelectMenuForBattleScript.selectionAngle = rawInputAngle;
-                else if (battleToolQuickSelectInit)
-                    toolQuickSelectMenuForBattleScript.selectionAngle = 90;
-
-                var battleQuickSelectCurrentlySelectedTool = toolQuickSelectMenuForBattleScript.GetCurrentlySelectedTool();
-                if (battleQuickSelectCurrentlySelectedTool != null)
-                {
-                    if (leftToolButtonActive)
-                    {
-                        if (battleQuickSelectCurrentlySelectedTool == battleManagerSingleton.playerRightTool)
-                            battleManagerSingleton.SwapLeftAndRightTools();
-                        else
-                        {
-                            battleManagerSingleton.playerLeftTool = battleQuickSelectCurrentlySelectedTool;
-                        }
-                    }
-
-                    if (rightToolButtonActive)
-                    {
-                        if (battleQuickSelectCurrentlySelectedTool == battleManagerSingleton.playerLeftTool)
-                            battleManagerSingleton.SwapLeftAndRightTools();
-                        else
-                        {
-                            battleManagerSingleton.playerRightTool = battleQuickSelectCurrentlySelectedTool;
-                        }
-                    }
-
-                    if (leftToolButtonActive || rightToolButtonActive)
-                    {
-                        battleManagerSingleton.SetPlayerTopDownAim();
-                    }
-                }
-            }
+        public void InitPlayerDefaultTools()
+        {
+            foreach (GameObject curToolModelGO in defaultPlayerToolModels)
+                playerAllTools.Add(Instantiate(curToolModelGO).GetComponent<Tool>());
         }
 
         public static Vector2 radianToDirection(float _input, bool _isDegree = false)
@@ -304,5 +185,10 @@ namespace Arena
 
             return _input;
         }
+    }
+
+    public enum GameState
+    {
+        battle,shop
     }
 }

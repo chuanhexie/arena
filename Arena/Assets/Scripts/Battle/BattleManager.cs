@@ -22,6 +22,10 @@ namespace Arena
         public Sprite playerSprite;
         public Sprite enemySprite;
 
+        [Header("Containers")]
+        public GameObject miscBattleObjectsContainer;
+        public GameObject battleHUDContainer;
+
         [Header("Gameplay General")]
         public float defaultKnockbackForce;
         public float defualtKnockbackTimeLength;
@@ -171,6 +175,10 @@ namespace Arena
 
         public void InitBattle()
         {
+            // enable misc related objects
+            miscBattleObjectsContainer.SetActive(true);
+            battleHUDContainer.SetActive(true);
+
             // SET VARIOUS BATTLE VALUES TO THEIR DEFAULTS
             curDirectionX = 0;
             curDirectionY = -1;
@@ -198,6 +206,7 @@ namespace Arena
 
         public void UpdateBattleLogic()
         {
+            ParsePlayerInputsForBattle(GameManager.singleton.inputValuesScript);
             CheckPlayerShields();
             UpdateMirage();
 
@@ -488,6 +497,150 @@ namespace Arena
                 }
             }
             // ----- BATTLE-OBJECT-LOGIC END ------
+        }
+
+        public void ParsePlayerInputsForBattle(InputValues _inputValues)
+        {
+            // TOOL QUICKSELECT SET STATE (set "init" if the quickselect wasn't open on the last frame, and is now being opened this frame, to init appropriately later below)
+            bool battleToolQuickSelectInit = false;
+            if (!battleToolQuickSelectActive && _inputValues.quickselectOrMoreInfo)
+                battleToolQuickSelectInit = true;
+            battleToolQuickSelectActive = _inputValues.quickselectOrMoreInfo;
+
+            // PLAYER RUNNING SET STATE
+            BattleManager.singleton.playerIsRunning = ((
+                !BattleManager.singleton.isPlayerUsingMirage &&
+                _inputValues.runOrCursorSpeed) && 
+                !BattleManager.singleton.isPlayerCurrentlyUsingTool &&
+                BattleManager.singleton.curStamina > 0);
+
+            // LEFT AND RIGHT TOOL SET STATE
+            bool leftToolButtonActive = _inputValues.leftToolOrPageLeft;
+            bool rightToolButtonActive = _inputValues.rightToolOrPageRight;
+
+            // PLAYER MOVEMENT SPEED (WALK, RUN, MIRAGE)
+            var movementSpeed = playerWalkSpeed;
+            if (isPlayerUsingMirage)
+                movementSpeed = playerMirageMovementSpeed;
+            if (playerIsRunning)
+                movementSpeed = playerRunSpeed;
+
+            // MOVE PLAYER BASED ON DIRECTION AND SPEED
+            Vector2 movement = new Vector2(_inputValues.horMovement * movementSpeed * Time.deltaTime, 
+                _inputValues.vertMovement * movementSpeed * Time.deltaTime);
+            player.GetComponent<Rigidbody2D>().velocity = movement;
+
+            // PLAYER AIM (used in fighting, as well as for selecting in the tool quickselect)
+            var rawInputAngle = Mathf.Atan2(-_inputValues.horAim, _inputValues.vertAim) * Mathf.Rad2Deg;
+            rawInputAngle += 90;
+            if (rawInputAngle < 0)
+                rawInputAngle += 360;
+            if (rawInputAngle > 360)
+                rawInputAngle -= 360;
+            // if initializing quickselect on this frame, and the player has no aim input, set the quickselect selector to a default angle
+            if (battleToolQuickSelectInit && _inputValues.horAim == 0 && _inputValues.vertAim == 0)
+                rawInputAngle = 90;
+
+            // PERFORM LOGIC FOR WHEN QUICKSELECT ISNT OPEN (aim is used for aiming player direction)
+            if (!battleToolQuickSelectActive)
+            {
+                // HIDE TOOL QUICKSELECT (player isn't holding quickselect button here)
+                UIManager.singleton.toolQuickSelectMenuForBattle.SetActive(false);
+
+
+                //DIRECTIONAL AIM (controlled by aim stick normally, but controlled by move stick during mirage)
+                var dirAimHorInput = _inputValues.horAim;
+                var dirAimVertInput = _inputValues.vertAim;
+                if (isPlayerUsingMirage)
+                {
+                    dirAimHorInput = _inputValues.horMovement;
+                    dirAimVertInput = _inputValues.vertMovement;
+                }
+
+                if (dirAimHorInput != 0 || dirAimVertInput != 0)
+                {
+                    curDirectionX = dirAimHorInput;
+                    curDirectionY = dirAimVertInput;
+
+                    var aimRotation = 0;
+
+                    if (dirAimHorInput == 1 && dirAimVertInput == 1)
+                        aimRotation = 315;
+                    else if (dirAimHorInput == 1 && dirAimVertInput == 0)
+                        aimRotation = 270;
+                    else if (dirAimHorInput == 1 && dirAimVertInput == -1)
+                        aimRotation = 225;
+                    else if (dirAimHorInput == 0 && dirAimVertInput == -1)
+                        aimRotation = 180;
+                    else if (dirAimHorInput == -1 && dirAimVertInput == -1)
+                        aimRotation = 135;
+                    else if (dirAimHorInput == -1 && dirAimVertInput == 0)
+                        aimRotation = 90;
+                    else if (dirAimHorInput == -1 && dirAimVertInput == 1)
+                        aimRotation = 45;
+
+                    playerDirectionalAim.transform.localRotation = Quaternion.Euler(0, 0, aimRotation);
+                }
+
+                Vector2 directionalAimOffset = new Vector2(curDirectionX / 2, curDirectionY / 2 - 0.5f);
+                playerDirectionalAim.transform.localPosition = playerDirectionalAimCenter + directionalAimOffset;
+
+                // TOP DOWN AIM (ALT AIM)
+                if (playerTopDownAim.activeInHierarchy)
+                    UpdatePlayerTopDownAim(new Vector2(
+                        _inputValues.horAim * playerTopDownAimMovementSpeed,
+                        _inputValues.vertAim * playerTopDownAimMovementSpeed));
+
+                //TOOLS
+                if (!isPlayerUsingMirage)
+                {
+                    if (leftToolButtonActive)
+                        InitToolUse(playerLeftTool);
+
+                    if (rightToolButtonActive)
+                        InitToolUse(playerRightTool);
+                }
+            }
+            // PERFORM LOGIC FOR WHEN QUICKSELECT IS OPEN (aim is used for selecting in the quickselect)
+            else
+            {
+                var toolQuickSelectMenuForBattle = UIManager.singleton.toolQuickSelectMenuForBattle;
+                var toolQuickSelectMenuForBattleScript = toolQuickSelectMenuForBattle.GetComponent<ToolQuickSelectMenu>();
+                toolQuickSelectMenuForBattle.SetActive(true);
+                if (_inputValues.horAim != 0 || _inputValues.vertAim != 0)
+                    toolQuickSelectMenuForBattleScript.selectionAngle = rawInputAngle;
+                else if (battleToolQuickSelectInit)
+                    toolQuickSelectMenuForBattleScript.selectionAngle = 90;
+
+                var battleQuickSelectCurrentlySelectedTool = toolQuickSelectMenuForBattleScript.GetCurrentlySelectedTool();
+                if (battleQuickSelectCurrentlySelectedTool != null)
+                {
+                    if (leftToolButtonActive)
+                    {
+                        if (battleQuickSelectCurrentlySelectedTool == playerRightTool)
+                            SwapLeftAndRightTools();
+                        else
+                        {
+                            playerLeftTool = battleQuickSelectCurrentlySelectedTool;
+                        }
+                    }
+
+                    if (rightToolButtonActive)
+                    {
+                        if (battleQuickSelectCurrentlySelectedTool == playerLeftTool)
+                            SwapLeftAndRightTools();
+                        else
+                        {
+                            playerRightTool = battleQuickSelectCurrentlySelectedTool;
+                        }
+                    }
+
+                    if (leftToolButtonActive || rightToolButtonActive)
+                    {
+                        SetPlayerTopDownAim();
+                    }
+                }
+            }
         }
 
         public void InitToolUse (GameObject tool)

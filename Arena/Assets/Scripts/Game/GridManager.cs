@@ -35,18 +35,6 @@ namespace Arena
         public List<GameObject> allTilesInGrid;
         public List<GameObject> spawners;
 
-        // Use this for initialization
-        void Start () 
-        {
-            
-        }
-
-        // Update is called once per frame
-        void Update () 
-        {
-            
-        }
-
         public static GridManager singleton;
         void Awake()
         {

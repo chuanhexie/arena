@@ -77,11 +77,6 @@ namespace Arena
         // FPS
 		float deltaTime = 0.0f;
 
-        // Use this for initialization
-        void Start () 
-        {
-            toolQuickSelectMenuForBattle = InitToolQuickSelectMenu();
-        }
 		
 		void Update()
 		{
